@@ -8,6 +8,7 @@ import { CommonModule } from "src/common/common.module";
 import { JwtAuthGuard } from "src/common/guards/jwt-auth.guard";
 import { JwtRefreshTokenGuard } from "src/common/guards/ref-token.guard";
 import { MailerModule } from "@nestjs-modules/mailer";
+import { MyRedisModule } from "src/redis/redis.module";
 
 
 @Module({
@@ -42,6 +43,7 @@ import { MailerModule } from "@nestjs-modules/mailer";
          })
       }),
 
+      MyRedisModule,
       CommonModule
    ],
    controllers: [AuthController],

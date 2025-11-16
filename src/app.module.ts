@@ -9,14 +9,16 @@ import databaseConfig from './config/database.config';
 import authConfig from './config/auth.config';
 import { validationSchema } from './config/validation.schema';
 import { CommonModule } from './common/common.module';
+import { MyRedisModule } from './redis/redis.module';
+import redisConfig from './config/redis.config';
+
 
 
 @Module({
   imports: [
-
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig, authConfig, databaseConfig],
+      load: [appConfig, authConfig, databaseConfig, redisConfig],
       validationSchema
     }),
 
@@ -27,9 +29,10 @@ import { CommonModule } from './common/common.module';
       })
     }),
 
+    MyRedisModule,
+
     AuthModule,
     CommonModule
-
   ],
   providers: [
     {

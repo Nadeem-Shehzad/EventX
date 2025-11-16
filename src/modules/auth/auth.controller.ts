@@ -6,6 +6,7 @@ import {
    Req,
    UseGuards,
 } from "@nestjs/common";
+
 import { AuthService } from "./auth.service";
 import { RegisterDTO } from "./dto/register.dto";
 import { LoginDTO } from "./dto/login.dto";
@@ -15,6 +16,8 @@ import { JwtRefreshTokenGuard } from "src/common/guards/ref-token.guard";
 import type { Request } from "express";
 import { ChangePasswordDTO } from "./dto/change-password.dto";
 import { GetUserEmail } from "src/common/decorators/user-email";
+import { ForgotPasswordDTO } from "./dto/forgot-password.dto";
+import { ResetPasswordDTO } from "./dto/reset-password.dto";
 
 
 @Controller('auth')
@@ -62,5 +65,15 @@ export class AuthController {
    @Post('verify-email')
    verifyEmail(@Query('token') token: string) {
       return this.authService.verifyEmail(token);
+   }
+
+   @Post('forgot-password')
+   forgotPassword(@Body() body: ForgotPasswordDTO) {
+      return this.authService.forgotPassword(body.email);
+   }
+
+   @Post('reset-password')
+   resetPassword(@Body() dto: ResetPasswordDTO) {
+      return this.authService.resetPassword(dto);
    }
 }

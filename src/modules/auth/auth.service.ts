@@ -16,6 +16,9 @@ import { JwtService, JwtSignOptions } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { ChangePasswordDTO } from "./dto/change-password.dto";
 import { MailerService } from "@nestjs-modules/mailer";
+import { randomBytes } from "crypto";
+import { RedisService } from "src/redis/redis.service";
+import { ResetPasswordDTO } from "./dto/reset-password.dto";
 
 
 @Injectable()
@@ -25,7 +28,8 @@ export class AuthService {
       private readonly userService: UserService,
       private readonly jwtService: JwtService,
       private readonly configService: ConfigService,
-      private readonly mailService: MailerService
+      private readonly mailService: MailerService,
+      private readonly redis: RedisService
    ) { }
 
 
@@ -197,5 +201,54 @@ export class AuthService {
       await this.userService.update(user._id, { isVerified: true });
 
       return { message: 'Email verified successfully.' }
+   }
+
+
+   async forgotPassword(email: string) {
+      const user = await this.userService.findByEmail(email);
+      if (!user) throw new NotFoundException('User not Found.');
+
+
+      const token = randomBytes(32).toString('hex');
+      const userId = String(user._id);
+
+      await this.redis.set(`fp:${token}`, userId, 60 * 15);
+
+      const APP_URL = this.configService.get<string>('app_url');
+      const url = `${APP_URL}/auth/reset-password?token=${token}`;
+
+      await this.mailService.sendMail({
+         to: email,
+         subject: 'Reset Your Password',
+         html: `
+         <h2>Reset Password</h2>
+         <p>Click below to reset your passwird:</p>
+         <a href="${url}">${url}</a>`
+      });
+   }
+
+   async resetPassword(dto: ResetPasswordDTO) {
+      const { token, newPassword, confirmPassword } = dto;
+      if (newPassword !== confirmPassword) {
+         throw new BadRequestException("Passwords do not match.");
+      }
+
+      const userId = await this.redis.get(`fp:${token}`);
+      if (!userId) {
+         throw new BadRequestException("Invalid or expired token.");
+      }
+
+      const user = await this.userService.findUserById(userId);
+      if (!user) {
+         throw new NotFoundException("User not found.");
+      }
+
+      const hashed = await bcrypt.hash(newPassword, 10);
+
+      await this.userService.update(userId, { password: hashed });
+
+      await this.redis.del(`fp:${token}`);
+
+      return { message: "Password reset successfully." };
    }
 }
