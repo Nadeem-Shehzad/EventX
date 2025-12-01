@@ -3,19 +3,26 @@ import { AppModule } from './app.module';
 import { GlobalExceptionFilter } from './common/filters/global-exception-filter';
 import { ClassSerializerInterceptor } from '@nestjs/common';
 import helmet from 'helmet';
+import compression from 'compression';
 import { corsConfig } from './config/cors.config';
+import { Logger } from 'nestjs-pino';
 
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: false,
+    logger: ['error', 'warn'],
+  });
 
   app.use(helmet());
   app.enableCors(corsConfig());
-
+  app.use(compression());
+  
   app.useGlobalFilters(new GlobalExceptionFilter());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
-
+  
   await app.listen(process.env.PORT ?? 3000);
+  app.useLogger(app.get(Logger));
 }
 
 bootstrap();

@@ -2,6 +2,7 @@ import {
    BadRequestException,
    ConflictException,
    Injectable,
+   Logger,
    NotFoundException,
    UnauthorizedException
 } from "@nestjs/common";
@@ -29,9 +30,10 @@ export class AuthService {
       private readonly jwtService: JwtService,
       private readonly configService: ConfigService,
       private readonly mailService: MailerService,
-      private readonly redis: RedisService
+      private readonly redis: RedisService,
    ) { }
 
+   private readonly logger = new Logger(AuthService.name);
 
    async register(data: RegisterDTO) {
 
@@ -57,6 +59,7 @@ export class AuthService {
 
 
    async login(loginData: LoginDTO) {
+      //this.logger.log(`Login Attempts ...`);
       const user = await this.userService.findByEmailWithPassword(loginData.email);
       if (!user) {
          throw new NotFoundException('User not Registered!');
@@ -117,7 +120,7 @@ export class AuthService {
          password: newHashedPassword
       });
 
-      return 'Password Changes Successfully.';
+      return 'Password Changed Successfully.';
    }
 
 

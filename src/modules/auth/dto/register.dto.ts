@@ -1,5 +1,5 @@
 import { Transform } from "class-transformer";
-import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
+import { IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator";
 
 
 export class RegisterDTO {
@@ -19,6 +19,10 @@ export class RegisterDTO {
    @IsString()
    @MinLength(6, { message: 'Password must be at least 6 characters long!' })
    @MaxLength(22, { message: 'Password must not exceed 22 characters!' })
+   @Matches(/[A-Z]/, { message: 'Password must contain at least one uppercase letter.' })
+   @Matches(/[a-z]/, { message: 'Password must contain at least one lowercase letter.' })
+   @Matches(/[0-9]/, { message: 'Password must contain at least one number.' })
+   @Matches(/[@$!%*?&]/, { message: 'Password must contain at least one special character.' })
    password: string
 
    @IsOptional()

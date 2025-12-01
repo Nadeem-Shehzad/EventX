@@ -1,4 +1,4 @@
-import { Inject, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AuthModule } from './modules/auth/auth.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
@@ -11,6 +11,8 @@ import { validationSchema } from './config/validation.schema';
 import { CommonModule } from './common/common.module';
 import { MyRedisModule } from './redis/redis.module';
 import redisConfig from './config/redis.config';
+import { RateLimitModule } from './rateLimit/rate-limit.module';
+import { LoggerModule } from 'nestjs-pino';
 
 
 
@@ -22,6 +24,21 @@ import redisConfig from './config/redis.config';
       validationSchema
     }),
 
+    LoggerModule.forRoot({
+      pinoHttp: {
+        autoLogging: false,
+        transport: {
+          target: 'pino-pretty',
+          options: {
+            colorize: true,
+            translateTime: 'SYS:standard',
+            ignore: 'req,pid,hostname,context',
+            messageFormat: '[{context}] {msg}',
+          },
+        },
+      },
+    }),
+
     MongooseModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
@@ -30,6 +47,7 @@ import redisConfig from './config/redis.config';
     }),
 
     MyRedisModule,
+    RateLimitModule,
 
     AuthModule,
     CommonModule
@@ -43,3 +61,18 @@ import redisConfig from './config/redis.config';
 })
 
 export class AppModule { }
+
+
+// <-------- VIP - apply 'compression' when implementing these modules -------->
+// export class AppModule implements NestModule {
+//   configure(consumer: MiddlewareConsumer) {
+//     consumer
+//       .apply(compression())
+//       .forRoutes(
+//         'events',
+//         'users',
+//         'products',
+//         'analytics',
+//       );
+//   }
+// }
