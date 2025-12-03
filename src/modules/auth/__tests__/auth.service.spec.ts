@@ -17,17 +17,16 @@ import { RedisService } from "../../../redis/redis.service";
 import { JwtService } from "@nestjs/jwt";
 import { LoginDTO } from "../dto/login.dto";
 import { ChangePasswordDTO } from "../dto/change-password.dto";
+import { randomBytes } from "crypto";
+import { ResetPasswordDTO } from "../dto/reset-password.dto";
 
 
-// 1. MOCK BCRYPT GLOBALLY
-// This prevents the "Cannot redefine property" error
 jest.mock('bcrypt');
 
 describe('AuthService - register', () => {
 
    let service: AuthService;
 
-   // Define the mock object structure
    const userService = {
       findByEmail: jest.fn(),
       create: jest.fn(),
@@ -45,8 +44,6 @@ describe('AuthService - register', () => {
    };
 
    beforeEach(async () => {
-      // 2. RESET MOCKS BEFORE EVERY TEST
-      // This fixes the "Resolved instead of rejected" error by clearing previous test data
       jest.resetAllMocks();
 
       const module: TestingModule = await Test.createTestingModule({
@@ -70,22 +67,16 @@ describe('AuthService - register', () => {
          password: '123456',
       };
 
-      // 1️⃣ Email not exists (Return null)
       userService.findByEmail.mockResolvedValueOnce(null);
 
-      // 2️⃣ Mock bcrypt hash
-      // Since we mocked the library globally, we just cast it to jest.Mock
       (bcrypt.hash as jest.Mock).mockResolvedValue('hashedpassword');
 
-      // 3️⃣ Mock userService.create resolves
       userService.create.mockResolvedValueOnce(undefined);
 
-      // 4️⃣ Mock findByEmail after creation returns user
       userService.findByEmail.mockResolvedValueOnce(mockUser);
 
       const result = await service.register(dto);
 
-      // ✅ Verify method calls
       expect(userService.findByEmail).toHaveBeenNthCalledWith(1, dto.email);
       expect(bcrypt.hash).toHaveBeenCalledWith(dto.password, 10);
       expect(userService.create).toHaveBeenCalledWith({
@@ -93,7 +84,6 @@ describe('AuthService - register', () => {
          password: 'hashedpassword',
       });
 
-      // ✅ Verify returned DTO
       expect(result).toEqual(
          plainToInstance(UserResponseDTO, mockUser, { excludeExtraneousValues: true }),
       );
@@ -106,13 +96,10 @@ describe('AuthService - register', () => {
          password: '123456',
       };
 
-      // 1️⃣ Email ALREADY exists (Return user immediately)
-      // Because we used resetAllMocks(), this is guaranteed to be the first call
       userService.findByEmail.mockResolvedValueOnce(mockUser);
 
       await expect(service.register(dto)).rejects.toThrow(ConflictException);
 
-      // Ensure create was NOT called
       expect(userService.create).not.toHaveBeenCalled();
    });
 });
@@ -449,6 +436,182 @@ describe('AuthService - Verify Email', () => {
       expect(userService.update).toHaveBeenCalledWith(fakeUser2._id, { isVerified: true });
       expect(result).toEqual({ message: 'Email verified successfully.' });
    });
+});
 
 
+jest.mock('crypto', () => ({
+   randomBytes: jest.fn(),
+}));
+
+describe('AuthService - forgotPassword', () => {
+   let service: AuthService;
+
+   const userService = {
+      findByEmail: jest.fn()
+   }
+
+   const redisService = {
+      set: jest.fn()
+   }
+
+   const configService = {
+      get: jest.fn()
+   }
+
+   const mailService = {
+      sendMail: jest.fn()
+   }
+
+   const email = 'nadeem@gmail.com';
+   const fakeUser = {
+      _id: '1h2jh3j',
+      name: 'nadeem',
+      email: 'nadeem@gmail.com',
+      role: 'user'
+   }
+
+   beforeEach(async () => {
+      const module: TestingModule = await Test.createTestingModule({
+         providers: [
+            AuthService,
+            { provide: UserService, useValue: userService },
+            { provide: ConfigService, useValue: configService },
+            { provide: JwtService, useValue: {} },
+            { provide: RedisService, useValue: redisService },
+            { provide: MailerService, useValue: mailService }
+         ]
+      }).compile();
+      service = module.get<AuthService>(AuthService);
+   });
+
+   it('should be defined', () => {
+      expect(service).toBeDefined();
+   });
+
+   it('should throw NotFoundException - if user not found', async () => {
+      userService.findByEmail.mockResolvedValueOnce(null);
+      await expect(service.forgotPassword(email)).rejects.toThrow(NotFoundException);
+   });
+
+   it('should send reset password email successfully', async () => {
+      const token = 'abc123';
+
+      userService.findByEmail.mockResolvedValueOnce(fakeUser);
+
+      (randomBytes as jest.Mock).mockReturnValue({
+         toString: () => token
+      });
+
+      redisService.set.mockResolvedValueOnce(true);
+
+      configService.get.mockImplementation((key) => {
+         if (key === 'app_url') return 'https://eventx.com';
+      });
+
+      mailService.sendMail.mockResolvedValueOnce(true);
+
+      await service.forgotPassword(email);
+
+      expect(userService.findByEmail).toHaveBeenCalledWith(email);
+
+      expect(randomBytes).toHaveBeenCalledWith(32);
+
+      expect(redisService.set).toHaveBeenCalledWith(
+         `fp:${token}`, 
+         fakeUser._id,
+         60 * 15
+      );
+
+      expect(mailService.sendMail).toHaveBeenCalledWith({
+         to: email,
+         subject: 'Reset Your Password',
+         html: expect.stringContaining(`https://eventx.com/auth/reset-password?token=${token}`)
+      });
+   });
+});
+
+
+describe('AuthService - resetPassword', () => {
+   let service: AuthService;
+
+   const userService = {
+      findUserById: jest.fn(),
+      update: jest.fn()
+   }
+
+   const redisService = {
+      get: jest.fn(),
+      del: jest.fn()
+   }
+
+   const userId = '1h2jh3j';
+   const hashedPassword = 'hashed_refresh_token';
+   const fakeUser = {
+      _id: '1h2jh3j',
+      name: 'nadeem',
+      email: 'nadeem@gmail.com',
+      role: 'user'
+   }
+
+   const dto: ResetPasswordDTO = {
+      token: 'dhdjfhjdf',
+      newPassword: '123456',
+      confirmPassword: '123456'
+   }
+
+   beforeEach(async () => {
+      const module: TestingModule = await Test.createTestingModule({
+         providers: [
+            AuthService,
+            { provide: UserService, useValue: userService },
+            { provide: ConfigService, useValue: {} },
+            { provide: JwtService, useValue: {} },
+            { provide: RedisService, useValue: redisService },
+            { provide: MailerService, useValue: {} }
+         ]
+      }).compile();
+      service = module.get<AuthService>(AuthService);
+   });
+
+   it('should be defined', () => {
+      expect(service).toBeDefined();
+   });
+
+   it('should throw BadRequestException - if new and confirm password not matched', async () => {
+      const dto2: ResetPasswordDTO = {
+         token: 'dhdjfhjdf',
+         newPassword: '123456',
+         confirmPassword: '112233'
+      }
+
+      await expect(service.resetPassword(dto2)).rejects.toThrow(BadRequestException);
+   });
+
+   it('should throw BadRequestException - if Invalid or expired token.', async () => {
+      redisService.get.mockResolvedValueOnce(null);
+      await expect(service.resetPassword(dto)).rejects.toThrow(BadRequestException);
+   });
+
+   it('should throw NotFoundException - if user not found', async () => {
+      redisService.get.mockResolvedValueOnce(userId);
+      userService.findUserById.mockResolvedValueOnce(null);
+      await expect(service.resetPassword(dto)).rejects.toThrow(NotFoundException);
+   });
+
+   it('should reset password', async () => {
+
+      redisService.get.mockResolvedValueOnce(userId);
+      userService.findUserById.mockResolvedValueOnce(fakeUser);
+
+      (bcrypt.compare as jest.Mock).mockResolvedValueOnce(hashedPassword);
+
+      userService.update.mockResolvedValueOnce(true);
+      redisService.del.mockResolvedValueOnce(true);
+
+      const result = await service.resetPassword(dto);
+
+      expect(userService.update).toHaveBeenCalledWith(fakeUser._id, { password: hashedPassword });
+      expect(redisService.del).toHaveBeenCalledWith('fp:dhdjfhjdf');
+      expect(result).toEqual({ message: "Password reset successfully." });
+   });
 });
