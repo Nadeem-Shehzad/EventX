@@ -107,7 +107,7 @@ export class AuthService {
       }
 
       if (cpData.currentPassword === cpData.newPassword) {
-         throw new BadRequestException('New password must be different from current password.');
+         throw new ConflictException('New password must be different from current password.');
       }
 
       if (cpData.newPassword !== cpData.confirmPassword) {
@@ -134,7 +134,7 @@ export class AuthService {
 
       const user = await this.userService.findByIdWithRefreshToken(userData.id);
       if (!user) {
-         throw new UnauthorizedException('User not found!');
+         throw new NotFoundException('User not found!');
       }
 
       const isValid = await bcrypt.compare(rf_Token, user.refreshToken);
@@ -230,6 +230,7 @@ export class AuthService {
       });
    }
 
+   
    async resetPassword(dto: ResetPasswordDTO) {
       const { token, newPassword, confirmPassword } = dto;
       if (newPassword !== confirmPassword) {

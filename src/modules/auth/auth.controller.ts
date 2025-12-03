@@ -55,7 +55,7 @@ export class AuthController {
 
    @UseGuards(JwtRefreshTokenGuard)
    @Post('refresh')
-   refresh(@Req() req: Request) {
+   refreshToken(@Req() req: Request) {
       const user = req['user'];
       const rf_Token = req['rf_Token'];
 
