@@ -9,20 +9,20 @@ import { Logger } from 'nestjs-pino';
 
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    bufferLogs: false,
-    logger: ['error', 'warn'],
-  });
+   const app = await NestFactory.create(AppModule, {
+      bufferLogs: false,
+      logger: ['error', 'warn'],
+   });
 
-  app.use(helmet());
-  app.enableCors(corsConfig());
-  app.use(compression());
-  
-  app.useGlobalFilters(new GlobalExceptionFilter());
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
-  
-  await app.listen(process.env.PORT ?? 3000);
-  app.useLogger(app.get(Logger));
+   app.use(helmet());
+   app.enableCors(corsConfig());
+   app.use(compression());
+
+   app.useGlobalFilters(new GlobalExceptionFilter());
+   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+
+   await app.listen(process.env.PORT ?? 3000);
+   app.useLogger(app.get(Logger));
 }
 
 bootstrap();

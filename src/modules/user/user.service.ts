@@ -14,7 +14,6 @@ export class UserService {
    }
 
 
-   // common services
    async findUserById(id: string) {
       return await this.userModel.findById(id).exec();
    }
@@ -47,7 +46,7 @@ export class UserService {
       ).exec();
    }
 
-   
+
    async removeToken(id: any) {
       await this.userModel.updateOne(
          { _id: id },

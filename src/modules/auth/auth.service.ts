@@ -230,7 +230,7 @@ export class AuthService {
       });
    }
 
-   
+
    async resetPassword(dto: ResetPasswordDTO) {
       const { token, newPassword, confirmPassword } = dto;
       if (newPassword !== confirmPassword) {
