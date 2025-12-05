@@ -1,6 +1,4 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { AuthService } from "../auth.service";
-import { UserService } from "../../user/user.service";
 import {
    BadRequestException,
    ConflictException,
@@ -8,17 +6,20 @@ import {
    UnauthorizedException
 } from "@nestjs/common";
 import * as bcrypt from 'bcrypt';
-import { RegisterDTO } from "../dto/register.dto";
-import { UserResponseDTO } from "../../user/dto/user-response.dto";
+
 import { plainToInstance } from "class-transformer";
 import { ConfigService } from "@nestjs/config";
 import { MailerService } from "@nestjs-modules/mailer";
-import { RedisService } from "../../../redis/redis.service";
 import { JwtService } from "@nestjs/jwt";
-import { LoginDTO } from "../dto/login.dto";
-import { ChangePasswordDTO } from "../dto/change-password.dto";
 import { randomBytes } from "crypto";
-import { ResetPasswordDTO } from "../dto/reset-password.dto";
+import { AuthService } from "../../auth.service";
+import { UserService } from "src/modules/user/user.service";
+import { RegisterDTO } from "../../dto/register.dto";
+import { UserResponseDTO } from "src/modules/user/dto/user-response.dto";
+import { RedisService } from "src/redis/redis.service";
+import { LoginDTO } from "../../dto/login.dto";
+import { ChangePasswordDTO } from "../../dto/change-password.dto";
+import { ResetPasswordDTO } from "../../dto/reset-password.dto";
 
 
 jest.mock('bcrypt');

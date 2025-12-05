@@ -1,13 +1,14 @@
-import { AuthController } from "../auth.controller";
-import { AuthService } from "../auth.service";
+
 import { UserResponseDTO } from "src/modules/user/dto/user-response.dto";
 import { CanActivate, ExecutionContext } from "@nestjs/common";
-import { RegisterDTO } from "../dto/register.dto";
-import { LoginDTO } from "../dto/login.dto";
 import { createAuthTestingModule } from "./module.factories";
-import { ChangePasswordDTO } from "../dto/change-password.dto";
-import { ForgotPasswordDTO } from "../dto/forgot-password.dto";
-import { ResetPasswordDTO } from "../dto/reset-password.dto";
+import { AuthController } from "../../auth.controller";
+import { AuthService } from "../../auth.service";
+import { RegisterDTO } from "../../dto/register.dto";
+import { LoginDTO } from "../../dto/login.dto";
+import { ChangePasswordDTO } from "../../dto/change-password.dto";
+import { ForgotPasswordDTO } from "../../dto/forgot-password.dto";
+import { ResetPasswordDTO } from "../../dto/reset-password.dto";
 
 
 export class MockGuard implements CanActivate {

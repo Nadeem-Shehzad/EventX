@@ -11,7 +11,6 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
@@ -64,6 +63,7 @@
     "eslint-plugin-prettier": "^5.2.2",
     "globals": "^16.0.0",
     "jest": "^30.2.0",
+    "mongodb-memory-server": "^10.4.1",
     "prettier": "^3.4.2",
     "source-map-support": "^0.5.21",
     "supertest": "^7.1.4",
@@ -81,7 +81,9 @@
       "ts"
     ],
     "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
+    "testMatch": [
+      "**/?(*.)+(spec|int-spec).ts"
+    ],
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { AuthController } from "../auth.controller";
-import { AuthService } from "../auth.service";
+import { AuthController } from "../../auth.controller";
+import { AuthService } from "../../auth.service";
 import { RedisService } from "src/redis/redis.service";
 import { MailerService } from "@nestjs-modules/mailer";
 import { JwtAuthGuard } from "src/common/guards/jwt-auth.guard";
