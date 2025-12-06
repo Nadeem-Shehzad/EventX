@@ -45,3 +45,22 @@ export const loginTestUser = async (
 
    return res;
 };
+
+
+export const forgotPasswordTestUser = async (
+   app: INestApplication,
+   overrideData?: Partial<{ email: string }>
+) => {
+   const defaultData = {
+      email: 'user@test.com'
+   };
+
+   const userData = { ...defaultData, ...overrideData };
+
+   const res = await request(app.getHttpServer())
+      .post('/auth/forgot-password')
+      .send(userData)
+      .expect(201);
+
+   return res;
+};

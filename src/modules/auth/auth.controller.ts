@@ -33,7 +33,7 @@ export class AuthController {
       return this.authService.register(data);
    }
 
-   @Throttle({ default: { limit: 3, ttl: 60000 } })
+   @Throttle({ default: { limit: 5, ttl: 60000 } })
    @Post('login')
    login(@Body() loginData: LoginDTO) {
       return this.authService.login(loginData);

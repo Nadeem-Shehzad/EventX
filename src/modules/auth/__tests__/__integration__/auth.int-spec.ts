@@ -5,22 +5,37 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MongooseModule, getConnectionToken } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 import { MailerService } from '@nestjs-modules/mailer';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from '../../auth.module';
-import { registerTestUser } from './auth.helper';
+import { forgotPasswordTestUser, loginTestUser, registerTestUser } from './auth.helper';
 import { UserService } from 'src/modules/user/user.service';
+import { ThrottlerGuard } from '@nestjs/throttler';
+//import { getRedisToken } from '@nestjs-modules/ioredis';
 
 
-// ---- Mock Redis safely
+// 1. SMART REDIS MOCK
+// We use a global Map to simulate Redis storage in memory.
+// This allows 'set' to actually store data that 'get' can retrieve later in the same test.
+const redisStore = new Map<string, string>();
+
 jest.mock('ioredis', () => {
-   return {
-      __esModule: true,
-      default: jest.fn().mockImplementation(() => ({
-         get: jest.fn(),
-         set: jest.fn(),
-         del: jest.fn(),
-      })),
-   };
+  return {
+    __esModule: true,
+    default: jest.fn().mockImplementation(() => ({
+      set: jest.fn().mockImplementation((key, value) => {
+        redisStore.set(key, String(value)); // Store as string
+        return 'OK';
+      }),
+      get: jest.fn().mockImplementation((key) => {
+        return redisStore.get(key) || null; // Return value or null
+      }),
+      del: jest.fn().mockImplementation((key) => redisStore.delete(key)),
+      setex: jest.fn(),
+      expire: jest.fn(),
+      ttl: jest.fn(),
+      exists: jest.fn(),
+    })),
+  };
 });
 
 jest.setTimeout(30000);
@@ -31,6 +46,7 @@ let mongoServer: MongoMemoryServer;
 let connection: Connection;
 let userService: UserService;
 
+
 // --- Setup Nest app + MongoMemoryServer
 beforeAll(async () => {
    mongoServer = await MongoMemoryServer.create();
@@ -38,19 +54,43 @@ beforeAll(async () => {
 
    const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [
-         ConfigModule.forRoot({ isGlobal: true }),
+         // 1. Configure ConfigModule properly instead of mocking the service
+         ConfigModule.forRoot({
+            isGlobal: true,
+            ignoreEnvFile: true, // Don't look at .env file
+            load: [
+               () => ({
+                  MONGO_URI: mongoUri,
+                  app_url: 'http://localhost:3000',
+                  // Provide BOTH keys to be safe (depending on what your JwtModule uses)
+                  JWT_SECRET: 'test-access-secret',
+                  JWT_ACCESS_SECRET: 'test-access-secret',
+                  JWT_REFRESH_SECRET: 'test-refresh-secret',
+                  JWT_REFRESH_EXPIRES: '900s',
+               }),
+            ],
+         }),
          MongooseModule.forRootAsync({
             useFactory: async () => ({ uri: mongoUri }),
          }),
          AuthModule,
       ],
    })
+      // ---- Mock MailerService
       .overrideProvider(MailerService)
-      .useValue({ sendMail: jest.fn().mockResolvedValue(true) })
+      .useValue({
+         sendMail: jest.fn().mockResolvedValue(true),
+      })
+      // ---- Disable Throttler (Rate Limiting) for Tests
+      .overrideGuard(ThrottlerGuard)
+      .useValue({ canActivate: () => true })
       .compile();
 
    app = moduleRef.createNestApplication();
-   app.useGlobalPipes(new ValidationPipe());
+
+   // Apply validation pipe if your controller relies on it for DTO validation
+   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+
    await app.init();
 
    connection = moduleRef.get(getConnectionToken());
@@ -59,20 +99,23 @@ beforeAll(async () => {
 
 // --- Cleanup Mongo + App
 afterAll(async () => {
-   await connection.close();
+   if (connection) await connection.close();
    if (mongoServer) await mongoServer.stop();
    if (app) await app.close();
 });
 
 // --- Clear collections after each test
 afterEach(async () => {
-   const collections = connection.collections;
-   for (const key in collections) {
-      await collections[key].deleteMany({});
+   if (connection) {
+      const collections = connection.collections;
+      for (const key in collections) {
+         await collections[key].deleteMany({});
+      }
    }
 });
 
 
+// ================= TESTS =================
 
 describe('AuthModule - Registration', () => {
    it('should register a user successfully', async () => {
@@ -91,7 +134,7 @@ describe('AuthModule - Registration', () => {
 
 describe('AuthModule - Login', () => {
    it('should be able to login with registered user', async () => {
-      const user = await registerTestUser(app, { email: 'user@test.com' });
+      await registerTestUser(app, { email: 'user@test.com', password: 'Aa$123456' });
 
       const res = await request(app.getHttpServer())
          .post('/auth/login')
@@ -101,12 +144,13 @@ describe('AuthModule - Login', () => {
       expect(res.body).toHaveProperty('token');
       expect(res.body).toHaveProperty('refreshToken');
 
+      // Ensure tokens are valid JWT strings (3 parts)
       expect(res.body.token.split('.')).toHaveLength(3);
       expect(res.body.refreshToken.split('.')).toHaveLength(3);
    });
 
    it('should fail login with invalid password', async () => {
-      const user = await registerTestUser(app, { email: 'user@test.com', password: 'Aa$123456' });
+      await registerTestUser(app, { email: 'user@test.com', password: 'Aa$123456' });
 
       const res = await request(app.getHttpServer())
          .post('/auth/login')
@@ -119,13 +163,12 @@ describe('AuthModule - Login', () => {
    it('should fail login for non-existent user', async () => {
       const res = await request(app.getHttpServer())
          .post('/auth/login')
-         .send({ email: 'user@test.com', password: 'wrongpassword' })
-         .expect(404);
+         .send({ email: 'ghost@test.com', password: 'wrongpassword' })
+         .expect(404); // Changed from 401 to 404 based on your code (NotFoundException)
 
       expect(res.body.message).toBe('User not Registered!');
    });
 });
-
 
 
 describe('AuthModule - Change Password', () => {
@@ -208,11 +251,11 @@ describe('AuthModule - Change Password', () => {
 
       const res = await request(app.getHttpServer())
          .post('/auth/change-password')
-         .set('Authorization',`Bearer ${token}`)
+         .set('Authorization', `Bearer ${token}`)
          .send(payload);
 
       expect(res.status).toBe(400);
-      expect(res.body.message).toBe('New and Confirm password are not same.');   
+      expect(res.body.message).toBe('New and Confirm password are not same.');
    });
 
    it('should fail without JWT token', async () => {
@@ -226,6 +269,153 @@ describe('AuthModule - Change Password', () => {
          .post('/auth/change-password')
          .send(payload);
 
-      expect(res.status).toBe(401);   
+      expect(res.status).toBe(401);
+   });
+});
+
+
+describe('AuthModule - logout', () => {
+   let token: string;
+   const email = 'nadeem@gmail.com';
+   const password = 'Aa$123456';
+
+   beforeEach(async () => {
+      const user = await registerTestUser(app, { email, password });
+      const loginRes = await loginTestUser(app, { email, password });
+      token = loginRes.body.token;
+   });
+
+   it('should logout user ', async () => {
+      const res = await request(app.getHttpServer())
+         .post('/auth/logout')
+         .set('Authorization', `Bearer ${token}`)
+         .expect(201)
+
+      expect(res.body.loggedOut).toBe(true);
+
+      const user = await connection.collection('users').findOne({ email });
+
+      expect(user).not.toBeNull();
+      expect(user?.refreshToken).toBeFalsy();
+   });
+});
+
+
+describe('AuthModule - RefreshToken', () => {
+   let rftoken: string;
+   const email = 'nadeem@gmail.com';
+   const password = 'Aa$123456';
+
+   beforeEach(async () => {
+      const user = await registerTestUser(app, { email, password });
+      const loginRes = await loginTestUser(app, { email, password });
+
+      rftoken = loginRes.body.refreshToken;
+   });
+
+   it('should Generate Access Token', async () => {
+      const res = await request(app.getHttpServer())
+         .post('/auth/refresh')
+         .send({ refresh_token: rftoken })
+         .expect(201);
+
+      expect(res.body).toHaveProperty('access_token');
+      expect(res.body).toHaveProperty('refresh_token');
+
+      expect(res.body.access_token.split('.')).toHaveLength(3);
+      expect(res.body.refresh_token.split('.')).toHaveLength(3);
+   });
+});
+
+
+describe('AuthModule - Verify Email', () => {
+   let token: string;
+   const email = 'nadeem@gmail.com';
+   const password = 'Aa$123456';
+
+   beforeEach(async () => {
+      const user = await registerTestUser(app, { email, password });
+      const loginRes = await loginTestUser(app, { email, password });
+
+      token = loginRes.body.token;
+   });
+
+   it('Should Verify User Email', async () => {
+      const res = await request(app.getHttpServer())
+         .post('/auth/verify-email')
+         .query({ token })
+         .expect(201);
+
+      expect(res.body.message).toEqual('Email verified successfully.');
+   });
+});
+
+
+describe('ForgotPassword', () => {
+    const email = 'forgot@gmail.com';
+    const password = 'Aa$123456';
+
+    beforeEach(async () => {
+      await registerTestUser(app, { email, password });
+    });
+
+    it('Should send reset password token successfully', async () => {
+      const res = await request(app.getHttpServer())
+        .post('/auth/forgot-password')
+        .send({ email })
+        .expect(201);
+
+      // Check response
+      expect(res.body.token).toBeDefined();
+
+      // Check Redis
+      // Use the Correct Injection Token: getRedisToken('default')
+      // const redisClient = app.get(getRedisToken('default'));
+      
+      // Since we used the Smart Mock, this will actually find the key
+      // const redisValue = await redisClient.get(`fp:${res.body.token}`);
+      // expect(redisValue).toBeDefined();
+
+      // Check Mailer
+      const mailerService = app.get(MailerService);
+      expect(mailerService.sendMail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: email,
+          subject: 'Reset Your Password',
+        })
+      );
+    });
+
+    it('Should fail if user does not exist', async () => {
+      const res = await request(app.getHttpServer())
+        .post('/auth/forgot-password')
+        .send({ email: 'unknown@domain.com' })
+        .expect(404);
+
+      expect(res.body.message).toBe('User not Found.');
+    });
+  });
+
+
+describe('AuthModule - ResetPassword', () => {
+   const email = 'nadeem@gmail.com';
+   const password = 'Aa$123456';
+   let token: string;
+   const newPassword = 'Aa$112233';
+   const confirmPassword = 'Aa$112233';
+
+   beforeEach(async () => {
+      const user = await registerTestUser(app, { email, password });
+      const res = await forgotPasswordTestUser(app, { email });
+      token = res.body.token;
+   });
+
+   it('Should Reset Password', async () => {
+      const res = await request(app.getHttpServer())
+         .post('/auth/reset-password')
+         .send({ token, newPassword, confirmPassword })
+         .expect(201);
+
+      expect(res.body.message).toEqual('Password reset successfully.');
    });
 });

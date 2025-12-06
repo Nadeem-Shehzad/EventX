@@ -228,6 +228,8 @@ export class AuthService {
          <p>Click below to reset your passwird:</p>
          <a href="${url}">${url}</a>`
       });
+
+      return { token, message: 'Token sent to Your Given Email.' };
    }
 
 
