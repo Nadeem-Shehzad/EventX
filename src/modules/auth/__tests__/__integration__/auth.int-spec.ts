@@ -5,7 +5,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MongooseModule, getConnectionToken } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 import { MailerService } from '@nestjs-modules/mailer';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from '../../auth.module';
 import { forgotPasswordTestUser, loginTestUser, registerTestUser } from './auth.helper';
 import { UserService } from 'src/modules/user/user.service';
