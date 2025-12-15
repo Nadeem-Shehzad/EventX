@@ -47,7 +47,12 @@ let throttlerStorage: any;
 
 // --- Setup Nest app + MongoMemoryServer
 beforeAll(async () => {
-   mongoServer = await MongoMemoryServer.create();
+   mongoServer = await MongoMemoryServer.create({
+      instance: {
+         // Increase startup timeout to 30 seconds (30000ms)
+         launchTimeout: 30000
+      }
+   });
    const mongoUri = mongoServer.getUri();
 
    const moduleRef: TestingModule = await Test.createTestingModule({
@@ -116,7 +121,7 @@ afterEach(async () => {
       }
    }
 
-   if (throttlerStorage.storage) {
+   if (throttlerStorage && throttlerStorage.storage) {
       throttlerStorage.storage.clear();
    }
 });
