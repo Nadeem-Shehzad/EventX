@@ -1,11 +1,4 @@
-import {
-   Body,
-   Controller,
-   Post,
-   Query,
-   Req,
-   UseGuards,
-} from "@nestjs/common";
+import { Body, Controller, Post, Query, Req, UseGuards } from "@nestjs/common";
 
 import { SkipThrottle, Throttle } from "@nestjs/throttler";
 
