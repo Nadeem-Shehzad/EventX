@@ -2,7 +2,7 @@ name: CI - EventX
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main ]
   pull_request:
 
 jobs:
