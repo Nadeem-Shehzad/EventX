@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    container_name: eventx-api-test
+    environment:
+      NODE_ENV: test
+      JWT_SECRET: test-secret
+    networks:
+      - eventx-network
+
+networks:
+  eventx-network:
+    driver: bridge
