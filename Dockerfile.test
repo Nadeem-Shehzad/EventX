@@ -2,10 +2,12 @@ FROM node:22-slim
 
 WORKDIR /app
 
+# Install all dependencies (including dev)
 COPY package*.json ./
-
 RUN npm install
 
+# Copy source and tests
 COPY . .
 
-CMD [ "npm", "test" ]
+# Default command: run tests
+CMD ["npm", "test"]
