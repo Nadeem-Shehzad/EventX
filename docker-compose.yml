@@ -1,25 +1,37 @@
 version: "3.9"
 
 services:
-  eventx:
-    build: .
-    container_name: eventx-backend
+  eventx-api:
+    container_name: eventx-api
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     env_file:
       - .env
     volumes:
-      - .:/app               # Sync local code for hot-reload
+      - .:/app 
+      - /app/node_modules 
+    networks:
+      - backend  
     depends_on:
-      - mongo
+      - mongo  
+    restart: unless-stopped
 
   mongo:
-    image: mongo:7.0
     container_name: eventx-mongo
-    ports:
-      - "27017:27017"
+    image: mongo:7.0
     volumes:
       - mongo_data:/data/db
+    networks:
+      - backend  
+    restart: unless-stopped  
+
 
 volumes:
   mongo_data:
+
+
+networks:
+  backend:
