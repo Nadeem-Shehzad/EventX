@@ -1,58 +1,51 @@
-import { Injectable } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Injectable, Logger } from "@nestjs/common";
 import { User, UserDocument } from "./user.schema";
+import { UserRepository } from "./user.repository";
 
 
 @Injectable()
 export class UserService {
 
-   constructor(@InjectModel('User') private userModel: Model<UserDocument>) { }
+   constructor(private readonly userRepo: UserRepository) { }
 
-   async create(data: Partial<User>): Promise<UserDocument | null> {
-      return await this.userModel.create(data);
+   private readonly logger = new Logger(UserService.name);
+
+   async createUser(data: Partial<User>): Promise<UserDocument | null> {
+      return await this.userRepo.create(data);
    }
 
 
-   async findUserById(id: string) {
-      return await this.userModel.findById(id).exec();
+   async getUserById(id: string) {
+      return await this.userRepo.findUserById(id);
    }
 
 
-   async findByIDWithPassword(id: string): Promise<UserDocument | null> {
-      return await this.userModel.findById(id).select('+password').exec();
+   async findUserByIDWithPassword(id: string): Promise<UserDocument | null> {
+      return await this.userRepo.findByIDWithPassword(id);
    }
 
 
-   async findByEmail(email: string): Promise<UserDocument | null> {
-      return await this.userModel.findOne({ email }).exec();
+   async getUserByEmail(email: string): Promise<UserDocument | null> {
+      return await this.userRepo.findByEmail(email);
    }
 
 
-   async findByEmailWithPassword(email: string): Promise<UserDocument | null> {
-      return await this.userModel.findOne({ email }).select('+password').exec();
+   async getUserByEmailWithPassword(email: string): Promise<UserDocument | null> {
+      return await this.userRepo.findByEmailWithPassword(email);
    }
 
 
-   async findByIdWithRefreshToken(id: string) {
-      return await this.userModel.findById(id).select('+refreshToken').exec();
+   async getUserByIdWithRefreshToken(id: string) {
+      return await this.userRepo.findByIdWithRefreshToken(id);
    }
 
 
-   async update(id: any, dataToUpdate: any): Promise<UserDocument | null> {
-      return await this.userModel.findByIdAndUpdate(
-         id,
-         dataToUpdate
-      ).exec();
+   async updateUser(id: any, dataToUpdate: any): Promise<UserDocument | null> {
+      return await this.userRepo.update(id, dataToUpdate);
    }
 
 
-   async removeToken(id: any) {
-      await this.userModel.updateOne(
-         { _id: id },
-         { $set: { refreshToken: null } }
-      ).lean().exec();
-
-      return true;
+   async removeUserToken(id: any) {
+      return await this.userRepo.removeToken(id);
    }
 }

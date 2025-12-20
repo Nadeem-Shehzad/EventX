@@ -2,8 +2,9 @@ name: Docker CI - EventX
 
 on:
   push:
-    branches: [ main ]
+    branches: [ auth, main ]
   pull_request:
+    branches: [ main ]
 
 jobs:
   test:
