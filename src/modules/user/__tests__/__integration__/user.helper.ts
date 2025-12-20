@@ -5,12 +5,13 @@ import { RegisterDTO } from "src/modules/auth/dto/register.dto";
 
 export const registerTestUser = async (
    app: INestApplication,
-   overrideData?: Partial<{ name: string; email: string; password: string }>
+   overrideData?: Partial<{ name: string; email: string; password: string, role: string }>
 ) => {
    const defaultData = {
       name: 'Test User',
       email: 'user@test.com',
       password: 'Aa$123456',
+      role: 'user'
    };
 
    const userData = { ...defaultData, ...overrideData };

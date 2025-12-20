@@ -194,9 +194,10 @@ describe('UserModule - Get User By ID', () => {
 
    const email = 'nadeem@test.com';
    const password = 'Aa$123456';
+   const role = 'admin';
 
    beforeEach(async () => {
-      const user = await registerTestUser(app, { email, password });
+      const user = await registerTestUser(app, { email, password, role });
       userId = user._id;
 
       //console.log('userID -> ',userId);
@@ -358,4 +359,168 @@ describe('UserModule - Delete Account', () => {
 
       expect(res.statusCode).toBe(403);
    });
-})
+});
+
+
+describe('UserModule - Gel All Users', () => {
+   let token: string;
+   let userId: string;
+
+   const name = 'nadeem';
+   const email = 'nadeem@test.com';
+   const password = 'Aa$123456';
+   const role = 'admin';
+
+   beforeEach(async () => {
+      const user = await registerTestUser(app, { name, email, password, role });
+      userId = user._id;
+
+      const loginRes = await request(app.getHttpServer())
+         .post('/auth/login')
+         .send({ email, password })
+         .expect(201);
+
+      token = loginRes.body.data.token;
+   });
+
+   afterEach(async () => {
+      if (connection) {
+         const collections = connection.collections;
+         for (const key in collections) {
+            await collections[key].deleteMany({});
+         }
+      }
+   });
+
+   it('Should Give All Users Data', async () => {
+
+      const res = await request(app.getHttpServer())
+         .get(`/user/`)
+         .set('Authorization', `Bearer ${token}`)
+         .expect(200);
+
+      expect(res.body.success).toBe(true);
+      expect(res.statusCode).toBe(200);
+   });
+});
+
+
+describe('Admin - UserModule - Update Profile', () => {
+   let token: string;
+   let userId: string;
+
+   const name = 'nadeem';
+   const email = 'nadeem@test.com';
+   const password = 'Aa$123456';
+   const role = 'admin';
+
+   beforeEach(async () => {
+      const user = await registerTestUser(app, { name, email, password, role });
+      userId = user._id;
+
+      const loginRes = await request(app.getHttpServer())
+         .post('/auth/login')
+         .send({ email, password })
+         .expect(201);
+
+      token = loginRes.body.data.token;
+   });
+
+   afterEach(async () => {
+      if (connection) {
+         const collections = connection.collections;
+         for (const key in collections) {
+            await collections[key].deleteMany({});
+         }
+      }
+   });
+
+   it('Admin - Should Update User Profile.', async () => {
+
+      const dataToUpdate = {
+         name: 'Nadeem Shahzad'
+      }
+
+      const res = await request(app.getHttpServer())
+         .put(`/user/${userId}/admin`)
+         .set('Authorization', `Bearer ${token}`)
+         .send(dataToUpdate)
+         .expect(201);
+
+      expect(res.body.success).toBe(true);
+      expect(res.statusCode).toBe(201);
+      expect(res.body.data.message).toBe('Profile updated successfully');
+   });
+
+   it('Admin - should give Error of Forbidden - if ID not valid', async () => {
+
+      userId = '6946bb33d16c4c03c0f00000';
+      const dataToUpdate = {
+         name: 'Nadeem Shahzad'
+      }
+
+      const res = await request(app.getHttpServer())
+         .put(`/user/${userId}/admin`)
+         .set('Authorization', `Bearer ${token}`)
+         .send(dataToUpdate)
+         .expect(404);
+
+      expect(res.statusCode).toBe(404);
+   });
+});
+
+
+describe('Admin - UserModule - Delete Account', () => {
+   let token: string;
+   let userId: string;
+
+   const name = 'nadeem';
+   const email = 'nadeem@test.com';
+   const password = 'Aa$123456';
+   const role = 'admin';
+
+   beforeEach(async () => {
+      const user = await registerTestUser(app, { name, email, password, role });
+      userId = user._id;
+
+      const loginRes = await request(app.getHttpServer())
+         .post('/auth/login')
+         .send({ email, password })
+         .expect(201);
+
+      token = loginRes.body.data.token;
+   });
+
+   afterEach(async () => {
+      if (connection) {
+         const collections = connection.collections;
+         for (const key in collections) {
+            await collections[key].deleteMany({});
+         }
+      }
+   });
+
+   it('Admin - Should Delete User Account.', async () => {
+
+      const res = await request(app.getHttpServer())
+         .delete(`/user/${userId}/admin`)
+         .set('Authorization', `Bearer ${token}`)
+         .expect(200);
+
+      expect(res.body.success).toBe(true);
+      expect(res.statusCode).toBe(200);
+      expect(res.body.data.message).toBe('Account deleted successfully');
+   });
+
+   it('should give Error of Forbidden - if ID not valid', async () => {
+
+      userId = '6946bb33d16c4c03c0f00000';
+
+      const res = await request(app.getHttpServer())
+         .delete(`/user/${userId}/admin`)
+         .set('Authorization', `Bearer ${token}`)
+         expect(404);
+
+      expect(res.statusCode).toBe(404);
+   });
+});

@@ -4,9 +4,11 @@ import { UserService } from "./user.service";
 import { GetUserID } from "src/common/decorators/used-id";
 import { AccountOwnerShipGuard } from "src/common/guards/ownership.guard";
 import { UpdateUserDTO } from "./dto/update-user.dto";
+import { RoleCheckGuard } from "src/common/guards/role.guard";
+import { Roles } from "src/common/decorators/user-roles";
 
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RoleCheckGuard)
 @Controller('user')
 export class UserController {
 
@@ -18,14 +20,7 @@ export class UserController {
       return this.userService.getUserProfile(id);
    }
 
-   @Get(':id')
-   @HttpCode(HttpStatus.OK)
-   getUserByID(@Param('id') id: string) {
-      return this.userService.getUserDataByID(id);
-   }
-
-   // get all users - admin
-
+   
    @UseGuards(AccountOwnerShipGuard)
    @Put(':id')
    @HttpCode(HttpStatus.CREATED)
@@ -37,6 +32,37 @@ export class UserController {
    @Delete(':id')
    @HttpCode(HttpStatus.OK)
    deleteAccount(@Param('id') id: string) {
+      return this.userService.deleteAccount(id);
+   }
+
+
+   // <------ Admin Apis ------>
+
+   @Get('')
+   @Roles('admin')
+   @HttpCode(HttpStatus.OK)
+   getAllUsers() {
+      return this.userService.getAllUsers();
+   }
+
+   @Get(':id')
+   @Roles('admin')
+   @HttpCode(HttpStatus.OK)
+   getUserByID(@Param('id') id: string) {
+      return this.userService.getUserDataByID(id);
+   }
+
+   @Put(':id/admin')
+   @Roles('admin')
+   @HttpCode(HttpStatus.CREATED)
+   updateUserProfile(@Param('id') id: string, @Body() dataToUpdate: UpdateUserDTO) {
+      return this.userService.updateProfile(id, dataToUpdate);
+   }
+
+   @Delete(':id/admin')
+   @Roles('admin')
+   @HttpCode(HttpStatus.OK)
+   deleteUserAccount(@Param('id') id: string) {
       return this.userService.deleteAccount(id);
    }
 }

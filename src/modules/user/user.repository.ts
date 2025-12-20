@@ -14,6 +14,11 @@ export class UserRepository {
    }
 
 
+   async findAllUsers() {
+      return await this.userModel.find({ role: 'user' });
+   }
+
+
    async findUserById(id: string) {
       return await this.userModel.findById(id).exec();
    }
