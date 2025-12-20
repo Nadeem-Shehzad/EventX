@@ -35,7 +35,7 @@ export class UserService {
    async deleteAccount(id: string) {
       const result = await this.userRepo.removeAccount(id);
       if (!result) {
-         throw new BadRequestException('Account Not Deleted!');
+         throw new NotFoundException('User Not Found!');
       }
 
       return { message: 'Account deleted successfully' };
@@ -48,6 +48,14 @@ export class UserService {
       }
       return { message: 'Profile updated successfully' };
    }
+
+   async getAllUsers() {
+      const users = await this.userRepo.findAllUsers();
+      return plainToInstance(UserResponseDTO, users, {
+         excludeExtraneousValues: true,
+      });
+   }
+
 
 
    // user-db - services

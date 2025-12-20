@@ -7,6 +7,7 @@ import { UserRepository } from "./user.repository";
 import { JwtAuthGuard } from "src/common/guards/jwt-auth.guard";
 import { CommonModule } from "src/common/common.module";
 import { AccountOwnerShipGuard } from "src/common/guards/ownership.guard";
+import { RoleCheckGuard } from "src/common/guards/role.guard";
 
 
 @Module({
@@ -15,7 +16,7 @@ import { AccountOwnerShipGuard } from "src/common/guards/ownership.guard";
       forwardRef(() => CommonModule),
    ],
    controllers: [UserController],
-   providers: [UserService, UserRepository, JwtAuthGuard, AccountOwnerShipGuard],
+   providers: [UserService, UserRepository, JwtAuthGuard, AccountOwnerShipGuard, RoleCheckGuard],
    exports: [UserService, MongooseModule]
 })
 
