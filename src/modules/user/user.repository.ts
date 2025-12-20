@@ -55,4 +55,9 @@ export class UserRepository {
 
       return true;
    }
+
+
+   async removeAccount(id: string) {
+      return await this.userModel.findByIdAndDelete(id);
+   }
 }

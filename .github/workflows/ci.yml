@@ -2,8 +2,9 @@ name: CI - EventX
 
 on:
   push:
-    branches: [ main ]
+    branches: [ user, main ]
   pull_request:
+    branches: [ main ]
 
 jobs:
   test:

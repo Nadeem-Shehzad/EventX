@@ -52,7 +52,7 @@ export class AuthService {
 
       const user = await this.userService.getUserByEmail(data.email);
 
-      return plainToInstance(UserResponseDTO, user?.toObject(), {
+      return plainToInstance(UserResponseDTO, user, {
          excludeExtraneousValues: true,
       });
    }
