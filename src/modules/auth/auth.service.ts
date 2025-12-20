@@ -37,7 +37,7 @@ export class AuthService {
 
    async register(data: RegisterDTO) {
 
-      const userExists = await this.userService.findByEmail(data.email);
+      const userExists = await this.userService.getUserByEmail(data.email);
       if (userExists) {
          throw new ConflictException('Email already Exists!');
       }
@@ -48,9 +48,9 @@ export class AuthService {
          password: hashedPassword
       }
 
-      await this.userService.create(registerData);
+      await this.userService.createUser(registerData);
 
-      const user = await this.userService.findByEmail(data.email);
+      const user = await this.userService.getUserByEmail(data.email);
 
       return plainToInstance(UserResponseDTO, user?.toObject(), {
          excludeExtraneousValues: true,
@@ -60,7 +60,7 @@ export class AuthService {
 
    async login(loginData: LoginDTO) {
       //this.logger.log(`Login Attempts ...`);
-      const user = await this.userService.findByEmailWithPassword(loginData.email);
+      const user = await this.userService.getUserByEmailWithPassword(loginData.email);
       if (!user) {
          throw new NotFoundException('User not Registered!');
       }
@@ -84,7 +84,7 @@ export class AuthService {
          expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRES') as JwtSignOptions['expiresIn'],
       });
 
-      await this.userService.update(user._id, {
+      await this.userService.updateUser(user._id, {
          refreshToken: await bcrypt.hash(refreshToken, 10)
       });
 
@@ -96,7 +96,7 @@ export class AuthService {
 
 
    async changePassword(id: string, cpData: ChangePasswordDTO) {
-      const user = await this.userService.findByIDWithPassword(id);
+      const user = await this.userService.findUserByIDWithPassword(id);
       if (!user) {
          throw new NotFoundException('User not Found.');
       }
@@ -116,7 +116,7 @@ export class AuthService {
 
       const newHashedPassword = await bcrypt.hash(cpData.newPassword, 10);
 
-      await this.userService.update(user._id, {
+      await this.userService.updateUser(user._id, {
          password: newHashedPassword
       });
 
@@ -125,14 +125,14 @@ export class AuthService {
 
 
    async logout(id: string) {
-      await this.userService.removeToken(id);
+      await this.userService.removeUserToken(id);
       return { loggedOut: true };
    }
 
 
    async refreshToken(userData: any, rf_Token: string) {
 
-      const user = await this.userService.findByIdWithRefreshToken(userData.id);
+      const user = await this.userService.getUserByIdWithRefreshToken(userData.id);
       if (!user) {
          throw new NotFoundException('User not found!');
       }
@@ -158,7 +158,7 @@ export class AuthService {
 
       const hashed = await bcrypt.hash(newRefreshToken, 10);
 
-      await this.userService.update(user._id, {
+      await this.userService.updateUser(user._id, {
          refreshToken: hashed
       });
 
@@ -192,7 +192,7 @@ export class AuthService {
 
    async verifyEmail(token: string) {
       const payload = await this.jwtService.verifyAsync(token);
-      const user = await this.userService.findUserById(payload.id);
+      const user = await this.userService.getUserById(payload.id);
       if (!user) {
          throw new NotFoundException('User not found.')
       }
@@ -201,14 +201,14 @@ export class AuthService {
          return { message: 'Email Already Verified.' }
       }
 
-      await this.userService.update(user._id, { isVerified: true });
+      await this.userService.updateUser(user._id, { isVerified: true });
 
       return { message: 'Email verified successfully.' }
    }
 
 
    async forgotPassword(email: string) {
-      const user = await this.userService.findByEmail(email);
+      const user = await this.userService.getUserByEmail(email);
       if (!user) throw new NotFoundException('User not Found.');
 
 
@@ -244,14 +244,14 @@ export class AuthService {
          throw new BadRequestException("Invalid or expired token.");
       }
 
-      const user = await this.userService.findUserById(userId);
+      const user = await this.userService.getUserById(userId);
       if (!user) {
          throw new NotFoundException("User not found.");
       }
 
       const hashed = await bcrypt.hash(newPassword, 10);
 
-      await this.userService.update(userId, { password: hashed });
+      await this.userService.updateUser(userId, { password: hashed });
 
       await this.redis.del(`fp:${token}`);
 

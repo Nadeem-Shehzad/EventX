@@ -1,7 +1,10 @@
-import { Controller } from "@nestjs/common";
+import { Controller, Get, Param } from "@nestjs/common";
 
 
 @Controller('user')
 export class UserController {
-   
+   @Get('profile')
+   profile() {
+      
+   }
 }
