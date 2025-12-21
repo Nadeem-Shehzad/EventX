@@ -13,15 +13,22 @@ export class UserService {
 
    private readonly logger = new Logger(UserService.name);
 
+
    async getUserProfile(id: string) {
       const user = await this.userRepo.findUserById(id);
+
+      if (!user) {
+         throw new NotFoundException('User not found');
+      }
+      
       return plainToInstance(UserResponseDTO, user, {
          excludeExtraneousValues: true,
       });
    }
 
+
    async getUserDataByID(id: string) {
-      const user = await this.getUserById(id);
+      const user = await this.userRepo.findUserById(id);
 
       if (!user) {
          throw new NotFoundException('User not Found!');
@@ -32,6 +39,7 @@ export class UserService {
       });
    }
 
+
    async deleteAccount(id: string) {
       const result = await this.userRepo.removeAccount(id);
       if (!result) {
@@ -41,6 +49,7 @@ export class UserService {
       return { message: 'Account deleted successfully' };
    }
 
+
    async updateProfile(id: string, dataToUpdate: UpdateUserDTO) {
       const result = await this.userRepo.update(id, dataToUpdate);
       if (!result) {
@@ -48,6 +57,7 @@ export class UserService {
       }
       return { message: 'Profile updated successfully' };
    }
+
 
    async getAllUsers() {
       const users = await this.userRepo.findAllUsers();
