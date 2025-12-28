@@ -1,7 +1,7 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { GlobalExceptionFilter } from './common/filters/global-exception-filter';
-import { ClassSerializerInterceptor } from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import compression from 'compression';
 import { corsConfig } from './config/cors.config';
@@ -20,6 +20,10 @@ async function bootstrap() {
 
    app.useGlobalFilters(new GlobalExceptionFilter());
    app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+   app.useGlobalPipes(new ValidationPipe({
+      whitelist: true,
+      transform: true,
+   }));
 
    await app.listen(process.env.PORT ?? 3000);
    app.useLogger(app.get(Logger));
