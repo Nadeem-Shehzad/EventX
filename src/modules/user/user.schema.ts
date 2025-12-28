@@ -19,7 +19,7 @@ export class User {
    @Prop({ default: false })
    isVerified: boolean
 
-   @Prop({ enum: ['user', 'admin'], default: 'user' })
+   @Prop({ enum: ['user', 'admin', 'organizer'], default: 'user' })
    role: string
 
    @Prop({ type: [String], default: [] })

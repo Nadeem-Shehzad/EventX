@@ -13,6 +13,7 @@ import { MyRedisModule } from './redis/redis.module';
 import redisConfig from './config/redis.config';
 import { RateLimitModule } from './rateLimit/rate-limit.module';
 import { LoggerModule } from 'nestjs-pino';
+import { EventModule } from './modules/event/event.module';
 
 
 
@@ -50,6 +51,7 @@ import { LoggerModule } from 'nestjs-pino';
     RateLimitModule,
 
     AuthModule,
+    EventModule,
     CommonModule
   ],
   providers: [
