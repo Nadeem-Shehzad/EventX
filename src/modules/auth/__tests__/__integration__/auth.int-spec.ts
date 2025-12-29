@@ -1,5 +1,10 @@
+// At the very top of your test file, before any imports
+process.env.CLOUDINARY_NAME = 'test_cloud';
+process.env.CLOUDINARY_KEY = 'test_key';
+process.env.CLOUDINARY_SECRET = 'test_secret';
+
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { INestApplication, Logger, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MongooseModule, getConnectionToken } from '@nestjs/mongoose';
@@ -12,6 +17,7 @@ import { UserService } from 'src/modules/user/user.service';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerStorage } from '@nestjs/throttler';
+import { PassThrough } from 'stream'; // Import this at the top
 
 
 const redisStore = new Map<string, string>();
@@ -35,6 +41,32 @@ jest.mock('ioredis', () => {
       })),
    };
 });
+
+
+jest.mock('cloudinary', () => ({
+  v2: {
+    config: jest.fn(),
+    uploader: {
+      upload_stream: jest.fn().mockImplementation((options, callback) => {
+        // Create a real Node.js PassThrough stream
+        const mockStream = new PassThrough();
+
+        // When the stream finishes (Multer is done piping), trigger the callback
+        mockStream.on('finish', () => {
+          if (callback) {
+            callback(null, {
+              public_id: 'eventx/events/test_id',
+              secure_url: 'https://res.cloudinary.com/test-url.jpg',
+            });
+          }
+        });
+
+        return mockStream;
+      }),
+      destroy: jest.fn().mockResolvedValue({ result: 'ok' }),
+    },
+  },
+}));
 
 jest.setTimeout(30000);
 
@@ -65,11 +97,15 @@ beforeAll(async () => {
                () => ({
                   MONGO_URI: mongoUri,
                   app_url: 'http://localhost:3000',
-                  // Provide BOTH keys to be safe (depending on what your JwtModule uses)
+
                   JWT_SECRET: 'test-access-secret',
                   JWT_ACCESS_SECRET: 'test-access-secret',
                   JWT_REFRESH_SECRET: 'test-refresh-secret',
                   JWT_REFRESH_EXPIRES: '900s',
+
+                  CLOUDINARY_NAME: 'test_cloud',
+                  CLOUDINARY_KEY: 'test_key',
+                  CLOUDINARY_SECRET: 'test_secret',
                }),
             ],
          }),
@@ -83,8 +119,6 @@ beforeAll(async () => {
          AuthModule,
       ],
       providers: [
-         // 2. ADD THIS PROVIDER BLOCK
-         // This forces the test module to actually USE the guard globally
          {
             provide: APP_GUARD,
             useClass: ThrottlerGuard,
@@ -97,6 +131,23 @@ beforeAll(async () => {
 
    // Apply validation pipe if your controller relies on it for DTO validation
    app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+
+   // ADD THIS TEMPORARY DEBUGGER
+   app.useGlobalFilters({
+      catch(exception: any, host: any) {
+         const ctx = host.switchToHttp();
+         const response = ctx.getResponse();
+         const status = exception.getStatus ? exception.getStatus() : 500;
+
+         // Log the error for you to see in terminal
+         if (status === 500) console.error('REAL ERROR:', exception);
+
+         response.status(status).json(
+            exception.response || { message: exception.message, statusCode: status }
+         );
+      }
+   });
+
    //app.getHttpAdapter().getInstance().set('trust proxy', true);
    throttlerStorage = moduleRef.get<ThrottlerStorage>(ThrottlerStorage);
    await app.init();
@@ -133,22 +184,36 @@ describe('AuthModule - Registration', () => {
    it('should register a user successfully', async () => {
       const res = await request(app.getHttpServer())
          .post('/auth/register')
-         .send({ name: 'Test User', email: 'user@test.com', password: 'Aa$123456' })
+         .field('name', 'Test User')
+         .field('email', 'user@test.com')
+         .field('password', 'Aa$123456')
+         .attach('image', Buffer.from('fake-image-data'), 'test.jpg')
          .expect(201);
+
+      // console.log('Res.Body --> ', res.body)
 
       const user = await connection.collection('users').findOne({ email: 'user@test.com' });
 
       expect(user).not.toBeNull();
       expect(user?.email).toBe('user@test.com');
+      expect(user?.image.publicId).toBeDefined();
    });
 
    it('should Throw conflictException - If Email already exists.', async () => {
 
-      await registerTestUser(app, { name: 'Test User', email: 'user@test.com', password: 'Aa$123456' });
+      await request(app.getHttpServer())
+         .post('/auth/register')
+         .field('name', 'Test User')
+         .field('email', 'user@test.com')
+         .field('password', 'Aa$123456')
+         .attach('image', Buffer.from('fake-image-data'), 'test.jpg');
 
       const res = await request(app.getHttpServer())
          .post('/auth/register')
-         .send({ name: 'Test User', email: 'user@test.com', password: 'Aa$123456' })
+         .field('name', 'Test User')
+         .field('email', 'user@test.com')
+         .field('password', 'Aa$123456')
+         .attach('image', Buffer.from('fake-image-data'), 'test.jpg')
          .expect(409);
 
       expect(res.status).toBe(409);
@@ -158,12 +223,18 @@ describe('AuthModule - Registration', () => {
       for (let i = 0; i < 5; i++) {
          await request(app.getHttpServer())
             .post('/auth/register')
-            .send({ name: 'Test User', email: 'user@test.com', password: 'Aa$123456' });
+            .field('name', 'Test User')
+            .field('email', 'throttled@test.com')
+            .field('password', 'Aa$123456')
+            .attach('image', Buffer.from('fake-data'), 'test.jpg');
       }
 
       const res = await request(app.getHttpServer())
          .post('/auth/register')
-         .send({ name: 'Test User', email: 'user@test.com', password: 'Aa$123456' });
+         .field('name', 'Test User')
+         .field('email', 'throttled@test.com')
+         .field('password', 'Aa$123456')
+         .attach('image', Buffer.from('fake-data'), 'test.jpg');
 
       expect(res.status).toBe(429);
    });

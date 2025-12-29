@@ -34,8 +34,15 @@ export class Event {
    eventType: string
 
 
-   @Prop({ default: '' })
-   bannerImage: string
+   @Prop({
+      type: {
+         url: String,
+         publicId: String
+      },
+      required: true,
+      _id: false
+   })
+   bannerImage: { url: string; publicId: string }
 
 
    @Prop({ required: true, index: true })

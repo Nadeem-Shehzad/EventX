@@ -1,5 +1,14 @@
-import { Transform } from "class-transformer";
-import { IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator";
+import { Transform, Type } from "class-transformer";
+import { IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MaxLength, MinLength, ValidateNested } from "class-validator";
+
+
+export class ImageDTO {
+   @IsString()
+   url: string;
+
+   @IsString()
+   publicId: string;
+}
 
 
 export class RegisterDTO {
@@ -23,9 +32,28 @@ export class RegisterDTO {
    @Matches(/[a-z]/, { message: 'Password must contain at least one lowercase letter.' })
    @Matches(/[0-9]/, { message: 'Password must contain at least one number.' })
    @Matches(/[@$!%*?&]/, { message: 'Password must contain at least one special character.' })
+   @Transform(({ value }) => value?.trim())
    password: string
 
    @IsOptional()
+   @Transform(({ value }) => {
+      if (!value) return undefined;
+
+      if (typeof value === 'string') {
+         try {
+            return JSON.parse(value);
+         } catch (e) {
+            throw new Error('Invalid JSON format');
+         }
+      }
+      return value;
+   })
+   @ValidateNested()
+   @Type(() => ImageDTO)
+   image: ImageDTO;
+
+   @IsOptional()
    @IsString()
+   @Transform(({ value }) => value?.trim())
    role?: string;
 }

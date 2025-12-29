@@ -26,6 +26,10 @@ describe('AuthController - Register', () => {
       _id: 'abc123',
       name: 'John Doe',
       email: 'test@mail.com',
+      image: {
+         url: 'https://cloudinary.com/test-image.jpg',
+         publicId: 'eventx/events/test-id'
+      },
       role: 'user',
       isVerified: false
    };
@@ -48,12 +52,28 @@ describe('AuthController - Register', () => {
          name: 'John Doe',
          email: 'test@mail.com',
          password: '123456',
+         image: {
+            url: 'https://cloudinary.com/test-image.jpg',
+            publicId: 'eventx/events/test-id'
+         },
          role: 'user'
       };
 
-      const result = await controller.register(dto);
+      const mockFile = {
+         path: 'https://cloudinary.com/test-image.jpg',
+         filename: 'eventx/events/test-id',
+      } as Express.Multer.File;
 
-      expect(service.register).toHaveBeenCalledWith(dto);
+      const result = await controller.register(dto, mockFile);
+
+      expect(service.register).toHaveBeenCalledWith({
+         ...dto,
+         image: {
+            url: mockFile.path,
+            publicId: mockFile.filename,
+         },
+      });
+
       expect(result).toEqual(mockUserResponse);
    })
 

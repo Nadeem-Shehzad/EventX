@@ -16,6 +16,16 @@ export class User {
    @Prop({ required: true, min: 4, max: 22, select: false })
    password: string
 
+   @Prop({
+      type: {
+         url: String,
+         publicId: String
+      },
+      required: true,
+      _id: false
+   })
+   image: { url: string; publicId: string }
+
    @Prop({ default: false })
    isVerified: boolean
 

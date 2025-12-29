@@ -4,6 +4,15 @@ import { UserRepository } from "../../user.repository";
 import { UserResponseDTO } from "../../dto/user-response.dto";
 import { NotFoundException } from "@nestjs/common";
 import { UpdateUserDTO } from "../../dto/update-user.dto";
+import { v2 as cloudinary } from 'cloudinary';
+
+jest.mock('cloudinary', () => ({
+   v2: {
+      uploader: {
+         destroy: jest.fn().mockResolvedValue({ result: 'ok' }),
+      },
+   },
+}));
 
 
 describe('UserService - Profile', () => {
@@ -18,6 +27,10 @@ describe('UserService - Profile', () => {
       _id: 'abc123',
       name: 'John Doe',
       email: 'test@mail.com',
+      image: {
+         url: 'abc',
+         publicId: 'abc/cbs'
+      },
       role: 'user',
       isVerified: false
    };
@@ -57,6 +70,7 @@ describe('UserService - Update Profile', () => {
    let service: UserService;
 
    const userRepository = {
+      findUserById: jest.fn(),
       update: jest.fn()
    }
 
@@ -69,11 +83,8 @@ describe('UserService - Update Profile', () => {
       _id: 'abc123',
       name: 'John Doe',
       email: 'test@mail.com',
-      password: 'hashedpassword',
       role: 'user',
-      isVerified: false,
-      createdAt: new Date(),
-      toObject: function () { return this; },
+      isVerified: false
    };
 
    const mockResult = { message: 'Profile updated successfully' };
@@ -86,6 +97,7 @@ describe('UserService - Update Profile', () => {
          ]
       }).compile();
 
+      jest.clearAllMocks();
       service = module.get<UserService>(UserService);
    });
 
@@ -93,18 +105,39 @@ describe('UserService - Update Profile', () => {
       expect(service).toBeDefined();
    });
 
-   it('should give NotFoundException - if user not found', async () => {
-      userRepository.update.mockResolvedValueOnce(null);
-      await expect(service.updateProfile(id, dataToUpdate)).rejects.toThrow(NotFoundException);
-   });
-
    it('should update user profile', async () => {
+      // Ensure findUserById returns the user so it passes the first check
+      userRepository.findUserById.mockResolvedValueOnce(mockUser);
+
+      // Ensure update returns the updated user so it passes the if(!result) check
       userRepository.update.mockResolvedValueOnce(mockUser);
 
       const result = await service.updateProfile(id, dataToUpdate);
 
+      expect(userRepository.findUserById).toHaveBeenCalledWith(id);
       expect(userRepository.update).toHaveBeenCalledWith(id, dataToUpdate);
       expect(result).toEqual(mockResult);
+   });
+
+   it('should delete old image from cloudinary if new image is provided', async () => {
+      const userWithImage = { ...mockUser, image: { publicId: 'old_id', url: '...' } };
+      const dataWithNewImage = { ...dataToUpdate, image: { publicId: 'new_id', url: '...' } };
+
+      userRepository.findUserById.mockResolvedValueOnce(userWithImage);
+      userRepository.update.mockResolvedValueOnce(userWithImage);
+
+      const cloudinary = require('cloudinary').v2;
+
+      await service.updateProfile(id, dataWithNewImage);
+
+      expect(cloudinary.uploader.destroy).toHaveBeenCalledWith('old_id');
+      expect(userRepository.update).toHaveBeenCalled();
+   });
+
+   it('should give NotFoundException - if user not found', async () => {
+      userRepository.findUserById.mockResolvedValueOnce(null)
+      userRepository.update.mockResolvedValueOnce(null);
+      await expect(service.updateProfile(id, dataToUpdate)).rejects.toThrow(NotFoundException);
    });
 });
 
@@ -112,7 +145,10 @@ describe('UserService - Update Profile', () => {
 describe('UserService - Delete Account', () => {
    let service: UserService;
 
-   const userRepository = { removeAccount: jest.fn() }
+   const userRepository = {
+      findUserById: jest.fn(),
+      removeAccount: jest.fn()
+   }
 
    const id = '6946bb33d16c4c03c0f00000';
    const mockResult = { message: 'Account deleted successfully' };
@@ -120,12 +156,8 @@ describe('UserService - Delete Account', () => {
       _id: 'abc123',
       name: 'John Doe',
       email: 'test@mail.com',
-      password: '$2b$10$hashedPassword',
       role: 'user',
-      isVerified: false,
-      createdAt: new Date('2025-01-01T10:00:00Z'),
-      updatedAt: new Date('2025-01-05T12:00:00Z'),
-      __v: 0,
+      isVerified: false
    };
 
    beforeEach(async () => {
@@ -143,18 +175,20 @@ describe('UserService - Delete Account', () => {
       expect(service).toBeDefined();
    });
 
-   it('should give NotFoundException - if user not found', async () => {
-      userRepository.removeAccount.mockResolvedValueOnce(null);
-      await expect(service.deleteAccount(id)).rejects.toThrow(NotFoundException);
-   });
-
    it('should delete user account', async () => {
+      userRepository.findUserById.mockResolvedValueOnce(mockUserDocument);
       userRepository.removeAccount.mockResolvedValueOnce(mockUserDocument);
 
       const result = await service.deleteAccount(id);
 
       expect(userRepository.removeAccount).toHaveBeenCalledWith(id);
       expect(result).toEqual(mockResult);
+   });
+
+   it('should give NotFoundException - if user not found', async () => {
+      userRepository.findUserById.mockResolvedValueOnce(null)
+      userRepository.removeAccount.mockResolvedValueOnce(null);
+      await expect(service.deleteAccount(id)).rejects.toThrow(NotFoundException);
    });
 });
 

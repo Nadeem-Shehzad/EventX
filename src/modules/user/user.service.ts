@@ -4,6 +4,7 @@ import { UserRepository } from "./user.repository";
 import { plainToInstance } from "class-transformer";
 import { UserResponseDTO } from "./dto/user-response.dto";
 import { UpdateUserDTO } from "./dto/update-user.dto";
+import { v2 as cloudinary } from 'cloudinary';
 
 
 @Injectable()
@@ -20,7 +21,7 @@ export class UserService {
       if (!user) {
          throw new NotFoundException('User not found');
       }
-      
+
       return plainToInstance(UserResponseDTO, user, {
          excludeExtraneousValues: true,
       });
@@ -41,9 +42,25 @@ export class UserService {
 
 
    async deleteAccount(id: string) {
+      const user = await this.userRepo.findUserById(id);
+      if (!user) {
+         throw new NotFoundException('User Not Found!');
+      }
+
+      const imageId = user.image?.publicId;
+
       const result = await this.userRepo.removeAccount(id);
       if (!result) {
          throw new NotFoundException('User Not Found!');
+      }
+
+      if (imageId) {
+         try {
+            await cloudinary.uploader.destroy(imageId);
+            this.logger.log(`Cloudinary image deleted: ${imageId}`);
+         } catch (error) {
+            this.logger.error(`Failed to delete image from Cloudinary: ${imageId}`, error.stack);
+         }
       }
 
       return { message: 'Account deleted successfully' };
@@ -51,10 +68,20 @@ export class UserService {
 
 
    async updateProfile(id: string, dataToUpdate: UpdateUserDTO) {
+      const user = await this.userRepo.findUserById(id);
+      if (!user) {
+         throw new NotFoundException('User Not Found!');
+      }
+
+      if (dataToUpdate.image && user.image?.publicId) {
+         await cloudinary.uploader.destroy(user.image.publicId);
+      }
+
       const result = await this.userRepo.update(id, dataToUpdate);
       if (!result) {
          throw new NotFoundException('User not found');
       }
+
       return { message: 'Profile updated successfully' };
    }
 

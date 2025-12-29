@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 import authConfig from './config/auth.config';
+import cloudinaryConfig from './config/cloudinary.config';
 import { validationSchema } from './config/validation.schema';
 import { CommonModule } from './common/common.module';
 import { MyRedisModule } from './redis/redis.module';
@@ -21,7 +22,7 @@ import { EventModule } from './modules/event/event.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig, authConfig, databaseConfig, redisConfig],
+      load: [appConfig, authConfig, databaseConfig, redisConfig, cloudinaryConfig],
       validationSchema
     }),
 

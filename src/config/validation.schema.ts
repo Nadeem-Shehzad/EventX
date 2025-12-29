@@ -18,6 +18,10 @@ export const validationSchema = Joi.object({
    REDIS_USERNAME: Joi.string().required(),
    REDIS_PASSWORD: Joi.string().required(),
 
+   CLOUDINARY_NAME: Joi.string().required(),
+   CLOUDINARY_KEY: Joi.string().required(),
+   CLOUDINARY_SECRET: Joi.string().required(),
+
    APP_URL: Joi.string().required(),
    NODE_ENV: Joi.string().required(),
    FRONTEND_URL: Joi.string().required(),

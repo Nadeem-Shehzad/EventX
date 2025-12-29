@@ -1,4 +1,13 @@
-import { Expose, Transform } from "class-transformer";
+import { Expose, Transform, Type } from "class-transformer";
+
+
+export class ImageResponseDTO {
+   @Expose()
+   url: string;
+
+   @Expose()
+   publicId: string;
+}
 
 
 export class UserResponseDTO {
@@ -11,6 +20,10 @@ export class UserResponseDTO {
 
    @Expose()
    readonly email: string;
+
+   @Expose()
+   @Type(() => ImageResponseDTO)
+   readonly image: ImageResponseDTO;
 
    @Expose()
    readonly role: string;

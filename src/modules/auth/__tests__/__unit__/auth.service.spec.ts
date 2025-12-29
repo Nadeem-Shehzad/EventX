@@ -66,6 +66,10 @@ describe('AuthService - register', () => {
          name: 'John Doe',
          email: 'test@mail.com',
          password: '123456',
+         image: {
+            url: '',
+            publicId: ''
+         }
       };
 
       userService.getUserByEmail.mockResolvedValueOnce(null);
@@ -95,6 +99,10 @@ describe('AuthService - register', () => {
          name: 'John Doe',
          email: 'test@mail.com',
          password: '123456',
+         image: {
+            url: '',
+            publicId: ''
+         }
       };
 
       userService.getUserByEmail.mockResolvedValueOnce(mockUser);
