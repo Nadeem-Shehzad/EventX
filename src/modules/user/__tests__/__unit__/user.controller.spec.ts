@@ -21,6 +21,10 @@ describe('UserController - Profile', () => {
       _id: 'abc123',
       name: 'John Doe',
       email: 'test@mail.com',
+      image: {
+         url: '',
+         publicId: ''
+      },
       role: 'user',
       isVerified: false
    };

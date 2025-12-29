@@ -9,7 +9,7 @@ import {
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
-   catch(exception: unknown, host: ArgumentsHost) {
+   catch(exception: any, host: ArgumentsHost) {
       const ctx = host.switchToHttp();
       const response = ctx.getResponse();
       const request = ctx.getRequest();
@@ -30,6 +30,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
          statusCode: status,
          path: request.url,
          message,
+         error: exception.response || 'No details',
       });
    }
 }

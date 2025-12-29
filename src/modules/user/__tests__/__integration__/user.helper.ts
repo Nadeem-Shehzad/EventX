@@ -16,17 +16,16 @@ export const registerTestUser = async (
 
    const userData = { ...defaultData, ...overrideData };
 
-   const payload = plainToInstance(RegisterDTO, userData);
-
    const res = await request(app.getHttpServer())
       .post('/auth/register')
-      .send(payload)
+      .field('name', userData.name)
+      .field('email', userData.email)
+      .field('password', userData.password)
+      .field('role', userData.role)
+      .attach('image', Buffer.from('fake-image-data'), 'test-image.jpg')
       .expect(201);
 
-   // console.log('Register User ->', res.body.data);
-   // console.log('Register UserID ->', res.body.data.data._id);   
-
-   return { ...userData, _id: res.body.data._id }; // return data so the test can use it (e.g., for login)
+   return { ...userData, _id: res.body.data._id }; // res.body.data._id // return data so the test can use it (e.g., for login)
 };
 
 

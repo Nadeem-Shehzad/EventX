@@ -13,7 +13,7 @@ import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
 import { ResponseInterceptor } from "src/common/interceptors/response.interceptor";
 import { AuthModule } from "src/modules/auth/auth.module";
 import { UserModule } from "../../user.module";
-
+import { PassThrough } from 'stream';
 
 const redisStore = new Map<string, string>();
 
@@ -36,6 +36,32 @@ jest.mock('ioredis', () => {
       })),
    };
 });
+
+
+jest.mock('cloudinary', () => ({
+  v2: {
+    config: jest.fn(),
+    uploader: {
+      upload_stream: jest.fn().mockImplementation((options, callback) => {
+        // Create a real Node.js PassThrough stream
+        const mockStream = new PassThrough();
+
+        // When the stream finishes (Multer is done piping), trigger the callback
+        mockStream.on('finish', () => {
+          if (callback) {
+            callback(null, {
+              public_id: 'eventx/events/test_id',
+              secure_url: 'https://res.cloudinary.com/test-url.jpg',
+            });
+          }
+        });
+
+        return mockStream;
+      }),
+      destroy: jest.fn().mockResolvedValue({ result: 'ok' }),
+    },
+  },
+}));
 
 
 jest.setTimeout(30000);
@@ -72,6 +98,10 @@ beforeAll(async () => {
                   JWT_ACCESS_SECRET: 'test-access-secret',
                   JWT_REFRESH_SECRET: 'test-refresh-secret',
                   JWT_REFRESH_EXPIRES: '900s',
+
+                  CLOUDINARY_NAME: 'test_cloud',
+                  CLOUDINARY_KEY: 'test_key',
+                  CLOUDINARY_SECRET: 'test_secret',
                }),
             ],
          }),
@@ -103,6 +133,21 @@ beforeAll(async () => {
 
    // Apply validation pipe if your controller relies on it for DTO validation
    app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+
+   app.useGlobalFilters({
+      catch(exception: any, host: any) {
+         const ctx = host.switchToHttp();
+         const response = ctx.getResponse();
+         const status = exception.getStatus ? exception.getStatus() : 500;
+
+         // Log the error for you to see in terminal
+         if (status === 500) console.error('REAL ERROR:', exception);
+
+         response.status(status).json(
+            exception.response || { message: exception.message, statusCode: status }
+         );
+      }
+   });
    //app.getHttpAdapter().getInstance().set('trust proxy', true);
    throttlerStorage = moduleRef.get<ThrottlerStorage>(ThrottlerStorage);
    await app.init();
@@ -415,7 +460,7 @@ describe('Admin - UserModule - Update Profile', () => {
    const role = 'admin';
 
    beforeEach(async () => {
-      const user = await registerTestUser(app, { name, email, password, role });
+      const user = await registerTestUser(app, { name, email, password, role});
       userId = user._id;
 
       const loginRes = await request(app.getHttpServer())

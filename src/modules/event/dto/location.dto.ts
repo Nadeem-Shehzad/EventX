@@ -7,13 +7,11 @@ import {
 
 export class LocationDTO {
 
-   @IsOptional()
    @IsString()
-   venueName?: string;
+   venueName: string;
 
-   @IsOptional()
    @IsString()
-   address?: string;
+   address: string;
 
    @IsString()
    city: string;

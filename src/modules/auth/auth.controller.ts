@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Query, Req, UseGuards } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Post, Query, Req, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 
 import { SkipThrottle, Throttle } from "@nestjs/throttler";
 
@@ -13,6 +13,8 @@ import { ChangePasswordDTO } from "./dto/change-password.dto";
 import { GetUserEmail } from "src/common/decorators/user-email";
 import { ForgotPasswordDTO } from "./dto/forgot-password.dto";
 import { ResetPasswordDTO } from "./dto/reset-password.dto";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { getCloudinaryStorage } from "src/common/uploads/cloudinary.storage";
 
 
 @Controller('auth')
@@ -20,17 +22,38 @@ export class AuthController {
 
    constructor(private readonly authService: AuthService) { }
 
+
    @Throttle({ default: { limit: 5, ttl: 60000 } })
    @Post('register')
-   register(@Body() data: RegisterDTO) {
+   @UseInterceptors(
+      FileInterceptor('image', {
+         storage: getCloudinaryStorage(),
+         limits: { fileSize: 5 * 1024 * 1024 },
+      })
+   )
+   register(
+      @Body() data: RegisterDTO,
+      @UploadedFile() file?: Express.Multer.File
+   ) {
+      
+      if (!file) throw new BadRequestException('Image is required');
+
+      const imageData = {
+         url: file.path,
+         publicId: file.filename
+      };
+
+      data.image = imageData;
       return this.authService.register(data);
    }
+
 
    @Throttle({ default: { limit: 5, ttl: 60000 } })
    @Post('login')
    login(@Body() loginData: LoginDTO) {
       return this.authService.login(loginData);
    }
+
 
    @UseGuards(JwtAuthGuard)
    @Throttle({ default: { limit: 5, ttl: 60000 } })
@@ -39,12 +62,14 @@ export class AuthController {
       return this.authService.changePassword(id, cpData);
    }
 
+
    @UseGuards(JwtAuthGuard)
    @SkipThrottle()
    @Post('logout')
    logout(@GetUserID() id: string) {
       return this.authService.logout(id);
    }
+
 
    @UseGuards(JwtRefreshTokenGuard)
    @Post('refresh')
@@ -55,21 +80,25 @@ export class AuthController {
       return this.authService.refreshToken(user, rf_Token);
    }
 
+
    @UseGuards(JwtAuthGuard)
    @Post('send-verification-email')
    sendVerificationEmail(@GetUserID() id: string, @GetUserEmail() email: string) {
       return this.authService.sendVerificationEmail(id, email);
    }
 
+
    @Post('verify-email')
    verifyEmail(@Query('token') token: string) {
       return this.authService.verifyEmail(token);
    }
 
+
    @Post('forgot-password')
    forgotPassword(@Body() body: ForgotPasswordDTO) {
       return this.authService.forgotPassword(body.email);
    }
+
 
    @Post('reset-password')
    resetPassword(@Body() dto: ResetPasswordDTO) {

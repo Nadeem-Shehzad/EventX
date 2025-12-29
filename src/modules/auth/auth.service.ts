@@ -51,8 +51,13 @@ export class AuthService {
       await this.userService.createUser(registerData);
 
       const user = await this.userService.getUserByEmail(data.email);
+      if (!user) {
+         throw new NotFoundException('User not found.');
+      }
 
-      return plainToInstance(UserResponseDTO, user, {
+      const userObject = user.toObject();
+
+      return plainToInstance(UserResponseDTO, userObject, {
          excludeExtraneousValues: true,
       });
    }

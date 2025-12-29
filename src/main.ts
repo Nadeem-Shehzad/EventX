@@ -1,3 +1,6 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { GlobalExceptionFilter } from './common/filters/global-exception-filter';
@@ -23,6 +26,9 @@ async function bootstrap() {
    app.useGlobalPipes(new ValidationPipe({
       whitelist: true,
       transform: true,
+      transformOptions: {
+         enableImplicitConversion: true,
+      },
    }));
 
    await app.listen(process.env.PORT ?? 3000);

@@ -9,6 +9,15 @@ import { LocationDTO } from "./location.dto";
 import { PriceRangeDTO } from "./price.dto";
 
 
+export class BannerImageDTO {
+   @IsString()
+   url: string;
+
+   @IsString()
+   publicId: string;
+}
+
+
 export class CreateEventDTO {
 
    @IsNotEmpty()
@@ -28,6 +37,20 @@ export class CreateEventDTO {
    category: string
 
    @IsOptional()
+   @Transform(({ value }) => {
+      if (!value) return [];
+
+      if (typeof value === 'string') {
+         try {
+            return JSON.parse(value);
+         } catch {
+            throw new Error('Tags must be a valid JSON array');
+         }
+      }
+      console.log('RAW TAGS VALUE:', value);
+
+      return value;
+   })
    @IsArray()
    @IsString({ each: true })
    tags: string
@@ -36,9 +59,21 @@ export class CreateEventDTO {
    eventType: EventType
 
    @IsOptional()
-   @IsString()
-   @Transform(({ value }) => value?.trim())
-   bannerImage: string
+   @Transform(({ value }) => {
+      if (!value) return undefined;
+
+      if (typeof value === 'string') {
+         try {
+            return JSON.parse(value);
+         } catch (e) {
+            throw new Error('Invalid JSON format');
+         }
+      }
+      return value;
+   })
+   @ValidateNested()
+   @Type(() => BannerImageDTO)
+   bannerImage: BannerImageDTO
 
    @Type(() => Date)
    @IsDate()
@@ -53,6 +88,20 @@ export class CreateEventDTO {
    timezone: string
 
    @IsOptional()
+   @Transform(({ value }) => {
+      if (!value) return undefined;
+
+      if (typeof value === 'string') {
+         try {
+            return JSON.parse(value);
+         } catch (e) {
+            throw new Error('Invalid JSON format');
+         }
+      }
+
+      console.log('RAW LOCATION VALUE:', value);
+      return value;
+   })
    @ValidateNested()
    @Type(() => LocationDTO)
    location?: LocationDTO
@@ -78,6 +127,18 @@ export class CreateEventDTO {
    isPaid: boolean
 
    @IsOptional()
+   @Transform(({ value }) => {
+      if (!value) return undefined;
+
+      if (typeof value === 'string') {
+         try {
+            return JSON.parse(value);
+         } catch (e) {
+            throw new Error('Invalid JSON format');
+         }
+      }
+      return value;
+   })
    @ValidateNested()
    @Type(() => PriceRangeDTO)
    priceRange?: PriceRangeDTO
