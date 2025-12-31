@@ -30,7 +30,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
          statusCode: status,
          path: request.url,
          message,
-         error: exception.response || 'No details',
+         //error: exception.response || 'No details',
       });
    }
 }

@@ -42,8 +42,11 @@ export class BannerImageResponseDTO {
 
 
 export class EventResponseDTO {
+   // @Expose()
+   // readonly id: string;
    @Expose()
-   readonly id: string;
+   @Transform(({ obj }) => obj._id.toString())
+   _id: string;
 
    @Expose()
    readonly title: string

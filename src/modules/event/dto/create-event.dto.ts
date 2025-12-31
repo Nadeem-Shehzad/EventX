@@ -18,6 +18,10 @@ export class BannerImageDTO {
 }
 
 
+export const ToLowerCase = () =>
+   Transform(({ value }) => (typeof value === 'string' ? value.toLowerCase() : value));
+
+
 export class CreateEventDTO {
 
    @IsNotEmpty()
@@ -34,6 +38,7 @@ export class CreateEventDTO {
 
    @IsNotEmpty()
    @IsString()
+   @ToLowerCase()
    category: string
 
    @IsOptional()
@@ -42,13 +47,11 @@ export class CreateEventDTO {
 
       if (typeof value === 'string') {
          try {
-            return JSON.parse(value);
+            return JSON.parse(value.toLowerCase());
          } catch {
             throw new Error('Tags must be a valid JSON array');
          }
       }
-      console.log('RAW TAGS VALUE:', value);
-
       return value;
    })
    @IsArray()
