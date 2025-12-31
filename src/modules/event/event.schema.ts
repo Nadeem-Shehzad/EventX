@@ -12,7 +12,6 @@ export class Event {
    @Prop({ required: true, unique: true, index: true })
    slug: string
 
-
    @Prop({ required: true, trim: true, min: 3 })
    title: string
 
@@ -110,7 +109,7 @@ export class Event {
    registrationDeadline?: Date
 
 
-   @Prop({ default: false })
+   @Prop({ default: false, index: true })
    isPaid: boolean
 
    @Prop({
@@ -133,3 +132,6 @@ export const EventSchema = SchemaFactory.createForClass(Event);
 EventSchema.index({ organizerId: 1, isDeleted: 1 });
 EventSchema.index({ category: 1, status: 1 });
 EventSchema.index({ status: 1, startDateTime: 1 });
+EventSchema.index({ status: 1, isDeleted: 1, isPaid: 1, startDateTime: 1});
+EventSchema.index({ status: 1, isDeleted: 1, startDateTime: 1});
+EventSchema.index({ visibility: 1, isDeleted: 1, startDateTime: 1});
