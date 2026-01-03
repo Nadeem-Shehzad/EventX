@@ -19,4 +19,8 @@ export class RedisService {
    async del(key: string) {
       return this.redis.del(key);
    }
+
+   pipeline() {
+      return this.redis.pipeline();
+   }
 }

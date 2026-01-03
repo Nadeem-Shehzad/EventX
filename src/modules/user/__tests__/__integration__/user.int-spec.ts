@@ -14,6 +14,7 @@ import { ResponseInterceptor } from "src/common/interceptors/response.intercepto
 import { AuthModule } from "src/modules/auth/auth.module";
 import { UserModule } from "../../user.module";
 import { PassThrough } from 'stream';
+import { EventService } from "src/modules/event/event.service";
 
 const redisStore = new Map<string, string>();
 
@@ -39,28 +40,28 @@ jest.mock('ioredis', () => {
 
 
 jest.mock('cloudinary', () => ({
-  v2: {
-    config: jest.fn(),
-    uploader: {
-      upload_stream: jest.fn().mockImplementation((options, callback) => {
-        // Create a real Node.js PassThrough stream
-        const mockStream = new PassThrough();
+   v2: {
+      config: jest.fn(),
+      uploader: {
+         upload_stream: jest.fn().mockImplementation((options, callback) => {
+            // Create a real Node.js PassThrough stream
+            const mockStream = new PassThrough();
 
-        // When the stream finishes (Multer is done piping), trigger the callback
-        mockStream.on('finish', () => {
-          if (callback) {
-            callback(null, {
-              public_id: 'eventx/events/test_id',
-              secure_url: 'https://res.cloudinary.com/test-url.jpg',
+            // When the stream finishes (Multer is done piping), trigger the callback
+            mockStream.on('finish', () => {
+               if (callback) {
+                  callback(null, {
+                     public_id: 'eventx/events/test_id',
+                     secure_url: 'https://res.cloudinary.com/test-url.jpg',
+                  });
+               }
             });
-          }
-        });
 
-        return mockStream;
-      }),
-      destroy: jest.fn().mockResolvedValue({ result: 'ok' }),
-    },
-  },
+            return mockStream;
+         }),
+         destroy: jest.fn().mockResolvedValue({ result: 'ok' }),
+      },
+   },
 }));
 
 
@@ -127,7 +128,14 @@ beforeAll(async () => {
             useClass: ResponseInterceptor,
          },
       ]
-   }).compile();
+   })
+      .overrideProvider(EventService)
+      .useValue({
+         findById: jest.fn(),
+         findEventOwner: jest.fn(),
+         // Add other methods if AuthModule actually calls them
+      })
+      .compile();
 
    app = moduleRef.createNestApplication();
 
@@ -460,7 +468,7 @@ describe('Admin - UserModule - Update Profile', () => {
    const role = 'admin';
 
    beforeEach(async () => {
-      const user = await registerTestUser(app, { name, email, password, role});
+      const user = await registerTestUser(app, { name, email, password, role });
       userId = user._id;
 
       const loginRes = await request(app.getHttpServer())
@@ -564,7 +572,7 @@ describe('Admin - UserModule - Delete Account', () => {
       const res = await request(app.getHttpServer())
          .delete(`/user/${userId}/admin`)
          .set('Authorization', `Bearer ${token}`)
-         expect(404);
+      expect(404);
 
       expect(res.statusCode).toBe(404);
    });

@@ -7,16 +7,13 @@ export const RedisProvider: Provider = {
    provide: RedisClient,
    useFactory: async () => {
       const client = new Redis({
-         host: 'redis-15448.c82.us-east-1-2.ec2.redns.redis-cloud.com',
-         port: 15448,
-         username: 'default',
-         password: 'a4UjzshlvRi1emtDUyDIGeDdc5cn4Q0R',
-         tls: {},                 
+         host: 'localhost',
+         port: 6379,                 
          maxRetriesPerRequest: null,
       });
 
       client.on('connect', () => {
-         console.log('✅ Connected to Redis Cloud via TLS.');
+         console.log('✅ Connected to local Redis.');
       });
 
       client.on('error', (err) => {
