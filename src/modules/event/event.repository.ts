@@ -3,18 +3,32 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model, PipelineStage, Types } from "mongoose";
 import { EventDocument } from "./event.schema";
 import { MongoPerformanceHelper } from "src/common/helpers/db-performance-checker";
+import { EventType } from "./enums/event.enums";
+import { UpdateEventDTO } from "./dto/update-event.dto";
 
 
 @Injectable()
 export class EventRespository {
-   
+
    constructor(@InjectModel('Event') private eventModel: Model<EventDocument>) { }
-   
+
    private readonly logger = new Logger(EventRespository.name);
 
 
    async create(data: any): Promise<EventDocument | null> {
       return await this.eventModel.create(data);
+   }
+
+
+   async updateEvent(id: string, dataToUpdate: UpdateEventDTO) {
+
+      const result = await this.eventModel.findOneAndUpdate(
+         { _id: id },
+         { $set: dataToUpdate },
+         { new: true }
+      );
+
+      return result;
    }
 
 
@@ -28,44 +42,38 @@ export class EventRespository {
    }
 
 
-   async getEventsByAggregation() {
-      return await this.eventModel.aggregate([
-         { $match: { status: 'published', isDeleted: false } },
+   async getEventsByAggregation(page = 1, limit = 10) {
+
+      const skip = (page - 1) * limit;
+
+      const pipeline: PipelineStage[] = [
+         {
+            $match: {
+               status: 'published',
+               isDeleted: false
+            }
+         },
          { $sort: { startDateTime: 1 } },
          {
             $facet: {
-               data: [
-                  { $skip: 0 },
-                  { $limit: 10 },
+               events: [
+                  { $skip: skip },
+                  { $limit: limit },
                   {
-                     $project: {
-                        _id: { $toString: '$_id' },
-                        title: 1,
-                        description: 1,
-                        category: 1,
-                        tags: 1,
-                        eventType: 1,
-                        location: 1,
-                        bannerImage: 1,
-                        startDateTime: 1,
-                        endDateTime: 1,
-                        timezone: 1,
-                        capacity: 1,
-                        registeredCount: 1,
-                        isPaid: 1,
-                        priceRange: {
-                           $cond: [
-                              { $eq: ['$isPaid', true] },
-                              '$priceRange',
-                              '$$REMOVE'
-                           ]
-                        }
-                     }
+                     $project: publicResponseData
                   }
-               ]
+               ],
+               totalCount: [{ $count: 'count' }]
             }
          }
-      ]);
+      ];
+
+      const result = await this.eventModel.aggregate(pipeline);
+
+      const events = result[0]?.events ?? [];
+      const total = result[0]?.totalCount?.[0]?.count ?? 0;
+
+      return { events, total };
    }
 
 
@@ -79,16 +87,7 @@ export class EventRespository {
                   { $skip: options.skip },
                   { $limit: options.limit },
                   {
-                     $project: {
-                        _id: { $toString: '$_id' },
-                        title: 1,
-                        category: 1,
-                        tags: 1,
-                        startDateTime: 1,
-                        isPaid: 1,
-                        price: 1,
-                        location: 1,
-                     }
+                     $project: publicResponseData
                   }
                ],
                totalCount: [
@@ -132,6 +131,7 @@ export class EventRespository {
                events: [
                   { $skip: skip },
                   { $limit: limit },
+                  { $project: publicResponseData }
                ],
                totalCount: [{ $count: 'count' }],
             },
@@ -168,23 +168,7 @@ export class EventRespository {
                   { $skip: skip },
                   { $limit: limit },
                   {
-                     $project: {
-                        _id: { $toString: '$_id' },
-                        title: 1,
-                        description: 1,
-                        category: 1,
-                        tags: 1,
-                        eventType: 1,
-                        location: 1,
-                        bannerImage: 1,
-                        startDateTime: 1,
-                        endDateTime: 1,
-                        timezone: 1,
-                        capacity: 1,
-                        registeredCount: 1,
-                        isPaid: 1,
-                        priceRange: 1
-                     }
+                     $project: publicResponseData
                   }
                ],
                totalCount: [{ $count: 'count' }],
@@ -218,23 +202,34 @@ export class EventRespository {
                   { $skip: skip },
                   { $limit: limit },
                   {
-                     $project: {
-                        _id: { $toString: '$_id' },
-                        title: 1,
-                        description: 1,
-                        category: 1,
-                        tags: 1,
-                        eventType: 1,
-                        location: 1,
-                        bannerImage: 1,
-                        startDateTime: 1,
-                        endDateTime: 1,
-                        timezone: 1,
-                        capacity: 1,
-                        registeredCount: 1,
-                        isPaid: 1,
-                        priceRange: 1
+                     $lookup: {
+                        from: 'users',
+                        let: { organizerId: { $toObjectId: '$organizerId' } },
+                        pipeline: [
+                           {
+                              $match: {
+                                 $expr: {
+                                    $eq: ['$_id', '$$organizerId']
+                                 }
+                              }
+                           },
+                           {
+                              $project: {
+                                 name: 1
+                              }
+                           }
+                        ],
+                        as: 'organizer'
                      }
+                  },
+                  {
+                     $unwind: {
+                        path: '$organizer',
+                        preserveNullAndEmptyArrays: true
+                     }
+                  },
+                  {
+                     $project: administrativeResponseData
                   }
                ],
                totalCount: [
@@ -250,6 +245,8 @@ export class EventRespository {
 
       const events = result[0]?.events ?? [];
       const total = result[0]?.totalCount?.[0]?.total ?? 0;
+
+      this.logger.log(events);
 
       return { events, total };
    }
@@ -272,23 +269,7 @@ export class EventRespository {
                   { $skip: skip },
                   { $limit: limit },
                   {
-                     $project: {
-                        _id: { $toString: '$_id' },
-                        title: 1,
-                        description: 1,
-                        category: 1,
-                        tags: 1,
-                        eventType: 1,
-                        location: 1,
-                        bannerImage: 1,
-                        startDateTime: 1,
-                        endDateTime: 1,
-                        timezone: 1,
-                        capacity: 1,
-                        registeredCount: 1,
-                        isPaid: 1,
-                        priceRange: 1
-                     }
+                     $project: publicResponseData
                   }
                ],
                totalCount: [
@@ -326,23 +307,7 @@ export class EventRespository {
                   { $skip: skip },
                   { $limit: limit },
                   {
-                     $project: {
-                        _id: { $toString: '$_id' },
-                        title: 1,
-                        description: 1,
-                        category: 1,
-                        tags: 1,
-                        eventType: 1,
-                        location: 1,
-                        bannerImage: 1,
-                        startDateTime: 1,
-                        endDateTime: 1,
-                        timezone: 1,
-                        capacity: 1,
-                        registeredCount: 1,
-                        isPaid: 1,
-                        priceRange: 1
-                     }
+                     $project: publicResponseData
                   }
                ],
                totalCount: [
@@ -380,23 +345,7 @@ export class EventRespository {
                   { $skip: skip },
                   { $limit: limit },
                   {
-                     $project: {
-                        _id: { $toString: '$_id' },
-                        title: 1,
-                        description: 1,
-                        category: 1,
-                        tags: 1,
-                        eventType: 1,
-                        location: 1,
-                        bannerImage: 1,
-                        startDateTime: 1,
-                        endDateTime: 1,
-                        timezone: 1,
-                        capacity: 1,
-                        registeredCount: 1,
-                        isPaid: 1,
-                        priceRange: 1
-                     }
+                     $project: publicResponseData
                   }
                ],
                totalCount: [
@@ -414,6 +363,127 @@ export class EventRespository {
       const total = result[0]?.totalCount?.[0]?.total ?? 0;
 
       return { events, total };
+   }
+
+
+   async eventStatusSummary() {
+
+      const pipeline: PipelineStage[] = [
+         {
+            $match: {
+               isDeleted: false
+            }
+         },
+         {
+            $group: {
+               _id: '$status',
+               total: { $sum: 1 }
+            }
+         },
+         {
+            $project: {
+               _id: 0,
+               status: '$_id',
+               total: 1
+            }
+         }
+      ];
+
+      const result = await this.eventModel.aggregate(pipeline);
+
+      return result;
+   }
+
+
+   async eventVisibilitySummary() {
+
+      const pipeline: PipelineStage[] = [
+         {
+            $match: {
+               isDeleted: false
+            }
+         },
+         {
+            $group: {
+               _id: '$visibility',
+               total: { $sum: 1 }
+            }
+         },
+         {
+            $project: {
+               _id: 0,
+               visibility: '$_id',
+               total: 1
+            }
+         }
+      ];
+
+      const result = await this.eventModel.aggregate(pipeline);
+
+      return result;
+   }
+
+
+   async eventTagsSummary() {
+
+      const pipeline: PipelineStage[] = [
+         {
+            $match: {
+               isDeleted: false
+            }
+         },
+         { $unwind: '$tags' },
+         {
+            $group: {
+               _id: '$tags',
+               total: { $sum: 1 }
+            }
+         },
+         { $sort: { total: 1 } },
+         {
+            $project: {
+               _id: 0,
+               tag: '$_id',
+               total: 1
+            }
+         }
+      ];
+
+      const result = await this.eventModel.aggregate(pipeline);
+
+      return result;
+   }
+
+
+   async eventTypeSummary() {
+
+      const pipeline: PipelineStage[] = [
+         {
+            $match: {
+               isDeleted: false
+            }
+         },
+         {
+            $group: {
+               _id: '$eventType',
+               total: { $sum: 1 }
+            }
+         },
+         {
+            $sort: { total: 1 }
+         },
+         {
+            $project: {
+               _id: 0,
+               eventType: '$_id',
+               total: 1
+            }
+         }
+      ];
+
+      const result = await this.eventModel.aggregate(pipeline);
+
+      return result;
    }
 
 
@@ -436,23 +506,7 @@ export class EventRespository {
                   { $skip: skip },
                   { $limit: limit },
                   {
-                     $project: {
-                        _id: { $toString: '$_id' },
-                        title: 1,
-                        description: 1,
-                        category: 1,
-                        tags: 1,
-                        eventType: 1,
-                        location: 1,
-                        bannerImage: 1,
-                        startDateTime: 1,
-                        endDateTime: 1,
-                        timezone: 1,
-                        capacity: 1,
-                        registeredCount: 1,
-                        isPaid: 1,
-                        priceRange: 1
-                     }
+                     $project: publicResponseData
                   }
                ],
                totalCount: [
@@ -502,7 +556,7 @@ export class EventRespository {
    }
 
 
-   async deleteEvent(eventId: string, organizerId: string) {
+   async softDeleteEvent(eventId: string, organizerId: string) {
       return await this.eventModel.findOneAndUpdate(
          {
             _id: eventId,
@@ -516,6 +570,17 @@ export class EventRespository {
             }
          },
          { new: true }
+      );
+   }
+
+
+   async deleteEventPermanently(eventId: string, organizerId: string) {
+      return await this.eventModel.findOneAndDelete(
+         {
+            _id: eventId,
+            organizerId: organizerId,
+            isDeleted: true
+         }
       );
    }
 
@@ -554,5 +619,71 @@ export class EventRespository {
       ]);
 
       return result[0] || null;
+   }
+}
+
+
+// helper
+export const publicResponseData = {
+   _id: { $toString: '$_id' },
+   title: 1,
+   description: 1,
+   category: 1,
+   tags: 1,
+   eventType: 1,
+   location: {
+      $cond: [
+         { $ne: ['$eventType', EventType.ONLINE] },
+         '$location',
+         '$$REMOVE'
+      ]
+   },
+   bannerImage: 1,
+   startDateTime: 1,
+   endDateTime: 1,
+   timezone: 1,
+   capacity: 1,
+   registeredCount: 1,
+   isPaid: 1,
+   priceRange: {
+      $cond: [
+         { $eq: ['$isPaid', true] },
+         '$priceRange',
+         '$$REMOVE'
+      ]
+   }
+}
+
+
+export const administrativeResponseData = {
+   _id: { $toString: '$_id' },
+   title: 1,
+   description: 1,
+   category: 1,
+   tags: 1,
+   eventType: 1,
+   location: {
+      $cond: [
+         { $ne: ['$eventType', EventType.ONLINE] },
+         '$location',
+         '$$REMOVE'
+      ]
+   },
+   bannerImage: 1,
+   startDateTime: 1,
+   endDateTime: 1,
+   timezone: 1,
+   capacity: 1,
+   registeredCount: 1,
+   isPaid: 1,
+   priceRange: {
+      $cond: [
+         { $eq: ['$isPaid', true] },
+         '$priceRange',
+         '$$REMOVE'
+      ]
+   },
+   organizer: {
+      name: '$organizer.name'
    }
 }

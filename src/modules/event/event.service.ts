@@ -1,17 +1,28 @@
-import { BadRequestException, Injectable, Logger } from "@nestjs/common";
+import { BadRequestException, Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { EventRespository } from "./event.repository";
 import slugify from "slugify";
 import { plainToInstance } from "class-transformer";
 import { EventResponseDTO } from "./dto/event-response.dto";
 import { CreateEventDTO } from "./dto/create-event.dto";
 import { EventQueryDTO } from "./dto/event-query.dto";
-import { optional } from "joi";
+import { RedisService } from "src/redis/redis.service";
+import { UpdateEventDTO } from "./dto/update-event.dto";
+import { InjectQueue } from "@nestjs/bullmq";
+import { QUEUES } from "src/queue/queue.constants";
+import { Queue } from "bullmq";
 
 
 @Injectable()
 export class EventService {
-   constructor(private readonly eventRepo: EventRespository) { }
+   constructor(
+      private readonly eventRepo: EventRespository,
+      private readonly redis: RedisService,
+      @InjectQueue(QUEUES.EVENT_IMAGE)
+      private readonly imageQueue: Queue
+   ) { }
+
    private readonly logger = new Logger(EventService.name);
+
 
    async createEvent(id: string, data: CreateEventDTO): Promise<string> {
 
@@ -32,6 +43,40 @@ export class EventService {
    }
 
 
+   async updateEvent(eventId: string, dataToUpdate: UpdateEventDTO) {
+
+      const event = await this.eventRepo.findEventById(eventId);
+      if (!event) {
+         throw new NotFoundException('Event not Found!');
+      }
+
+      const newImagePublicId = dataToUpdate.bannerImage?.publicId;
+      const oldImagePublicId = event.bannerImage?.publicId;
+
+      const result = await this.eventRepo.updateEvent(eventId, dataToUpdate);
+
+      if (newImagePublicId && newImagePublicId !== oldImagePublicId) {
+         await this.imageQueue.add(
+            'delete-old-event-image',
+            {
+               publicId: oldImagePublicId,
+               eventId,
+            },
+            {
+               attempts: 3,
+               backoff: { type: 'exponential', delay: 3000 },
+            },
+         );
+      }
+
+      const finalResult = plainToInstance(EventResponseDTO, result, {
+         excludeExtraneousValues: true
+      });
+
+      return finalResult;
+   }
+
+
    async getAllEvents() {
       const events = await this.eventRepo.getEventsByAggregation();
 
@@ -41,8 +86,38 @@ export class EventService {
    }
 
 
-   async getAllEventsByAggregate() {
-      return await this.eventRepo.getEventsByAggregation();
+   async getAllEventsByAggregate(page = 1, limit = 10) {
+
+      const cacheKey = `all-event-${page}-${limit}`;
+
+      const cachedData = await this.redis.get(cacheKey);
+      if (cachedData) {
+         return JSON.parse(cachedData);
+      }
+
+      const { events, total } = await this.eventRepo.getEventsByAggregation(page, limit);
+
+      const finalResult = plainToInstance(EventResponseDTO, events, {
+         excludeExtraneousValues: true
+      });
+
+      const response = {
+         events: finalResult,
+         meta: {
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+         },
+      };
+
+      await this.redis.set(
+         cacheKey,
+         JSON.stringify(response),
+         120
+      );
+
+      return response;
    }
 
 
@@ -78,13 +153,25 @@ export class EventService {
 
 
    async getFreeEvents(page = 1, limit = 10) {
+
+      const cacheKey = `free-event-${page}-${limit}`;
+
+      try {
+         const cachedData = await this.redis.get(cacheKey);
+         if (cachedData) {
+            return JSON.parse(cachedData);
+         }
+      } catch (error) {
+         this.logger.warn('Redis unavailable, falling back to DB', 'Cache');
+      }
+
       const { events, total } = await this.eventRepo.getFreeEvents(page, limit);
 
       const finalResult = plainToInstance(EventResponseDTO, events, {
          excludeExtraneousValues: true
       });
 
-      return {
+      const response = {
          events: finalResult,
          meta: {
             total,
@@ -93,6 +180,14 @@ export class EventService {
             totalPages: Math.ceil(total / limit),
          },
       };
+
+      try {
+         await this.redis.set(cacheKey, JSON.stringify(response), 120);
+      } catch (err) {
+         Logger.warn('Failed to cache free events', 'Cache');
+      }
+
+      return response;
    }
 
 
@@ -191,6 +286,26 @@ export class EventService {
    }
 
 
+   async eventStatusSummary() {
+      return await this.eventRepo.eventStatusSummary();
+   }
+
+
+   async eventVisibilitySummary() {
+      return await this.eventRepo.eventVisibilitySummary();
+   }
+
+
+   async eventTypeSummary() {
+      return await this.eventRepo.eventTypeSummary();
+   }
+
+
+   async eventTagsSummary() {
+      return await this.eventRepo.eventTagsSummary();
+   }
+
+
    async getUpcomingEvents(page = 1, limit = 10) {
       const { events, total } = await this.eventRepo.getUpcomingEvents(page, limit);
 
@@ -242,19 +357,43 @@ export class EventService {
    }
 
 
-   async deleteEvent(eventId: string, organizerId: string) {
-      const result = await this.eventRepo.deleteEvent(eventId, organizerId);
+   async softDeleteEvent(eventId: string, organizerId: string) {
+      const result = await this.eventRepo.softDeleteEvent(eventId, organizerId);
       if (!result) {
          throw new BadRequestException(
             'Event cannot be Deleted or you are not authorized',
          );
       }
 
-      const eventObject = result.toObject();
+      return 'Event Deleted Successfully';
+   }
 
-      return plainToInstance(EventResponseDTO, eventObject, {
-         excludeExtraneousValues: true,
-      });
+
+   async deleteEventPermanently(eventId: string, organizerId: string) {
+
+      const deletedEvent = await this.eventRepo.deleteEventPermanently(eventId, organizerId);
+      if (!deletedEvent) {
+         throw new BadRequestException(
+            'Event cannot be Deleted permanently or you are not authorized',
+         );
+      }
+
+      if (deletedEvent.bannerImage.publicId) {
+
+         await this.imageQueue.add(
+            'delete-event-image',
+            {
+               publicId: deletedEvent.bannerImage.publicId,
+               eventId,
+            },
+            {
+               attempts: 3,
+               backoff: { type: 'exponential', delay: 3000 },
+            },
+         );
+      }
+
+      return 'Event deleted successfully';
    }
 
 
@@ -276,6 +415,7 @@ export class EventService {
 
 
    // export services
+
    async findById(id: string) {
       return await this.eventRepo.findEventById(id);
    }

@@ -15,6 +15,9 @@ import redisConfig from './config/redis.config';
 import { RateLimitModule } from './rateLimit/rate-limit.module';
 import { LoggerModule } from 'nestjs-pino';
 import { EventModule } from './modules/event/event.module';
+import { QueuesModule } from './queue/queues.module';
+import { ImageQueueModule } from './queue/event-image/image.queue.module';
+import { DB_QUERY_TIMEOUTS } from './constants/db-timeout.constants';
 
 
 
@@ -41,10 +44,16 @@ import { EventModule } from './modules/event/event.module';
       },
     }),
 
+    QueuesModule,
+    ImageQueueModule,
+
     MongooseModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        uri: config.get<string>('MONGO_URI')
+        uri: config.get<string>('MONGO_URI'),
+        serverSelectionTimeoutMS: 5000, // ⏱️ how long to wait to find a Mongo server
+        socketTimeoutMS: DB_QUERY_TIMEOUTS.defaultSocketTimeoutMS,  // ⏱️ inactivity timeout for queries
+        connectTimeoutMS: 10000,        // ⏱️ initial connection timeout
       })
     }),
 

@@ -17,7 +17,8 @@ import { UserService } from 'src/modules/user/user.service';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerStorage } from '@nestjs/throttler';
-import { PassThrough } from 'stream'; // Import this at the top
+import { PassThrough } from 'stream'; 
+import { EventService } from 'src/modules/event/event.service';
 
 
 const redisStore = new Map<string, string>();
@@ -44,28 +45,28 @@ jest.mock('ioredis', () => {
 
 
 jest.mock('cloudinary', () => ({
-  v2: {
-    config: jest.fn(),
-    uploader: {
-      upload_stream: jest.fn().mockImplementation((options, callback) => {
-        // Create a real Node.js PassThrough stream
-        const mockStream = new PassThrough();
+   v2: {
+      config: jest.fn(),
+      uploader: {
+         upload_stream: jest.fn().mockImplementation((options, callback) => {
+            // Create a real Node.js PassThrough stream
+            const mockStream = new PassThrough();
 
-        // When the stream finishes (Multer is done piping), trigger the callback
-        mockStream.on('finish', () => {
-          if (callback) {
-            callback(null, {
-              public_id: 'eventx/events/test_id',
-              secure_url: 'https://res.cloudinary.com/test-url.jpg',
+            // When the stream finishes (Multer is done piping), trigger the callback
+            mockStream.on('finish', () => {
+               if (callback) {
+                  callback(null, {
+                     public_id: 'eventx/events/test_id',
+                     secure_url: 'https://res.cloudinary.com/test-url.jpg',
+                  });
+               }
             });
-          }
-        });
 
-        return mockStream;
-      }),
-      destroy: jest.fn().mockResolvedValue({ result: 'ok' }),
-    },
-  },
+            return mockStream;
+         }),
+         destroy: jest.fn().mockResolvedValue({ result: 'ok' }),
+      },
+   },
 }));
 
 jest.setTimeout(30000);
@@ -124,7 +125,14 @@ beforeAll(async () => {
             useClass: ThrottlerGuard,
          },
       ]
-   }).overrideProvider(MailerService).useValue({ sendMail: jest.fn().mockResolvedValue(true) })
+   }).overrideProvider(MailerService)
+      .useValue({ sendMail: jest.fn().mockResolvedValue(true) })
+      .overrideProvider(EventService)
+      .useValue({
+         findById: jest.fn(),
+         findEventOwner: jest.fn(),
+         // Add other methods if AuthModule actually calls them
+      })
       .compile();
 
    app = moduleRef.createNestApplication();
