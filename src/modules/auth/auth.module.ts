@@ -5,8 +5,6 @@ import { UserModule } from "../user/user.module";
 import { JwtModule } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { CommonModule } from "src/common/common.module";
-import { JwtAuthGuard } from "src/common/guards/jwt-auth.guard";
-import { JwtRefreshTokenGuard } from "src/common/guards/ref-token.guard";
 import { MailerModule } from "@nestjs-modules/mailer";
 import { MyRedisModule } from "src/redis/redis.module";
 
@@ -47,7 +45,7 @@ import { MyRedisModule } from "src/redis/redis.module";
       CommonModule
    ],
    controllers: [AuthController],
-   providers: [AuthService, JwtAuthGuard, JwtRefreshTokenGuard]
+   providers: [AuthService]
 })
 
 export class AuthModule { }

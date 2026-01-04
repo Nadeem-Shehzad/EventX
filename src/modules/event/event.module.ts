@@ -5,11 +5,9 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { EventSchema } from "./event.schema";
 import { EventRespository } from "./event.repository";
 import { CommonModule } from "src/common/common.module";
-import { JwtAuthGuard } from "src/common/guards/jwt-auth.guard";
-import { RoleCheckGuard } from "src/common/guards/role.guard";
 import { MyRedisModule } from "src/redis/redis.module";
-import { RedisService } from "src/redis/redis.service";
 import { ImageQueueModule } from "src/queue/event-image/image.queue.module";
+import { EventOwnerShipGuard } from "./guards/ownership.guard";
 
 @Module({
    imports: [
@@ -19,7 +17,7 @@ import { ImageQueueModule } from "src/queue/event-image/image.queue.module";
       MyRedisModule
    ],
    controllers: [EventController],
-   providers: [EventService, EventRespository, JwtAuthGuard, RoleCheckGuard, RedisService],
+   providers: [EventService, EventRespository, EventOwnerShipGuard],
    exports: [EventService, EventRespository, MongooseModule]
 })
 

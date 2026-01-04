@@ -26,8 +26,6 @@ export class EventService {
 
    async createEvent(id: string, data: CreateEventDTO): Promise<string> {
 
-      // this.logger.log(`Create Event Attempts ...`);
-
       const slug = slugify(data.title);
 
       const organizer = { organizerId: id }
@@ -192,13 +190,25 @@ export class EventService {
 
 
    async getPaidEvents(page = 1, limit = 10) {
+
+      const cacheKey = `paid-event-${page}-${limit}`;
+
+      try {
+         const cachedData = await this.redis.get(cacheKey);
+         if (cachedData) {
+            return JSON.parse(cachedData);
+         }
+      } catch (error) {
+         this.logger.warn('Redis unavailable, falling back to DB', 'Cache');
+      }
+
       const { events, total } = await this.eventRepo.getPaidEvents(page, limit);
 
       const finalResult = plainToInstance(EventResponseDTO, events, {
          excludeExtraneousValues: true
       });
 
-      return {
+      const response = {
          events: finalResult,
          meta: {
             total,
@@ -207,6 +217,14 @@ export class EventService {
             totalPages: Math.ceil(total / limit),
          },
       };
+
+      try {
+         await this.redis.set(cacheKey, JSON.stringify(response), 120);
+      } catch (err) {
+         Logger.warn('Failed to cache paid events', 'Cache');
+      }
+
+      return response;
    }
 
 
