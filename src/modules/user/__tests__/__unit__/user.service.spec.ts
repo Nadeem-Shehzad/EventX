@@ -6,6 +6,7 @@ import { NotFoundException } from "@nestjs/common";
 import { UpdateUserDTO } from "../../dto/update-user.dto";
 import { v2 as cloudinary } from 'cloudinary';
 
+
 jest.mock('cloudinary', () => ({
    v2: {
       uploader: {

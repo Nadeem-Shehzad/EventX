@@ -16,7 +16,6 @@ import { ImageQueueModule } from "src/queue/event-image/image.queue.module";
       JwtModule.register({}),
       forwardRef(() => UserModule),
       forwardRef(() => EventModule),
-      //ImageQueueModule,
       MyRedisModule
    ],
    providers: [
@@ -24,14 +23,13 @@ import { ImageQueueModule } from "src/queue/event-image/image.queue.module";
       JwtRefreshTokenGuard,
       AccountOwnerShipGuard,
       RoleCheckGuard,
-      //EventService
    ],
    exports: [
       JwtAuthGuard,
       JwtRefreshTokenGuard,
       JwtModule,
       AccountOwnerShipGuard,
-      RoleCheckGuard
+      RoleCheckGuard,
    ]
 })
 

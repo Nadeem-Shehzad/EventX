@@ -13,18 +13,19 @@ import { Roles } from "src/common/decorators/user-roles";
 import { CreateEventDTO } from "./dto/create-event.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { getCloudinaryStorage } from "src/common/uploads/cloudinary.storage";
-import { EventOwnerShipGuard } from "src/common/guards/ownership.guard";
 import { EventQueryDTO } from "./dto/event-query.dto";
 import { EventStatusDTO } from "./dto/event-status.dto";
 import { EventVisibilityDTO } from "./dto/event-visibility.dto";
 import { PaginationDTO } from "./dto/pagination.dto";
 import { UpdateEventDTO } from "./dto/update-event.dto";
+import { EventOwnerShipGuard } from "./guards/ownership.guard";
 
 
 @Controller({ path: 'events', version: '1' })
 export class EventController {
 
    constructor(private readonly eventService: EventService) { }
+   
    private readonly logger = new Logger(EventService.name);
 
 
