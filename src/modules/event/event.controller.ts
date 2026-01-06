@@ -148,7 +148,7 @@ export class EventController {
    @UseGuards(JwtAuthGuard, RoleCheckGuard)
    @Throttle({ default: { limit: 5, ttl: 60000 } })
    @Roles('organizer')
-   @Get('/organizer/:id')
+   @Get('/organizer')
    @HttpCode(HttpStatus.OK)
    getOrganizerOwnEvents(
       @GetUserID() id: string,

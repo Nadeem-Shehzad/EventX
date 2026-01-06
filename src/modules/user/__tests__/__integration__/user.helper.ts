@@ -17,7 +17,7 @@ export const registerTestUser = async (
    const userData = { ...defaultData, ...overrideData };
 
    const res = await request(app.getHttpServer())
-      .post('/auth/register')
+      .post('/v1/auth/register')
       .field('name', userData.name)
       .field('email', userData.email)
       .field('password', userData.password)
@@ -41,7 +41,7 @@ export const loginTestUser = async (
    const userData = { ...defaultData, ...overrideData };
 
    const res = await request(app.getHttpServer())
-      .post('/auth/login')
+      .post('/v1/auth/login')
       .send(userData)
       .expect(201);
 

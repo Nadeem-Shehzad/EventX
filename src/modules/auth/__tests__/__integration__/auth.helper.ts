@@ -6,7 +6,7 @@ import { RegisterDTO } from '../../dto/register.dto';
 
 export const registerTestUser = async (
    app: INestApplication,
-   overrideData?: Partial<{ name: string; email: string; password: string }>
+   overrideData?: Partial<{ name: string; email: string; password: string, role: string }>
 ) => {
    const defaultData = {
       name: 'Test User',
@@ -18,7 +18,7 @@ export const registerTestUser = async (
    const userData = { ...defaultData, ...overrideData };
 
    const res = await request(app.getHttpServer())
-      .post('/auth/register')
+      .post('/v1/auth/register')
       // 1. Use .field() for text data instead of .send()
       .field('name', userData.name)
       .field('email', userData.email)
@@ -29,7 +29,9 @@ export const registerTestUser = async (
       .attach('image', Buffer.from('fake-image-data'), 'test-image.jpg')
       .expect(201);
 
-   return { ...userData, _id: res.body._id }; // return data so the test can use it (e.g., for login)
+      //console.log('Register - res --> ', res.body.data);
+
+   return { ...userData, _id: res.body.data._id }; // return data so the test can use it (e.g., for login)
 };
 
 

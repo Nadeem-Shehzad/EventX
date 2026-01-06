@@ -191,7 +191,7 @@ export class EventRespository {
       const pipeline: PipelineStage[] = [
          {
             $match: {
-               organizerId: id,
+               organizerId: new Types.ObjectId(id),
                isDeleted: false
             }
          },
@@ -204,24 +204,35 @@ export class EventRespository {
                   {
                      $lookup: {
                         from: 'users',
-                        let: { organizerId: { $toObjectId: '$organizerId' } },
+                        localField: 'organizerId', // Matches ObjectId to ObjectId directly
+                        foreignField: '_id',
                         pipeline: [
-                           {
-                              $match: {
-                                 $expr: {
-                                    $eq: ['$_id', '$$organizerId']
-                                 }
-                              }
-                           },
-                           {
-                              $project: {
-                                 name: 1
-                              }
-                           }
+                           { $project: { name: 1 } } // Only fetch the name
                         ],
                         as: 'organizer'
                      }
                   },
+                  // {
+                  //    $lookup: {
+                  //       from: 'users',
+                  //       let: { organizerId: { $toObjectId: '$organizerId' } },
+                  //       pipeline: [
+                  //          {
+                  //             $match: {
+                  //                $expr: {
+                  //                   $eq: ['$_id', '$$organizerId']
+                  //                }
+                  //             }
+                  //          },
+                  //          {
+                  //             $project: {
+                  //                name: 1
+                  //             }
+                  //          }
+                  //       ],
+                  //       as: 'organizer'
+                  //    }
+                  // },
                   {
                      $unwind: {
                         path: '$organizer',
@@ -258,8 +269,7 @@ export class EventRespository {
       const pipeline: PipelineStage[] = [
          {
             $match: {
-               organizerId: id,
-               isDeleted: false
+               organizerId: new Types.ObjectId(id)
             }
          },
          { $sort: { createdAt: -1 } },

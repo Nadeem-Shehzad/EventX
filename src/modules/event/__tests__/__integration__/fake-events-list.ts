@@ -1,0 +1,108 @@
+
+export const eventsList = (organizerId: any) => [
+    // ✅ Published & visible event
+    {
+      organizerId,
+      slug: 'published-event-1',
+      title: 'Published Event 1',
+      description: 'This is a properly published event description.',
+      category: 'tech',
+      tags: ['node', 'backend'],
+      eventType: 'offline',
+      bannerImage: {
+        url: 'https://example.com/banner1.jpg',
+        publicId: 'banner1',
+      },
+      startDateTime: new Date('2026-01-10T10:00:00Z'),
+      endDateTime: new Date('2026-01-10T12:00:00Z'),
+      timezone: 'UTC',
+      capacity: 100,
+      status: 'published',
+      visibility: 'public',
+      isDeleted: false,
+      isPaid: false,
+      registeredCount: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+
+    // ✅ Another published event (later date)
+    {
+      organizerId,
+      slug: 'published-event-2',
+      title: 'Published Event 2',
+      description: 'Second published event for sorting verification.',
+      category: 'coding',
+      tags: ['nestjs'],
+      eventType: 'offline',
+      location : {
+        city: 'Kasur'
+      },
+      bannerImage: {
+        url: 'https://example.com/banner2.jpg',
+        publicId: 'banner2',
+      },
+      startDateTime: new Date('2026-01-11T10:00:00Z'),
+      endDateTime: new Date('2026-01-11T12:00:00Z'),
+      timezone: 'UTC',
+      capacity: 150,
+      status: 'published',
+      visibility: 'public',
+      isDeleted: false,
+      isPaid: false,
+      registeredCount: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+
+    // ❌ Draft event (should NOT appear)
+    {
+      organizerId,
+      slug: 'draft-event',
+      title: 'Draft Event',
+      description: 'This event is still in draft state.',
+      category: 'tech',
+      eventType: 'offline',
+      bannerImage: {
+        url: 'https://example.com/banner3.jpg',
+        publicId: 'banner3',
+      },
+      startDateTime: new Date('2026-01-12T10:00:00Z'),
+      endDateTime: new Date('2026-01-12T12:00:00Z'),
+      timezone: 'UTC',
+      capacity: 50,
+      status: 'draft',
+      visibility: 'public',
+      isDeleted: false,
+      isPaid: false,
+      registeredCount: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+
+    // ❌ Deleted event (should NOT appear)
+    {
+      organizerId,
+      slug: 'deleted-event',
+      title: 'Deleted Event',
+      description: 'This event is soft deleted.',
+      category: 'tech',
+      eventType: 'offline',
+      bannerImage: {
+        url: 'https://example.com/banner4.jpg',
+        publicId: 'banner4',
+      },
+      startDateTime: new Date('2026-01-13T10:00:00Z'),
+      endDateTime: new Date('2026-01-13T12:00:00Z'),
+      timezone: 'UTC',
+      capacity: 80,
+      status: 'published',
+      visibility: 'public',
+      isDeleted: true,
+      deletedAt: new Date(),
+      isPaid: false,
+      registeredCount: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ]
