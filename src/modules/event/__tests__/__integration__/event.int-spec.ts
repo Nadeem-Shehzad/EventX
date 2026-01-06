@@ -462,7 +462,7 @@ describe('Event Module - Get Organizer Events', () => {
       expect(titles).toEqual([
          'Published Event 1',
          'Published Event 2',
-         'Draft Event'
+         'Draft Event',
       ]);
 
       expect(res.body.data.meta).toEqual({
