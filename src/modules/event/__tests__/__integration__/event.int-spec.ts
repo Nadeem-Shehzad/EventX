@@ -16,7 +16,7 @@ import { ImageQueueModule } from "src/queue/event-image/image.queue.module";
 import { MockQueueModule } from "src/modules/event/__tests__/__integration__/mock-queue";
 import request from 'supertest';
 import { eventsList } from "./fake-events-list";
-import { registerTestUser } from "src/modules/auth/__tests__/__integration__/auth.helper";
+import { registerTestUser } from "./auth.helper";
 
 
 const redisStore = new Map<string, string>();
