@@ -139,6 +139,8 @@ beforeAll(async () => {
 
    app = moduleRef.createNestApplication();
 
+   app.setGlobalPrefix('v1');
+
    // Apply validation pipe if your controller relies on it for DTO validation
    app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
@@ -201,7 +203,7 @@ describe('UserModule - User Profile', () => {
       userId = user._id;
 
       const loginRes = await request(app.getHttpServer())
-         .post('/auth/login')
+         .post('/v1/auth/login')
          .send({ email, password })
          .expect(201);
 
@@ -219,7 +221,7 @@ describe('UserModule - User Profile', () => {
 
    it('GET /users/profile → should return logged-in user profile', async () => {
       const res = await request(app.getHttpServer())
-         .get('/user/profile')
+         .get('/v1/user/profile')
          .set('Authorization', `Bearer ${token}`)
          .expect(200);
 
@@ -232,7 +234,7 @@ describe('UserModule - User Profile', () => {
 
    it('GET /users/profile → should give Unauhtorized Error - if no token provided', async () => {
       const res = await request(app.getHttpServer())
-         .get('/user/profile')
+         .get('/v1/user/profile')
          .expect(401);
 
       expect(res.body.statusCode).toBe(401);
@@ -256,7 +258,7 @@ describe('UserModule - Get User By ID', () => {
       //console.log('userID -> ',userId);
 
       const loginRes = await request(app.getHttpServer())
-         .post('/auth/login')
+         .post('/v1/auth/login')
          .send({ email, password })
          .expect(201);
 
@@ -275,7 +277,7 @@ describe('UserModule - Get User By ID', () => {
    it('should give user data on ID based.', async () => {
 
       const res = await request(app.getHttpServer())
-         .get(`/user/${userId}`)
+         .get(`/v1/user/${userId}`)
          .set('Authorization', `Bearer ${token}`)
          .expect(200);
 
@@ -287,7 +289,7 @@ describe('UserModule - Get User By ID', () => {
       userId = '6946bb33d16c4c03c0f00000';
 
       const res = await request(app.getHttpServer())
-         .get(`/user/${userId}`)
+         .get(`/v1/user/${userId}`)
          .set('Authorization', `Bearer ${token}`)
          .expect(404);
 
@@ -309,7 +311,7 @@ describe('UserModule - Update Profile', () => {
       userId = user._id;
 
       const loginRes = await request(app.getHttpServer())
-         .post('/auth/login')
+         .post('/v1/auth/login')
          .send({ email, password })
          .expect(201);
 
@@ -332,7 +334,7 @@ describe('UserModule - Update Profile', () => {
       }
 
       const res = await request(app.getHttpServer())
-         .put(`/user/${userId}`)
+         .put(`/v1/user/${userId}`)
          .set('Authorization', `Bearer ${token}`)
          .send(dataToUpdate)
          .expect(201);
@@ -350,7 +352,7 @@ describe('UserModule - Update Profile', () => {
       }
 
       const res = await request(app.getHttpServer())
-         .put(`/user/${userId}`)
+         .put(`/v1/user/${userId}`)
          .set('Authorization', `Bearer ${token}`)
          .send(dataToUpdate)
          .expect(403);
@@ -373,7 +375,7 @@ describe('UserModule - Delete Account', () => {
       userId = user._id;
 
       const loginRes = await request(app.getHttpServer())
-         .post('/auth/login')
+         .post('/v1/auth/login')
          .send({ email, password })
          .expect(201);
 
@@ -392,7 +394,7 @@ describe('UserModule - Delete Account', () => {
    it('Should Delete User Account.', async () => {
 
       const res = await request(app.getHttpServer())
-         .delete(`/user/${userId}`)
+         .delete(`/v1/user/${userId}`)
          .set('Authorization', `Bearer ${token}`)
          .expect(200);
 
@@ -406,7 +408,7 @@ describe('UserModule - Delete Account', () => {
       userId = '6946bb33d16c4c03c0f00000';
 
       const res = await request(app.getHttpServer())
-         .delete(`/user/${userId}`)
+         .delete(`/v1/user/${userId}`)
          .set('Authorization', `Bearer ${token}`)
          .expect(403);
 
@@ -429,7 +431,7 @@ describe('UserModule - Gel All Users', () => {
       userId = user._id;
 
       const loginRes = await request(app.getHttpServer())
-         .post('/auth/login')
+         .post('/v1/auth/login')
          .send({ email, password })
          .expect(201);
 
@@ -448,7 +450,7 @@ describe('UserModule - Gel All Users', () => {
    it('Should Give All Users Data', async () => {
 
       const res = await request(app.getHttpServer())
-         .get(`/user/`)
+         .get(`/v1/user/`)
          .set('Authorization', `Bearer ${token}`)
          .expect(200);
 
@@ -472,7 +474,7 @@ describe('Admin - UserModule - Update Profile', () => {
       userId = user._id;
 
       const loginRes = await request(app.getHttpServer())
-         .post('/auth/login')
+         .post('/v1/auth/login')
          .send({ email, password })
          .expect(201);
 
@@ -495,7 +497,7 @@ describe('Admin - UserModule - Update Profile', () => {
       }
 
       const res = await request(app.getHttpServer())
-         .put(`/user/${userId}/admin`)
+         .put(`/v1/user/${userId}/admin`)
          .set('Authorization', `Bearer ${token}`)
          .send(dataToUpdate)
          .expect(201);
@@ -513,7 +515,7 @@ describe('Admin - UserModule - Update Profile', () => {
       }
 
       const res = await request(app.getHttpServer())
-         .put(`/user/${userId}/admin`)
+         .put(`/v1/user/${userId}/admin`)
          .set('Authorization', `Bearer ${token}`)
          .send(dataToUpdate)
          .expect(404);
@@ -537,7 +539,7 @@ describe('Admin - UserModule - Delete Account', () => {
       userId = user._id;
 
       const loginRes = await request(app.getHttpServer())
-         .post('/auth/login')
+         .post('/v1/auth/login')
          .send({ email, password })
          .expect(201);
 
@@ -556,7 +558,7 @@ describe('Admin - UserModule - Delete Account', () => {
    it('Admin - Should Delete User Account.', async () => {
 
       const res = await request(app.getHttpServer())
-         .delete(`/user/${userId}/admin`)
+         .delete(`/v1/user/${userId}/admin`)
          .set('Authorization', `Bearer ${token}`)
          .expect(200);
 
@@ -570,7 +572,7 @@ describe('Admin - UserModule - Delete Account', () => {
       userId = '6946bb33d16c4c03c0f00000';
 
       const res = await request(app.getHttpServer())
-         .delete(`/user/${userId}/admin`)
+         .delete(`/v1/user/${userId}/admin`)
          .set('Authorization', `Bearer ${token}`)
       expect(404);
 

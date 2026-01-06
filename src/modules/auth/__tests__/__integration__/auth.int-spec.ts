@@ -137,6 +137,8 @@ beforeAll(async () => {
 
    app = moduleRef.createNestApplication();
 
+   app.setGlobalPrefix('v1');
+
    // Apply validation pipe if your controller relies on it for DTO validation
    app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
@@ -191,7 +193,7 @@ afterEach(async () => {
 describe('AuthModule - Registration', () => {
    it('should register a user successfully', async () => {
       const res = await request(app.getHttpServer())
-         .post('/auth/register')
+         .post('/v1/auth/register')
          .field('name', 'Test User')
          .field('email', 'user@test.com')
          .field('password', 'Aa$123456')
@@ -210,14 +212,14 @@ describe('AuthModule - Registration', () => {
    it('should Throw conflictException - If Email already exists.', async () => {
 
       await request(app.getHttpServer())
-         .post('/auth/register')
+         .post('/v1/auth/register')
          .field('name', 'Test User')
          .field('email', 'user@test.com')
          .field('password', 'Aa$123456')
          .attach('image', Buffer.from('fake-image-data'), 'test.jpg');
 
       const res = await request(app.getHttpServer())
-         .post('/auth/register')
+         .post('/v1/auth/register')
          .field('name', 'Test User')
          .field('email', 'user@test.com')
          .field('password', 'Aa$123456')
@@ -230,7 +232,7 @@ describe('AuthModule - Registration', () => {
    it('should throttle requests after 5 attempts', async () => {
       for (let i = 0; i < 5; i++) {
          await request(app.getHttpServer())
-            .post('/auth/register')
+            .post('/v1/auth/register')
             .field('name', 'Test User')
             .field('email', 'throttled@test.com')
             .field('password', 'Aa$123456')
@@ -238,7 +240,7 @@ describe('AuthModule - Registration', () => {
       }
 
       const res = await request(app.getHttpServer())
-         .post('/auth/register')
+         .post('/v1/auth/register')
          .field('name', 'Test User')
          .field('email', 'throttled@test.com')
          .field('password', 'Aa$123456')
@@ -271,7 +273,7 @@ describe('AuthModule - Login', () => {
    it('should be able to login with registered user', async () => {
 
       const res = await request(app.getHttpServer())
-         .post('/auth/login')
+         .post('/v1/auth/login')
          .send({ email: 'user@test.com', password: 'Aa$123456' })
          .expect(201);
 
@@ -284,7 +286,7 @@ describe('AuthModule - Login', () => {
 
    it('should fail login with invalid password', async () => {
       const res = await request(app.getHttpServer())
-         .post('/auth/login')
+         .post('/v1/auth/login')
          .send({ email: 'user@test.com', password: 'Aa$112233' })
          .expect(401);
 
@@ -293,7 +295,7 @@ describe('AuthModule - Login', () => {
 
    it('should fail login for non-existent user', async () => {
       const res = await request(app.getHttpServer())
-         .post('/auth/login')
+         .post('/v1/auth/login')
          .send({ email: 'ghost@test.com', password: 'wrongpassword' })
          .expect(404); // Changed from 401 to 404 based on your code (NotFoundException)
 
@@ -304,12 +306,12 @@ describe('AuthModule - Login', () => {
 
       for (let i = 0; i < 5; i++) {
          await request(app.getHttpServer())
-            .post('/auth/login')
+            .post('/v1/auth/login')
             .send({ email: 'user@test.com', password: 'Aa$123456' })
       }
 
       const res = await request(app.getHttpServer())
-         .post('/auth/login')
+         .post('/v1/auth/login')
          .send({ email: 'user@test.com', password: 'Aa$123456' });
 
       expect(res.status).toBe(429);
@@ -331,7 +333,7 @@ describe('AuthModule - Change Password', () => {
       userId = user._id;
 
       const loginRes = await request(app.getHttpServer())
-         .post('/auth/login')
+         .post('/v1/auth/login')
          .send({ email: 'change@test.com', password: oldPassword })
          .expect(201);
 
@@ -360,7 +362,7 @@ describe('AuthModule - Change Password', () => {
       };
 
       const res = await request(app.getHttpServer())
-         .post('/auth/change-password')
+         .post('/v1/auth/change-password')
          .set('Authorization', `Bearer ${token}`)
          .send(payload);
 
@@ -378,7 +380,7 @@ describe('AuthModule - Change Password', () => {
       await connection.collection('users').deleteOne({ email });
 
       const res = await request(app.getHttpServer())
-         .post('/auth/change-password')
+         .post('/v1/auth/change-password')
          .set('Authorization', `Bearer ${token}`)
          .send(payload)
          .expect(404);
@@ -394,7 +396,7 @@ describe('AuthModule - Change Password', () => {
       };
 
       const res = await request(app.getHttpServer())
-         .post('/auth/change-password')
+         .post('/v1/auth/change-password')
          .set('Authorization', `Bearer ${token}`)
          .send(payload);
 
@@ -410,7 +412,7 @@ describe('AuthModule - Change Password', () => {
       };
 
       const res = await request(app.getHttpServer())
-         .post('/auth/change-password')
+         .post('/v1/auth/change-password')
          .set('Authorization', `Bearer ${token}`)
          .send(payload);
 
@@ -426,7 +428,7 @@ describe('AuthModule - Change Password', () => {
       };
 
       const res = await request(app.getHttpServer())
-         .post('/auth/change-password')
+         .post('/v1/auth/change-password')
          .set('Authorization', `Bearer ${token}`)
          .send(payload);
 
@@ -442,7 +444,7 @@ describe('AuthModule - Change Password', () => {
       };
 
       const res = await request(app.getHttpServer())
-         .post('/auth/change-password')
+         .post('/v1/auth/change-password')
          .send(payload);
 
       expect(res.status).toBe(401);
@@ -463,7 +465,7 @@ describe('AuthModule - logout', () => {
 
    it('should logout user ', async () => {
       const res = await request(app.getHttpServer())
-         .post('/auth/logout')
+         .post('/v1/auth/logout')
          .set('Authorization', `Bearer ${token}`)
          .expect(201)
 
@@ -493,7 +495,7 @@ describe('AuthModule - RefreshToken', () => {
 
    it('should Generate Access Token', async () => {
       const res = await request(app.getHttpServer())
-         .post('/auth/refresh')
+         .post('/v1/auth/refresh')
          .send({ refresh_token: rftoken })
          .expect(201);
 
@@ -506,7 +508,7 @@ describe('AuthModule - RefreshToken', () => {
 
    it('should throw Unauthorized - If Invalid refresh token', async () => {
       const res = await request(app.getHttpServer())
-         .post('/auth/refresh')
+         .post('/v1/auth/refresh')
          .send({ refresh_token: fakeRfToken })
          .expect(401);
 
@@ -529,7 +531,7 @@ describe('AuthModule - Verify Email', () => {
 
    it('Should Verify User Email', async () => {
       const res = await request(app.getHttpServer())
-         .post('/auth/verify-email')
+         .post('/v1/auth/verify-email')
          .query({ token })
          .expect(201);
 
@@ -541,7 +543,7 @@ describe('AuthModule - Verify Email', () => {
       await connection.collection('users').deleteOne({ email });
 
       const res = await request(app.getHttpServer())
-         .post('/auth/verify-email')
+         .post('/v1/auth/verify-email')
          .query({ token })
          .expect(404);
 
@@ -556,7 +558,7 @@ describe('AuthModule - Verify Email', () => {
       );
 
       const res = await request(app.getHttpServer())
-         .post('/auth/verify-email')
+         .post('/v1/auth/verify-email')
          .query({ token })
          .expect(201);
 
@@ -575,7 +577,7 @@ describe('ForgotPassword', () => {
 
    it('Should send reset password token successfully', async () => {
       const res = await request(app.getHttpServer())
-         .post('/auth/forgot-password')
+         .post('/v1/auth/forgot-password')
          .send({ email })
          .expect(201);
 
@@ -602,7 +604,7 @@ describe('ForgotPassword', () => {
 
    it('Should fail if user does not exist', async () => {
       const res = await request(app.getHttpServer())
-         .post('/auth/forgot-password')
+         .post('/v1/auth/forgot-password')
          .send({ email: 'unknown@domain.com' })
          .expect(404);
 
@@ -627,7 +629,7 @@ describe('AuthModule - ResetPassword', () => {
 
    it('Should Reset Password', async () => {
       const res = await request(app.getHttpServer())
-         .post('/auth/reset-password')
+         .post('/v1/auth/reset-password')
          .send({ token, newPassword, confirmPassword })
          .expect(201);
 
@@ -638,7 +640,7 @@ describe('AuthModule - ResetPassword', () => {
       const newPassword = 'Aa$112233';
       const confirmPassword = 'Aa$111222';
       const res = await request(app.getHttpServer())
-         .post('/auth/reset-password')
+         .post('/v1/auth/reset-password')
          .send({ token, newPassword, confirmPassword })
          .expect(400);
 
@@ -652,7 +654,7 @@ describe('AuthModule - ResetPassword', () => {
       const confirmPassword = 'Aa$112233';
 
       const res = await request(app.getHttpServer())
-         .post('/auth/reset-password')
+         .post('/v1/auth/reset-password')
          .send({ token, newPassword, confirmPassword })
          .expect(400);
 
@@ -664,7 +666,7 @@ describe('AuthModule - ResetPassword', () => {
       await connection.collection('users').deleteOne({ email });
 
       const res = await request(app.getHttpServer())
-         .post('/auth/reset-password')
+         .post('/v1/auth/reset-password')
          .send({ token, newPassword, confirmPassword })
          .expect(404);
 

@@ -2,7 +2,8 @@
 import request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { RegisterDTO } from '../../dto/register.dto';
+import { RegisterDTO } from 'src/modules/auth/dto/register.dto';
+
 
 export const registerTestUser = async (
    app: INestApplication,
@@ -31,44 +32,5 @@ export const registerTestUser = async (
 
       //console.log('Register - res --> ', res.body.data);
 
-   return { ...userData, _id: res.body._id }; // return data so the test can use it (e.g., for login)
-};
-
-
-export const loginTestUser = async (
-   app: INestApplication,
-   overrideData?: Partial<{ email: string; password: string }>
-) => {
-   const defaultData = {
-      email: 'user@test.com',
-      password: '123456',
-   };
-
-   const userData = { ...defaultData, ...overrideData };
-
-   const res = await request(app.getHttpServer())
-      .post('/v1/auth/login')
-      .send(userData)
-      .expect(201);
-
-   return res;
-};
-
-
-export const forgotPasswordTestUser = async (
-   app: INestApplication,
-   overrideData?: Partial<{ email: string }>
-) => {
-   const defaultData = {
-      email: 'user@test.com'
-   };
-
-   const userData = { ...defaultData, ...overrideData };
-
-   const res = await request(app.getHttpServer())
-      .post('/v1/auth/forgot-password')
-      .send(userData)
-      .expect(201);
-
-   return res;
+   return { ...userData, _id: res.body.data._id }; // return data so the test can use it (e.g., for login)
 };

@@ -9,6 +9,7 @@ import helmet from 'helmet';
 import compression from 'compression';
 import { corsConfig } from './config/cors.config';
 import { Logger } from 'nestjs-pino';
+import { VersioningType } from '@nestjs/common';
 
 
 async function bootstrap() {
@@ -20,6 +21,11 @@ async function bootstrap() {
    app.use(helmet());
    app.enableCors(corsConfig());
    app.use(compression());
+
+   app.enableVersioning({
+      type: VersioningType.URI,
+      defaultVersion: '1', 
+   });
 
    app.useGlobalFilters(new GlobalExceptionFilter());
    app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
