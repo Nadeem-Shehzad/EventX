@@ -18,6 +18,7 @@ import { EventModule } from './modules/event/event.module';
 import { QueuesModule } from './queue/queues.module';
 import { ImageQueueModule } from './queue/event-image/image.queue.module';
 import { DB_QUERY_TIMEOUTS } from './constants/db-timeout.constants';
+import { BookingModule } from './modules/booking/booking.module';
 
 
 
@@ -62,7 +63,8 @@ import { DB_QUERY_TIMEOUTS } from './constants/db-timeout.constants';
 
     AuthModule,
     EventModule,
-    CommonModule
+    CommonModule,
+    BookingModule
   ],
   providers: [
     {
