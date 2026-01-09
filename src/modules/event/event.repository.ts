@@ -396,7 +396,8 @@ export class EventRespository {
                status: '$_id',
                total: 1
             }
-         }
+         },
+         { $sort: { status: 1 } }
       ];
 
       const result = await this.eventModel.aggregate(pipeline);
