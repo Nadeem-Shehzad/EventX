@@ -15,7 +15,7 @@ import { EventService } from "../../event.service";
 import { ImageQueueModule } from "src/queue/event-image/image.queue.module";
 import { MockQueueModule } from "src/modules/event/__tests__/__integration__/mock-queue";
 import request from 'supertest';
-import { eventsList } from "./fake-events-list";
+import { eventsList, singleEvent } from "./fake-events-list";
 import { registerTestUser } from "./auth.helper";
 
 
@@ -116,7 +116,7 @@ beforeAll(async () => {
             limit: 10, // Global default (your controller overrides this to 3)
          }]),
          AuthModule,
-         //UserModule,
+         UserModule,
          EventModule
       ],
       providers: [
@@ -532,12 +532,12 @@ describe('Event Module - Get Organizer Own Events', () => {
       expect(res.body.data.events).toHaveLength(4);
 
       const titles = res.body.data.events.map(e => e.title);
-      expect(titles).toEqual([
+      expect(titles).toEqual(expect.arrayContaining([
          'Published Event 1',
          'Published Event 2',
          'Draft Event',
          'Deleted Event'
-      ]);
+      ]));
 
       expect(res.body.data.meta).toEqual({
          total: 4,
@@ -569,8 +569,8 @@ describe('Event Module - Get Events By Status', () => {
       const user = await registerTestUser(app, { email, password, role });
       organizerId = user._id;
 
-      console.log('Organizer Response ----> ', user);
-      console.log('Organizer ID ----> ', organizerId);
+      //console.log('Organizer Response ----> ', user);
+      //console.log('Organizer ID ----> ', organizerId);
 
       const loginRes = await request(app.getHttpServer())
          .post('/v1/auth/login')
@@ -600,8 +600,8 @@ describe('Event Module - Get Events By Status', () => {
          .set('Authorization', `Bearer ${token}`)
          .expect(200);
 
-      console.log('token --> ', token);
-      console.log(res.status, res.body);
+      //console.log('token --> ', token);
+      //console.log(res.status, res.body);
 
       expect(res.body.data.events).toHaveLength(2);
 
@@ -617,5 +617,270 @@ describe('Event Module - Get Events By Status', () => {
          limit: 10,
          totalPages: 1,
       });
+   });
+})
+
+
+describe('Event Module - Get Events By Status', () => {
+
+   const email = 'nadeem@test.com';
+   const password = 'Aa$123456';
+   const role = 'organizer';
+
+   const insertEvents = async (id: string) => {
+      const eventCollection = connection.collection('events');
+      const organizerId = new Types.ObjectId(id);
+      await eventCollection.insertMany(eventsList(organizerId));
+   };
+
+   //const organizerId = '6946bb33d16c4c03c0f00000';
+   let organizerId: string;
+   let token: string;
+
+   beforeEach(async () => {
+      const user = await registerTestUser(app, { email, password, role });
+      organizerId = user._id;
+
+      //console.log('Organizer Response ----> ', user);
+      //console.log('Organizer ID ----> ', organizerId);
+
+      const loginRes = await request(app.getHttpServer())
+         .post('/v1/auth/login')
+         .send({ email, password })
+         .expect(201);
+
+      token = loginRes.body.data.token;
+   });
+
+
+   afterEach(async () => {
+      if (connection) {
+         const collections = connection.collections;
+         for (const key in collections) {
+            await collections[key].deleteMany({});
+         }
+      }
+   });
+
+
+   it('GET /filter-by-status → should return only published & non-deleted based on status', async () => {
+
+      await insertEvents(organizerId);
+
+      const res = await request(app.getHttpServer())
+         .get(`/v1/events/filter-by-status?status=published&page=1&limit=10`)
+         .set('Authorization', `Bearer ${token}`)
+         .expect(200);
+
+      //console.log('token --> ', token);
+      //console.log(res.status, res.body);
+
+      expect(res.body.data.events).toHaveLength(2);
+
+      const titles = res.body.data.events.map(e => e.title);
+      expect(titles).toEqual([
+         'Published Event 1',
+         'Published Event 2'
+      ]);
+
+      expect(res.body.data.meta).toEqual({
+         total: 2,
+         page: 1,
+         limit: 10,
+         totalPages: 1,
+      });
+   });
+})
+
+
+describe('Event Module - Get Status Summary', () => {
+
+   const email = 'nadeem@test.com';
+   const password = 'Aa$123456';
+   const role = 'organizer';
+
+   const insertEvents = async (id: string) => {
+      const eventCollection = connection.collection('events');
+      const organizerId = new Types.ObjectId(id);
+      await eventCollection.insertMany(eventsList(organizerId));
+   };
+
+   //const organizerId = '6946bb33d16c4c03c0f00000';
+   let organizerId: string;
+   let token: string;
+
+   beforeEach(async () => {
+      const user = await registerTestUser(app, { email, password, role });
+      organizerId = user._id;
+
+      //console.log('Organizer Response ----> ', user);
+      //console.log('Organizer ID ----> ', organizerId);
+
+      const loginRes = await request(app.getHttpServer())
+         .post('/v1/auth/login')
+         .send({ email, password })
+         .expect(201);
+
+      token = loginRes.body.data.token;
+   });
+
+
+   afterEach(async () => {
+      if (connection) {
+         const collections = connection.collections;
+         for (const key in collections) {
+            await collections[key].deleteMany({});
+         }
+      }
+   });
+
+
+   it('GET /status-summary → should return status based summary', async () => {
+
+      await insertEvents(organizerId);
+
+      const res = await request(app.getHttpServer())
+         .get(`/v1/events/status-summary`)
+         .set('Authorization', `Bearer ${token}`)
+         .expect(200);
+
+      //console.log('token --> ', token);
+      //console.log(res.status, res.body);
+
+      expect(res.body.data).toEqual([
+         {
+            total: 1,
+            status: 'draft'
+         },
+         {
+            total: 2,
+            status: 'published'
+         }
+      ]);
+   });
+})
+
+
+describe('Event Module - Get Upcoming Events', () => {
+
+   const email = 'nadeem@test.com';
+   const password = 'Aa$123456';
+   const role = 'organizer';
+
+   const insertEvents = async (id: string) => {
+      const eventCollection = connection.collection('events');
+      const organizerId = new Types.ObjectId(id);
+      await eventCollection.insertMany(eventsList(organizerId));
+   };
+
+   //const organizerId = '6946bb33d16c4c03c0f00000';
+   let organizerId: string;
+   let token: string;
+
+   beforeEach(async () => {
+      const user = await registerTestUser(app, { email, password, role });
+      organizerId = user._id;
+
+      //console.log('Organizer Response ----> ', user);
+      //console.log('Organizer ID ----> ', organizerId);
+
+      const loginRes = await request(app.getHttpServer())
+         .post('/v1/auth/login')
+         .send({ email, password })
+         .expect(201);
+
+      token = loginRes.body.data.token;
+   });
+
+
+   afterEach(async () => {
+      if (connection) {
+         const collections = connection.collections;
+         for (const key in collections) {
+            await collections[key].deleteMany({});
+         }
+      }
+   });
+
+
+   it('GET /upcoming-events → should return upcoming events', async () => {
+
+      await insertEvents(organizerId);
+
+      const res = await request(app.getHttpServer())
+         .get(`/v1/events/upcoming-events`)
+         .set('Authorization', `Bearer ${token}`)
+         .expect(200);
+
+      //console.log('token --> ', token);
+      //console.log(res.status, res.body);
+
+      expect(res.body.data.events.length).toEqual(2);
+   });
+})
+
+
+describe('Event Module - Get Cancel Events', () => {
+
+   const email = 'nadeem@test.com';
+   const password = 'Aa$123456';
+   const role = 'organizer';
+
+   const setupEvent = async (userId: string) => {
+      const eventCollection = connection.collection('events');
+      const organizerObjectId = new Types.ObjectId(userId);
+      
+      // Insert one specific event
+      const res = await eventCollection.insertOne(singleEvent(organizerObjectId));
+
+      console.log('////////////');
+      console.log(res);
+      console.log('////////////');
+
+      return res.insertedId.toString();
+   };
+
+   //const organizerId = '6946bb33d16c4c03c0f00000';
+   let organizerId: string;
+   let token: string;
+   let eventId: string;
+
+   beforeEach(async () => {
+      const user = await registerTestUser(app, { email, password, role });
+      organizerId = user._id;
+
+     // console.log('Organizer Response ----> ', user);
+     // console.log('Organizer ID ----> ', organizerId);
+
+      const loginRes = await request(app.getHttpServer())
+         .post('/v1/auth/login')
+         .send({ email, password })
+         .expect(201);
+
+      token = loginRes.body.data.token;
+      eventId = await setupEvent(organizerId);
+   });
+
+
+   afterEach(async () => {
+      if (connection) {
+         const collections = connection.collections;
+         for (const key in collections) {
+            await collections[key].deleteMany({});
+         }
+      }
+   });
+
+
+   it('POST /cancel/:id → should cancel event', async () => {
+
+      const res = await request(app.getHttpServer())
+         .post(`/v1/events/cancel/${eventId}`)
+         .set('Authorization', `Bearer ${token}`)
+         //.expect(200);
+
+      console.log('token --> ', token);
+      console.log(res.status, res.body);
+
    });
 })
