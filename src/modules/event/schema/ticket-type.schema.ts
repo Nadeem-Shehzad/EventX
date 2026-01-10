@@ -41,3 +41,4 @@ export const TicketTypeSchema = SchemaFactory.createForClass(TicketType);
 // Indexes
 TicketTypeSchema.index({ eventId: 1, name: 1 }, { unique: true });
 TicketTypeSchema.index({ availableQuantity: 1 });
+TicketTypeSchema.index({ eventId: 1, availableQuantity: 1 });

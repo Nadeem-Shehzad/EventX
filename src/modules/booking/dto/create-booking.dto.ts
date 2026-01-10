@@ -10,5 +10,5 @@ export class CreateBookingDTO {
 
    @IsInt()
    @Min(1)
-   quantity: string;
+   quantity: number;
 }
