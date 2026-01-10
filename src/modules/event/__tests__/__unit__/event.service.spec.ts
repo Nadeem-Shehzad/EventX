@@ -48,12 +48,7 @@ const mockEventResponse: EventResponseDTO[] = [{
    capacity: 30000,
    registeredCount: 18250,
 
-   isPaid: true,
-   priceRange: {
-      min: 5000,
-      max: 25000,
-      currency: "PKR"
-   }
+   isPaid: true
 }];
 
 
@@ -120,7 +115,7 @@ describe('EventService - Get Events', () => {
       expect(redisService.set).toHaveBeenCalledWith(
          'all-event-1-10',
          expect.any(String),
-         120
+         60
       );
       expect(result.meta.total).toBe(mockEventResponse.length);
    });
@@ -189,7 +184,7 @@ describe('EventService - Get Free Events', () => {
       expect(redisService.set).toHaveBeenCalledWith(
          'free-event-1-10',
          expect.any(String),
-         120
+         60
       );
       expect(result.meta.total).toBe(mockEventResponse.length);
    });

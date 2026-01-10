@@ -1,5 +1,6 @@
 import { Schema, SchemaFactory, Prop } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
+import { TicketType } from "./ticket-type.schema";
 
 export type EventDocument = Event & Document;
 
@@ -108,23 +109,8 @@ export class Event {
    @Prop()
    registrationDeadline?: Date
 
-
    @Prop({ default: false, index: true })
    isPaid: boolean
-
-   @Prop({
-      type: {
-         min: { type: Number },
-         max: { type: Number },
-         currency: { type: String },
-      },
-      _id: false,
-   })
-   priceRange?: {
-      min: number;
-      max: number;
-      currency: string;
-   };
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);

@@ -10,6 +10,7 @@ import { UpdateEventDTO } from "./dto/update-event.dto";
 import { InjectQueue } from "@nestjs/bullmq";
 import { QUEUES } from "src/queue/queue.constants";
 import { Queue } from "bullmq";
+import { dot } from "node:test/reporters";
 
 
 @Injectable()
@@ -24,15 +25,15 @@ export class EventService {
    private readonly logger = new Logger(EventService.name);
 
 
-   async createEvent(id: string, data: CreateEventDTO): Promise<string> {
+   async createEvent(id: string, dto: CreateEventDTO): Promise<string> {
 
-      const slug = slugify(data.title);
+      const slug = slugify(dto.title);
 
       const organizer = { organizerId: id }
       const slugObj = { slug };
-      const dataObject = { ...data, ...organizer, ...slugObj };
+      const dataObject = { ...dto, ...organizer, ...slugObj };
 
-      const result = await this.eventRepo.create(dataObject);
+      const result = await this.eventRepo.create(dataObject, dto);
 
       if (!result) {
          return 'Event not Added!.';
@@ -48,11 +49,16 @@ export class EventService {
          throw new NotFoundException('Event not Found!');
       }
 
+      if(dataToUpdate.title){
+         const slug = slugify(dataToUpdate.title);
+         dataToUpdate.slug = slug;
+      }
+
       const newImagePublicId = dataToUpdate.bannerImage?.publicId;
       const oldImagePublicId = event.bannerImage?.publicId;
 
       const result = await this.eventRepo.updateEvent(eventId, dataToUpdate);
-
+      
       if (newImagePublicId && newImagePublicId !== oldImagePublicId) {
          await this.imageQueue.add(
             'delete-old-event-image',
@@ -66,12 +72,18 @@ export class EventService {
             },
          );
       }
+      
+      // const finalResult = plainToInstance(EventResponseDTO, result, {
+      //    excludeExtraneousValues: true
+      // });
+      if(result){
+         return 'Event Record Updated.';
+      } 
 
-      const finalResult = plainToInstance(EventResponseDTO, result, {
-         excludeExtraneousValues: true
-      });
-
-      return finalResult;
+      return 'Event Record not Updated!';
+      
+      //console.log('Event in Service After Update -> ', finalResult);
+      //return finalResult;
    }
 
 
@@ -112,7 +124,7 @@ export class EventService {
       await this.redis.set(
          cacheKey,
          JSON.stringify(response),
-         120
+         60
       );
 
       return response;
@@ -180,7 +192,7 @@ export class EventService {
       };
 
       try {
-         await this.redis.set(cacheKey, JSON.stringify(response), 120);
+         await this.redis.set(cacheKey, JSON.stringify(response), 60);
       } catch (err) {
          Logger.warn('Failed to cache free events', 'Cache');
       }

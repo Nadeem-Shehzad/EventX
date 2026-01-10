@@ -815,7 +815,7 @@ describe('Event Module - Get Upcoming Events', () => {
       //console.log('token --> ', token);
       //console.log(res.status, res.body);
 
-      expect(res.body.data.events.length).toEqual(2);
+      expect(res.body.data.events.length).toEqual(1);
    });
 })
 

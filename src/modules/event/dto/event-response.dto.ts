@@ -1,16 +1,6 @@
 import { Expose, Transform, Type } from "class-transformer";
+import { TicketTypeDto } from "./create-event.dto";
 
-
-export class PriceRangeResponseDTO {
-   @Expose()
-   min: number;
-
-   @Expose()
-   max: number;
-
-   @Expose()
-   currency: string;
-}
 
 export class LocationResponseDTO {
    @Expose()
@@ -95,9 +85,5 @@ export class EventResponseDTO {
    readonly isPaid: boolean
 
    @Expose()
-   @Transform(({ obj }) => {
-      return obj.isPaid ? obj.priceRange : undefined;
-   })
-   @Type(() => PriceRangeResponseDTO)
-   readonly priceRange?: PriceRangeResponseDTO;
+   ticketTypes?: TicketTypeDto[];
 }

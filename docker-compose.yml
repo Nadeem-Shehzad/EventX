@@ -15,18 +15,18 @@ services:
       - /app/node_modules 
     networks:
       - backend  
-    depends_on:
-      - mongo  
+    # depends_on:
+    #   - mongo  
     restart: unless-stopped
 
-  mongo:
-    container_name: eventx-mongo
-    image: mongo:7.0
-    volumes:
-      - mongo_data:/data/db
-    networks:
-      - backend  
-    restart: unless-stopped  
+  # mongo:
+  #   container_name: eventx-mongo
+  #   image: mongo:7.0
+  #   volumes:
+  #     - mongo_data:/data/db
+  #   networks:
+  #     - backend  
+  #   restart: unless-stopped  
 
 
 volumes:
