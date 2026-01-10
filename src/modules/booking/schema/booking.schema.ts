@@ -27,8 +27,8 @@ export class Booking extends Document {
    @Prop({ required: true })
    currency: string;
 
-   @Prop({ required: true })
-   expiresAt: Date;
+   @Prop({ type: Date, default: null })
+   expiresAt?: Date;
 
    @Prop()
    confirmedAt?: Date;

@@ -10,7 +10,6 @@ import { UpdateEventDTO } from "./dto/update-event.dto";
 import { InjectQueue } from "@nestjs/bullmq";
 import { QUEUES } from "src/queue/queue.constants";
 import { Queue } from "bullmq";
-import { dot } from "node:test/reporters";
 
 
 @Injectable()

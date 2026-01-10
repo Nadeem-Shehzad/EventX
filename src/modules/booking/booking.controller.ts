@@ -4,6 +4,7 @@ import { CreateBookingDTO } from "./dto/create-booking.dto";
 import { JwtAuthGuard } from "src/common/guards/jwt-auth.guard";
 import { RoleCheckGuard } from "src/common/guards/role.guard";
 import { Roles } from "src/common/decorators/user-roles";
+import { GetUserID } from "src/common/decorators/used-id";
 
 
 @Controller({ path: 'bookings', version: '1' })
@@ -14,7 +15,7 @@ export class BookingController {
    @Roles('user')
    @Post('create')
    @HttpCode(HttpStatus.CREATED)
-   createBooking(@Body() dto: CreateBookingDTO) {
-      return this.service.createBooking();
+   createBooking(@GetUserID() userId: string, @Body() dto: CreateBookingDTO) {
+      return this.service.createBooking(userId, dto);
    }
 }
