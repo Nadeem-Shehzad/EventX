@@ -10,7 +10,7 @@ import { createEventTestingModule } from "./module.factories";
 import { Readable } from 'stream';
 
 import { BadRequestException } from '@nestjs/common';
-import { BannerImageDTO, CreateEventDTO } from "../../dto/create-event.dto";
+import { BannerImageDTO, CreateEventDTO, TicketTypeDto } from "../../dto/create-event.dto";
 
 
 
@@ -82,7 +82,8 @@ describe('EventController - addEvent', () => {
       bannerImage: new BannerImageDTO,
       status: EventStatus.DRAFT,
       visibility: EventVisibility.PUBLIC,
-      registrationDeadline: new Date()
+      registrationDeadline: new Date(),
+      ticketTypes: [new TicketTypeDto()]
    };
 
    const createdEventResponse = {
@@ -106,15 +107,9 @@ describe('EventController - addEvent', () => {
    it('should create event with banner image', async () => {
       const userId = 'user_123';
 
-      const result = await controller.addEvent(userId, mockEventDTO, mockFile);
+      const result = await controller.addEvent(userId, mockEventDTO);
 
-      expect(service.createEvent).toHaveBeenCalledWith(userId, {
-         ...mockEventDTO,
-         bannerImage: {
-            url: mockFile.path,
-            publicId: mockFile.filename,
-         },
-      });
+      expect(service.createEvent).toHaveBeenCalledWith(userId, mockEventDTO);
       //expect(result).toEqual(createdEventResponse);
    });
 });
@@ -154,11 +149,6 @@ describe('EventController - Update Events', () => {
       registeredCount: 18250,
 
       isPaid: true,
-      priceRange: {
-         min: 5000,
-         max: 25000,
-         currency: "PKR"
-      }
    }];
 
    beforeEach(async () => {
@@ -221,11 +211,6 @@ describe('EventController - Get Events', () => {
       registeredCount: 18250,
 
       isPaid: true,
-      priceRange: {
-         min: 5000,
-         max: 25000,
-         currency: "PKR"
-      }
    }];
 
    beforeEach(async () => {
@@ -290,11 +275,6 @@ describe('EventController - Get Events By Filters', () => {
       registeredCount: 18250,
 
       isPaid: true,
-      priceRange: {
-         min: 5000,
-         max: 25000,
-         currency: "PKR"
-      }
    }];
 
    beforeEach(async () => {
@@ -362,12 +342,7 @@ describe('EventController - Get Free Events', () => {
       capacity: 30000,
       registeredCount: 18250,
 
-      isPaid: true,
-      priceRange: {
-         min: 5000,
-         max: 25000,
-         currency: "PKR"
-      }
+      isPaid: true
    }];
 
    beforeEach(async () => {
@@ -432,12 +407,7 @@ describe('EventController - Get Paid Events', () => {
       capacity: 30000,
       registeredCount: 18250,
 
-      isPaid: true,
-      priceRange: {
-         min: 5000,
-         max: 25000,
-         currency: "PKR"
-      }
+      isPaid: true
    }];
 
    beforeEach(async () => {
@@ -502,12 +472,7 @@ describe('EventController - Get Oragnizer Events', () => {
       capacity: 30000,
       registeredCount: 18250,
 
-      isPaid: true,
-      priceRange: {
-         min: 5000,
-         max: 25000,
-         currency: "PKR"
-      }
+      isPaid: true
    }];
 
    beforeEach(async () => {
@@ -571,12 +536,7 @@ describe('EventController - Get Oragnizer Own Events', () => {
       capacity: 30000,
       registeredCount: 18250,
 
-      isPaid: true,
-      priceRange: {
-         min: 5000,
-         max: 25000,
-         currency: "PKR"
-      }
+      isPaid: true
    }];
 
    beforeEach(async () => {
@@ -640,12 +600,7 @@ describe('EventController - Get Events By Status', () => {
       capacity: 30000,
       registeredCount: 18250,
 
-      isPaid: true,
-      priceRange: {
-         min: 5000,
-         max: 25000,
-         currency: "PKR"
-      }
+      isPaid: true
    }];
 
    beforeEach(async () => {
@@ -741,12 +696,7 @@ describe('EventController - Get Publish Event', () => {
       capacity: 30000,
       registeredCount: 18250,
 
-      isPaid: true,
-      priceRange: {
-         min: 5000,
-         max: 25000,
-         currency: "PKR"
-      }
+      isPaid: true
    }];
 
    beforeEach(async () => {

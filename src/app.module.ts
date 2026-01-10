@@ -52,9 +52,9 @@ import { BookingModule } from './modules/booking/booking.module';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         uri: config.get<string>('MONGO_URI'),
-        serverSelectionTimeoutMS: 5000, // ⏱️ how long to wait to find a Mongo server
+        serverSelectionTimeoutMS: 30000, // ⏱️ how long to wait to find a Mongo server
         socketTimeoutMS: DB_QUERY_TIMEOUTS.defaultSocketTimeoutMS,  // ⏱️ inactivity timeout for queries
-        connectTimeoutMS: 10000,        // ⏱️ initial connection timeout
+        connectTimeoutMS: 20000,        // ⏱️ initial connection timeout
       })
     }),
 

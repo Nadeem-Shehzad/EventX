@@ -1,34 +1,146 @@
-import { Injectable, Logger } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model, PipelineStage, Types } from "mongoose";
-import { EventDocument } from "./event.schema";
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { InjectConnection, InjectModel } from "@nestjs/mongoose";
+import { Connection, Model, PipelineStage, Types } from "mongoose";
+import { EventDocument } from "./schema/event.schema";
 import { MongoPerformanceHelper } from "src/common/helpers/db-performance-checker";
 import { EventType } from "./enums/event.enums";
 import { UpdateEventDTO } from "./dto/update-event.dto";
+import { TicketTypeDocument } from "./schema/ticket-type.schema";
+import { CreateEventDTO } from "./dto/create-event.dto";
 
 
 @Injectable()
 export class EventRespository {
 
-   constructor(@InjectModel('Event') private eventModel: Model<EventDocument>) { }
+   constructor(
+      @InjectConnection() private readonly connection: Connection,
+      @InjectModel('Event') private eventModel: Model<EventDocument>,
+      @InjectModel('TicketType') private ticketModel: Model<TicketTypeDocument>
+   ) { }
 
    private readonly logger = new Logger(EventRespository.name);
 
 
-   async create(data: any): Promise<EventDocument | null> {
-      return await this.eventModel.create(data);
+   async create(data: any, dto: CreateEventDTO) {
+      const session = await this.connection.startSession();
+      session.startTransaction();
+
+      try {
+         const event = await this.eventModel.create([data], { session, ordered: true });
+
+         const ticketTypesData = dto.ticketTypes.map(tt => ({
+            ...tt,
+            eventId: event[0]._id,
+            availableQuantity: tt.totalQuantity,
+            reservedQuantity: 0,
+            soldQuantity: 0,
+         }));
+
+         await this.ticketModel.create(ticketTypesData, { session, ordered: true });
+
+         await session.commitTransaction();
+
+         //this.logger.log('Transaction Works Fine');
+         return event[0];
+
+      } catch (error) {
+         await session.abortTransaction();
+         console.error('Transaction failed for createEvent', { error });
+         throw error;
+
+      } finally {
+         session.endSession();
+      }
    }
 
 
    async updateEvent(id: string, dataToUpdate: UpdateEventDTO) {
+      const session = await this.connection.startSession();
+      session.startTransaction();
 
-      const result = await this.eventModel.findOneAndUpdate(
-         { _id: id },
-         { $set: dataToUpdate },
-         { new: true }
-      );
+      try {
 
-      return result;
+         if (dataToUpdate.ticketTypes?.length) {
+            for (const tt of dataToUpdate.ticketTypes) {
+               if (tt._id) {
+
+                  const existingTicket = await this.ticketModel.findById(tt._id).session(session);
+                  if (!existingTicket) throw new Error(`TicketType not found: ${tt._id}`);
+
+                  const sold = existingTicket.soldQuantity;
+                  const reserved = existingTicket.reservedQuantity;
+
+                  if (tt.totalQuantity !== undefined && tt.totalQuantity < sold + reserved) {
+                     throw new Error('Total quantity cannot be less than sold + reserved');
+                  }
+
+                  if (tt.name && tt.name !== existingTicket.name) {
+                     const conflict = await this.ticketModel.findOne({
+                        eventId: id,
+                        name: tt.name,
+                        _id: { $ne: tt._id }
+                     }).session(session);
+
+                     if (conflict) throw new Error(`TicketType name "${tt.name}" already exists for this event`);
+                  }
+
+                  await this.ticketModel.updateOne(
+                     { _id: tt._id },
+                     {
+                        $set: {
+                           ...tt,
+                           availableQuantity:
+                              tt.totalQuantity !== undefined
+                                 ? tt.totalQuantity - sold - reserved
+                                 : existingTicket.availableQuantity,
+                        },
+                     },
+                     { session }
+                  );
+               } else {
+
+                  const conflict = await this.ticketModel.findOne({
+                     eventId: new Types.ObjectId(id),
+                     name: tt.name,
+                  }).session(session);
+
+                  if (conflict) {
+                     throw new Error(`TicketType name "${tt.name}" already exists for this event`);
+                  }
+
+                  const ticket = new this.ticketModel({
+                     ...tt,
+                     eventId: new Types.ObjectId(id),
+                     availableQuantity: tt.totalQuantity,
+                     reservedQuantity: 0,
+                     soldQuantity: 0,
+                  });
+
+                  await ticket.save({ session });
+               }
+            }
+         }
+
+         const event = await this.eventModel.findOneAndUpdate(
+            { _id: id },
+            { $set: dataToUpdate },
+            { new: true, session }
+         );
+
+         if (!event) {
+            throw new Error('Event not found');
+         }
+
+         await session.commitTransaction();
+
+         return event;
+
+      } catch (error) {
+         await session.abortTransaction();
+         throw error;
+      } finally {
+         session.endSession();
+      }
    }
 
 
@@ -47,25 +159,50 @@ export class EventRespository {
       const skip = (page - 1) * limit;
 
       const pipeline: PipelineStage[] = [
+
          {
             $match: {
                status: 'published',
-               isDeleted: false
-            }
+               isDeleted: false,
+            },
          },
+
          { $sort: { startDateTime: 1 } },
+
          {
             $facet: {
                events: [
                   { $skip: skip },
                   { $limit: limit },
+
                   {
-                     $project: publicResponseData
-                  }
+                     $lookup: {
+                        from: 'tickettypes',          // MongoDB collection name
+                        localField: '_id',            // Event _id
+                        foreignField: 'eventId',      // TicketType.eventId
+                        as: 'ticketTypes',            // result array field
+                     },
+                  },
+
+                  {
+                     $project: {
+                        ...publicResponseData,
+                        ticketTypes: {
+                           name: 1,
+                           totalQuantity: 1,
+                           soldQuantity: 1,
+                           reservedQuantity: 1,
+                           price: 1,
+                           currency: 1,
+                           isPaidEvent: 1,
+                        },
+                     },
+                  },
                ],
-               totalCount: [{ $count: 'count' }]
-            }
-         }
+
+               totalCount: [{ $count: 'count' }],
+            },
+         },
       ];
 
       const result = await this.eventModel.aggregate(pipeline);
@@ -87,8 +224,28 @@ export class EventRespository {
                   { $skip: options.skip },
                   { $limit: options.limit },
                   {
-                     $project: publicResponseData
-                  }
+                     $lookup: {
+                        from: 'tickettypes',          // MongoDB collection name
+                        localField: '_id',            // Event _id
+                        foreignField: 'eventId',      // TicketType.eventId
+                        as: 'ticketTypes',            // result array field
+                     },
+                  },
+
+                  {
+                     $project: {
+                        ...publicResponseData,
+                        ticketTypes: {
+                           name: 1,
+                           totalQuantity: 1,
+                           soldQuantity: 1,
+                           reservedQuantity: 1,
+                           price: 1,
+                           currency: 1,
+                           isPaidEvent: 1,
+                        },
+                     },
+                  },
                ],
                totalCount: [
                   { $count: 'count' }
@@ -131,7 +288,29 @@ export class EventRespository {
                events: [
                   { $skip: skip },
                   { $limit: limit },
-                  { $project: publicResponseData }
+                  {
+                     $lookup: {
+                        from: 'tickettypes',          // MongoDB collection name
+                        localField: '_id',            // Event _id
+                        foreignField: 'eventId',      // TicketType.eventId
+                        as: 'ticketTypes',            // result array field
+                     },
+                  },
+
+                  {
+                     $project: {
+                        ...publicResponseData,
+                        ticketTypes: {
+                           name: 1,
+                           totalQuantity: 1,
+                           soldQuantity: 1,
+                           reservedQuantity: 1,
+                           price: 1,
+                           currency: 1,
+                           isPaidEvent: 1,
+                        },
+                     },
+                  },
                ],
                totalCount: [{ $count: 'count' }],
             },
@@ -168,8 +347,28 @@ export class EventRespository {
                   { $skip: skip },
                   { $limit: limit },
                   {
-                     $project: publicResponseData
-                  }
+                     $lookup: {
+                        from: 'tickettypes',          // MongoDB collection name
+                        localField: '_id',            // Event _id
+                        foreignField: 'eventId',      // TicketType.eventId
+                        as: 'ticketTypes',            // result array field
+                     },
+                  },
+
+                  {
+                     $project: {
+                        ...publicResponseData,
+                        ticketTypes: {
+                           name: 1,
+                           totalQuantity: 1,
+                           soldQuantity: 1,
+                           reservedQuantity: 1,
+                           price: 1,
+                           currency: 1,
+                           isPaidEvent: 1,
+                        },
+                     },
+                  },
                ],
                totalCount: [{ $count: 'count' }],
             },
@@ -317,8 +516,28 @@ export class EventRespository {
                   { $skip: skip },
                   { $limit: limit },
                   {
-                     $project: publicResponseData
-                  }
+                     $lookup: {
+                        from: 'tickettypes',          // MongoDB collection name
+                        localField: '_id',            // Event _id
+                        foreignField: 'eventId',      // TicketType.eventId
+                        as: 'ticketTypes',            // result array field
+                     },
+                  },
+
+                  {
+                     $project: {
+                        ...publicResponseData,
+                        ticketTypes: {
+                           name: 1,
+                           totalQuantity: 1,
+                           soldQuantity: 1,
+                           reservedQuantity: 1,
+                           price: 1,
+                           currency: 1,
+                           isPaidEvent: 1,
+                        },
+                     },
+                  },
                ],
                totalCount: [
                   {
@@ -355,8 +574,28 @@ export class EventRespository {
                   { $skip: skip },
                   { $limit: limit },
                   {
-                     $project: publicResponseData
-                  }
+                     $lookup: {
+                        from: 'tickettypes',          // MongoDB collection name
+                        localField: '_id',            // Event _id
+                        foreignField: 'eventId',      // TicketType.eventId
+                        as: 'ticketTypes',            // result array field
+                     },
+                  },
+
+                  {
+                     $project: {
+                        ...publicResponseData,
+                        ticketTypes: {
+                           name: 1,
+                           totalQuantity: 1,
+                           soldQuantity: 1,
+                           reservedQuantity: 1,
+                           price: 1,
+                           currency: 1,
+                           isPaidEvent: 1,
+                        },
+                     },
+                  },
                ],
                totalCount: [
                   {
@@ -517,8 +756,28 @@ export class EventRespository {
                   { $skip: skip },
                   { $limit: limit },
                   {
-                     $project: publicResponseData
-                  }
+                     $lookup: {
+                        from: 'tickettypes',          // MongoDB collection name
+                        localField: '_id',            // Event _id
+                        foreignField: 'eventId',      // TicketType.eventId
+                        as: 'ticketTypes',            // result array field
+                     },
+                  },
+
+                  {
+                     $project: {
+                        ...publicResponseData,
+                        ticketTypes: {
+                           name: 1,
+                           totalQuantity: 1,
+                           soldQuantity: 1,
+                           reservedQuantity: 1,
+                           price: 1,
+                           currency: 1,
+                           isPaidEvent: 1,
+                        },
+                     },
+                  },
                ],
                totalCount: [
                   {
@@ -586,13 +845,35 @@ export class EventRespository {
 
 
    async deleteEventPermanently(eventId: string, organizerId: string) {
-      return await this.eventModel.findOneAndDelete(
-         {
-            _id: eventId,
-            organizerId: organizerId,
-            isDeleted: true
-         }
-      );
+      const session = await this.connection.startSession();
+      session.startTransaction();
+
+      try {
+
+         const event = await this.eventModel.findOne({ _id: eventId, organizerId, isDeleted: true }).session(session);
+         if (!event) throw new NotFoundException('Event not found or not soft-deleted');
+
+         await this.ticketModel.deleteMany({ eventId: new Types.ObjectId(eventId) }).session(session);
+
+         const result = await this.eventModel.findOneAndDelete(
+            {
+               _id: eventId,
+               organizerId: organizerId,
+               isDeleted: true
+            }
+         ).session(session);
+
+         await session.commitTransaction();
+
+         return result;
+
+      } catch (error) {
+         await session.abortTransaction();
+         throw error;
+
+      } finally {
+         session.endSession();
+      }
    }
 
 
@@ -656,13 +937,7 @@ export const publicResponseData = {
    capacity: 1,
    registeredCount: 1,
    isPaid: 1,
-   priceRange: {
-      $cond: [
-         { $eq: ['$isPaid', true] },
-         '$priceRange',
-         '$$REMOVE'
-      ]
-   }
+   //ticketTypes: 1
 }
 
 

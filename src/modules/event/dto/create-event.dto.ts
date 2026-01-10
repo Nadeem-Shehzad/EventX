@@ -30,6 +30,11 @@ export class CreateEventDTO {
    @Transform(({ value }) => value?.trim())
    title: string
 
+   @IsOptional()
+   @IsString()
+   @ToLowerCase()
+   slug?: string
+
    @IsNotEmpty()
    @IsString()
    @MinLength(15)
@@ -101,8 +106,6 @@ export class CreateEventDTO {
             throw new Error('Invalid JSON format');
          }
       }
-
-      console.log('RAW LOCATION VALUE:', value);
       return value;
    })
    @ValidateNested()
@@ -129,20 +132,28 @@ export class CreateEventDTO {
    @IsBoolean()
    isPaid: boolean
 
-   @IsOptional()
-   @Transform(({ value }) => {
-      if (!value) return undefined;
+   @IsArray()
+   @ValidateNested({ each: true })
+   @Type(() => TicketTypeDto)
+   ticketTypes: TicketTypeDto[];
+}
 
-      if (typeof value === 'string') {
-         try {
-            return JSON.parse(value);
-         } catch (e) {
-            throw new Error('Invalid JSON format');
-         }
-      }
-      return value;
-   })
-   @ValidateNested()
-   @Type(() => PriceRangeDTO)
-   priceRange?: PriceRangeDTO
+
+export class TicketTypeDto {
+   @IsString()
+   name: string;
+
+   @IsNumber()
+   @Min(0)
+   totalQuantity: number;
+
+   @IsNumber()
+   @Min(0)
+   price: number;
+
+   @IsBoolean()
+   isPaidEvent: boolean;
+
+   @IsString()
+   currency: string;
 }

@@ -25,7 +25,7 @@ import { EventOwnerShipGuard } from "./guards/ownership.guard";
 export class EventController {
 
    constructor(private readonly eventService: EventService) { }
-   
+
    private readonly logger = new Logger(EventService.name);
 
 
@@ -34,25 +34,10 @@ export class EventController {
    @Roles('organizer')
    @Post('')
    @HttpCode(HttpStatus.CREATED)
-   @UseInterceptors(
-      FileInterceptor('bannerImage', {
-         storage: getCloudinaryStorage(),
-         limits: { fileSize: 5 * 1024 * 1024 },
-      })
-   )
    addEvent(
       @GetUserID() id: string,
-      @Body() data: CreateEventDTO,
-      @UploadedFile() file?: Express.Multer.File
+      @Body() data: CreateEventDTO
    ) {
-      if (!file) throw new BadRequestException('Image is required');
-
-      const imageData = {
-         url: file.path,
-         publicId: file.filename
-      };
-
-      data.bannerImage = imageData;
       return this.eventService.createEvent(id, data);
    }
 

@@ -2,16 +2,20 @@ import { forwardRef, Module } from "@nestjs/common";
 import { EventController } from "./event.controller";
 import { EventService } from "./event.service";
 import { MongooseModule } from "@nestjs/mongoose";
-import { EventSchema } from "./event.schema";
+import { EventSchema } from "./schema/event.schema";
 import { EventRespository } from "./event.repository";
 import { CommonModule } from "src/common/common.module";
 import { MyRedisModule } from "src/redis/redis.module";
 import { ImageQueueModule } from "src/queue/event-image/image.queue.module";
 import { EventOwnerShipGuard } from "./guards/ownership.guard";
+import { TicketTypeSchema } from "./schema/ticket-type.schema";
 
 @Module({
    imports: [
-      MongooseModule.forFeature([{ name: 'Event', schema: EventSchema }]),
+      MongooseModule.forFeature([
+         { name: 'Event', schema: EventSchema },
+         { name: 'TicketType', schema: TicketTypeSchema }
+      ]),
       forwardRef(() => CommonModule),
       ImageQueueModule,
       MyRedisModule
