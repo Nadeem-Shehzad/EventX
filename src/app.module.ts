@@ -8,6 +8,7 @@ import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 import authConfig from './config/auth.config';
 import cloudinaryConfig from './config/cloudinary.config';
+import stripeConfig from './config/stripe.config'
 import { validationSchema } from './config/validation.schema';
 import { CommonModule } from './common/common.module';
 import { MyRedisModule } from './redis/redis.module';
@@ -26,7 +27,7 @@ import { BookingModule } from './modules/booking/booking.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig, authConfig, databaseConfig, redisConfig, cloudinaryConfig],
+      load: [appConfig, authConfig, databaseConfig, redisConfig, cloudinaryConfig, stripeConfig],
       validationSchema
     }),
 

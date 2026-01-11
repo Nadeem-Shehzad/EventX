@@ -10,6 +10,7 @@ import compression from 'compression';
 import { corsConfig } from './config/cors.config';
 import { Logger } from 'nestjs-pino';
 import { VersioningType } from '@nestjs/common';
+import * as bodyParser from 'body-parser';
 
 
 async function bootstrap() {
@@ -22,9 +23,14 @@ async function bootstrap() {
    app.enableCors(corsConfig());
    app.use(compression());
 
+   // app.use(
+   //    '/payments/webhook',
+   //    bodyParser.raw({ type: 'application/json' }),
+   // );
+
    app.enableVersioning({
       type: VersioningType.URI,
-      defaultVersion: '1', 
+      defaultVersion: '1',
    });
 
    app.useGlobalFilters(new GlobalExceptionFilter());

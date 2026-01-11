@@ -25,4 +25,7 @@ export const validationSchema = Joi.object({
    APP_URL: Joi.string().required(),
    NODE_ENV: Joi.string().required(),
    FRONTEND_URL: Joi.string().required(),
+
+   STRIPE_SECRET_KEY: Joi.string().required(),
+   //STRIPE_WEBHOOK_SECRET: Joi.string().required()
 });
