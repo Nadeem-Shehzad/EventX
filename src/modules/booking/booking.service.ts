@@ -9,6 +9,9 @@ import { PaymentService } from "src/payment/payment.service";
 import { BookingQueryDTO } from "./dto/booking-query.dto";
 import { plainToInstance } from "class-transformer";
 import { BookingResponseDTO } from "./dto/booking.response.dto";
+import { RedisService } from "src/redis/redis.service";
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { PaymentStatus } from "./enum/payment-status.enum";
 
 
 @Injectable()
@@ -19,7 +22,9 @@ export class BookingService {
       @InjectModel('TicketType') private ticketModel: Model<TicketTypeDocument>,
       private readonly bookingRepo: BookingRepository,
       @Inject(forwardRef(() => PaymentService))
-      private readonly paymentService: PaymentService
+      private readonly paymentService: PaymentService,
+      private readonly redis: RedisService,
+      private readonly eventEmitter: EventEmitter2
    ) { }
 
 
@@ -94,9 +99,18 @@ export class BookingService {
                amount: bookingObj.amount,
                currency: bookingObj.currency
             });
+
+            booking.paymentIntentId = paymentData.paymentIntentId;
+            await booking.save({ session });
          }
 
          await session.commitTransaction();
+
+         this.eventEmitter.emit('booking.created', {
+            bookingId: bookingObj._id.toString(),
+            eventId: bookingObj.eventId.toString(),
+            userId
+         });
 
          return {
             bookingId: bookingObj._id.toString(),
@@ -121,13 +135,28 @@ export class BookingService {
    }
 
 
-   async getAllBookings() {
-     
-      const bookings = await this.bookingRepo.allBookings();
+   async getAllBookings(page = 1, limit = 10) {
 
-      const finalResult = plainToInstance(BookingResponseDTO, bookings, {
+      const cacheKey = `all-bookings:${page}-${limit}`;
+
+      const cachedData = await this.redis.get(cacheKey);
+      if (cachedData) {
+         return JSON.parse(cachedData);
+      }
+
+      const { bookings, meta } = await this.bookingRepo.allBookings(page, limit);
+
+      const result = plainToInstance(BookingResponseDTO, bookings, {
          excludeExtraneousValues: true
       });
+
+      const finalResult = { bookings: result, meta };
+
+      await this.redis.set(
+         cacheKey,
+         JSON.stringify(finalResult),
+         60
+      );
 
       return finalResult;
    }
@@ -162,25 +191,42 @@ export class BookingService {
    }
 
 
-   async getEventBookings(eventId: string) {
+   async getEventBookings(eventId: string, page: number, limit: number) {
 
-      const bookings = await this.bookingRepo.findBookingsByEventId(eventId);
+      const chacheKey = `event-bookings:${eventId}-${page}-${limit}`;
 
-      const finalResult = plainToInstance(BookingResponseDTO, bookings, {
+      const chacheData = await this.redis.get(chacheKey);
+      if (chacheData) {
+         return JSON.parse(chacheData);
+      }
+
+      const { bookings, meta } = await this.bookingRepo.findBookingsByEventId(eventId, page, limit);
+
+      const result = plainToInstance(BookingResponseDTO, bookings, {
          excludeExtraneousValues: true
       });
+
+      const finalResult = { bookings: result, meta };
+
+      await this.redis.set(
+         chacheKey,
+         JSON.stringify(finalResult),
+         60
+      )
 
       return finalResult;
    }
 
 
-   async getUserBookings(userId: string) {
+   async getUserBookings(userId: string, page: number, limit: number) {
 
-      const bookings = await this.bookingRepo.findBookingsByUserId(userId);
+      const { bookings, meta } = await this.bookingRepo.findBookingsByUserId(userId, page, limit);
 
-      const finalResult = plainToInstance(BookingResponseDTO, bookings, {
+      const result = plainToInstance(BookingResponseDTO, bookings, {
          excludeExtraneousValues: true
       });
+
+      const finalResult = { bookings: result, meta };
 
       return finalResult;
    }
@@ -199,7 +245,12 @@ export class BookingService {
             throw new BadRequestException('Booking already processed');
          }
 
-         await this.bookingRepo.updateStatus(bookingId, BookingStatus.CONFIRMED, session);
+         await this.bookingRepo.updateStatus(
+            bookingId,
+            BookingStatus.CONFIRMED,
+            PaymentStatus.SUCCEEDED,
+            session
+         );
 
          await this.ticketModel.updateOne(
             { _id: booking.ticketTypeId },
@@ -213,6 +264,12 @@ export class BookingService {
          );
 
          await session.commitTransaction();
+
+         this.eventEmitter.emit('booking.updated', {
+            bookingId: booking._id.toString(),
+            eventId: booking.eventId.toString(),
+            userId: booking.userId.toString()
+         });
 
          return true;
 
@@ -235,7 +292,7 @@ export class BookingService {
          if (!booking) throw new NotFoundException('Booking Not Found!');
 
          if (booking.status === BookingStatus.PENDING) {
-            await this.bookingRepo.updateStatus(bookingId, BookingStatus.CANCELLED, session);
+            await this.bookingRepo.updateStatus(bookingId, BookingStatus.CANCELLED, PaymentStatus.FAILED, session);
 
             await this.ticketModel.updateOne(
                { _id: booking.ticketTypeId },
@@ -251,6 +308,12 @@ export class BookingService {
 
          await session.commitTransaction();
 
+         this.eventEmitter.emit('booking.updated', {
+            bookingId: booking._id.toString(),
+            eventId: booking.eventId.toString(),
+            userId: booking.userId.toString()
+         });
+
          return true;
 
       } catch (error) {
@@ -261,4 +324,59 @@ export class BookingService {
       }
    }
 
+
+   async markBookingRefunded(paymentIntentId: string) {
+      const session = await this.connection.startSession();
+      session.startTransaction();
+
+      try {
+
+         const booking = await this.bookingRepo.findBookingByPaymentIntentId(paymentIntentId, session);
+
+         if (!booking) return true;
+         if (booking.paymentStatus === PaymentStatus.REFUNDED) return true;
+         if (booking.status !== BookingStatus.CONFIRMED) return true;
+
+         await this.bookingRepo.updateStatus(
+            booking._id.toString(),
+            BookingStatus.CANCELLED,
+            PaymentStatus.REFUNDED,
+            session
+         );
+
+         await this.ticketModel.updateOne(
+            { _id: booking.ticketTypeId },
+            {
+               $inc: {
+                  availableQuantity: booking.quantity,
+                  soldQuantity: -booking.quantity
+               }
+            },
+            { session }
+         );
+
+         await session.commitTransaction();
+
+         this.eventEmitter.emit('booking.updated', {
+            bookingId: booking._id.toString(),
+            eventId: booking.eventId.toString(),
+            userId: booking.userId.toString()
+         });
+
+         return true;
+
+      } catch (error) {
+         await session.abortTransaction();
+         throw error;
+
+      } finally {
+         session.endSession();
+      }
+   }
+
+
+   // public 
+   async getBookingById(id: string) {
+      return await this.bookingRepo.findBookingById(id);
+   }
 }

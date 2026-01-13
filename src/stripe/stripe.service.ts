@@ -18,7 +18,7 @@ export class StripeService {
       metadata?: Record<string, string>;
    }) {
 
-      return this.stripe.paymentIntents.create({
+      return await this.stripe.paymentIntents.create({
          amount: params.amount,
          currency: params.currency,
          payment_method_types: ['card'],
@@ -27,28 +27,23 @@ export class StripeService {
    }
 
 
-   // 2️⃣ Backend-only test: confirm PaymentIntent using dummy card
    async confirmTestPayment(paymentIntentId: string) {
-      // 1️⃣ Create test payment method
-      const paymentMethod = await this.stripe.paymentMethods.create({
-         type: 'card',
-         card: {
-            number: '4242424242424242',
-            exp_month: 12,
-            exp_year: 2030,
-            cvc: '123',
-         },
-      });
-
-      // 2️⃣ Confirm payment intent
+      // Use Stripe test token instead of raw card details
       const paymentIntent = await this.stripe.paymentIntents.confirm(
          paymentIntentId,
          {
-            payment_method: paymentMethod.id,
+            payment_method: 'pm_card_visa', // ✅ Stripe test payment method
          },
       );
 
       return paymentIntent;
+   }
+
+
+   async refundPayment(paymentIntentId: string) {
+      return await this.stripe.refunds.create({
+         payment_intent: paymentIntentId
+      });
    }
 
 
