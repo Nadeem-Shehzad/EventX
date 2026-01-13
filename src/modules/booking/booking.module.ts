@@ -7,6 +7,8 @@ import { BookingRepository } from "./repository/booking.repository";
 import { CommonModule } from "src/common/common.module";
 import { EventModule } from "../event/event.module";
 import { PaymentModule } from "src/payment/payment.module";
+import { MyRedisModule } from "src/redis/redis.module";
+import { BookingCacheListener } from "./cache/booking-cache-listener";
 
 
 @Module({
@@ -14,10 +16,11 @@ import { PaymentModule } from "src/payment/payment.module";
       MongooseModule.forFeature([{ name: 'Booking', schema: BookingSchema }]),
       EventModule,
       forwardRef(() => PaymentModule),
-      CommonModule
+      CommonModule,
+      MyRedisModule
    ],
    controllers: [BookingController],
-   providers: [BookingService, BookingRepository],
+   providers: [BookingService, BookingRepository, BookingCacheListener],
    exports: [BookingService]
 })
 

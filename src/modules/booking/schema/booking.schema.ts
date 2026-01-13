@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { BookingStatus } from '../enum/booking-status.enum';
+import { PaymentStatus } from '../enum/payment-status.enum';
 
 export type BookingDocument = Booking & Document;
 
@@ -27,6 +28,13 @@ export class Booking extends Document {
    @Prop({ required: true })
    currency: string;
 
+   @Prop({ enum: PaymentStatus, default: PaymentStatus.PENDING })
+   paymentStatus: PaymentStatus;
+
+   @Prop()
+   paymentIntentId?: string;
+
+
    @Prop({ type: Date, default: null })
    expiresAt?: Date;
 
@@ -40,5 +48,8 @@ export const BookingSchema = SchemaFactory.createForClass(Booking);
 BookingSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 // Query indexes
-BookingSchema.index({ userId: 1, createdAt: -1 });
+BookingSchema.index({ userId: 1, createdAt: -1 }, { partialFilterExpression: { status: "CONFIRMED" } });
+BookingSchema.index({ userId: 1, status: 1, createdAt: -1 });
+BookingSchema.index({ eventId: 1, createdAt: -1 });
+BookingSchema.index({ status: 1, createdAt: -1 });
 BookingSchema.index({ eventId: 1, status: 1 });

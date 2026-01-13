@@ -23,4 +23,11 @@ export class RedisService {
    pipeline() {
       return this.redis.pipeline();
    }
+
+   async delPattern(pattern: string) {
+      const allKeys = await this.redis.keys(pattern);
+      if (allKeys.length > 0) {
+         await this.redis.del(allKeys);
+      }
+   }
 }

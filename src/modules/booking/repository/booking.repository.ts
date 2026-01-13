@@ -3,9 +3,12 @@ import { InjectModel } from "@nestjs/mongoose";
 import { ClientSession, Model, PipelineStage, Types } from "mongoose";
 import { BookingDocument } from "../schema/booking.schema";
 import { BookingStatus } from "../enum/booking-status.enum";
+import { Pipeline } from "ioredis";
+import { PaymentStatus } from "../enum/payment-status.enum";
 
 @Injectable()
 export class BookingRepository {
+
    constructor(@InjectModel('Booking') private bookingModel: Model<BookingDocument>) { }
 
    async createBooking(data: Partial<BookingDocument>, session: ClientSession) {
@@ -14,9 +17,40 @@ export class BookingRepository {
    }
 
 
-   async allBookings() {
-      const booking = await this.bookingModel.find({});
-      return booking;
+   async allBookings(page: number, limit: number) {
+
+      const skip = (page - 1) * limit;
+
+      const pipeline: PipelineStage[] = [
+         { $sort: { createdAt: -1 } },
+         {
+            $facet: {
+               data: [
+                  { $skip: skip },
+                  { $limit: limit },
+                  { $project: publicResponseData }
+               ],
+               totalBookings: [
+                  { $count: 'count' }
+               ]
+            }
+         }
+      ];
+
+      const result = await this.bookingModel.aggregate(pipeline);
+
+      const bookings = result[0].data ?? [];
+      const total = result[0].totalBookings[0]?.count || 0;
+
+      return {
+         bookings,
+         meta: {
+            total,
+            page: Math.floor(skip / limit) + 1,
+            limit: limit,
+            totalPages: Math.ceil(total / limit)
+         }
+      };
    }
 
 
@@ -70,33 +104,104 @@ export class BookingRepository {
    }
 
 
-   async findBookingsByEventId(eventId: string) {
+   async findBookingByPaymentIntentId(paymentIntentId: string, session: ClientSession) {
+      const booking = await this.bookingModel.findOne({ paymentIntentId, session });
+      return booking;
+   }
+
+
+   async findBookingsByEventId(eventId: string, page: number, limit: number) {
+      const skip = (page - 1) * limit;
       const objId = new Types.ObjectId(eventId);
-      const booking = await this.bookingModel.find({ eventId: objId });
-      return booking;
+
+      const pipeline: PipelineStage[] = [
+         { $match: { eventId: objId } },
+         { $sort: { createdAt: -1 } },
+         {
+            $facet: {
+               data: [
+                  { $skip: skip },
+                  { $limit: limit },
+                  { $project: publicResponseData }
+               ],
+               totalCounts: [
+                  { $count: 'count' }
+               ]
+            }
+         }
+      ];
+
+      const result = await this.bookingModel.aggregate(pipeline);
+
+      const bookings = result[0].data ?? [];
+      const total = result[0].totalCounts[0]?.count || 0;
+
+      return {
+         bookings,
+         meta: {
+            total,
+            page: Math.floor(skip / limit) + 1,
+            limit: limit,
+            totalPages: Math.ceil(total / limit)
+         }
+      };
    }
 
 
-   async findBookingsByUserId(userId: string) {
+   async findBookingsByUserId(userId: string, page: number, limit: number) {
       const objId = new Types.ObjectId(userId);
-      const booking = await this.bookingModel.find({ userId: objId });
-      return booking;
+      const skip = (page - 1) * limit;
+
+      const pipeline: PipelineStage[] = [
+         { $match: { userId: objId } },
+         { $sort: { createdAt: -1 } },
+         {
+            $facet: {
+               data: [
+                  { $skip: skip },
+                  { $limit: limit },
+                  { $project: publicResponseData }
+               ],
+               totalCounts: [
+                  { $count: 'count' }
+               ]
+            }
+         }
+      ];
+
+      const result = await this.bookingModel.aggregate(pipeline);
+
+      const bookings = result[0].data ?? [];
+      const total = result[0].totalCounts[0]?.count || 0;
+
+      return {
+         bookings,
+         meta: {
+            total,
+            page: Math.floor(skip / limit) + 1,
+            limit: limit,
+            totalPages: Math.ceil(total / limit)
+         }
+      };
    }
 
 
-   async updateStatus(bookingId: string, status: BookingStatus, session: ClientSession) {
+   async updateStatus(bookingId: string, status: BookingStatus, paymentStatus: PaymentStatus, session: ClientSession) {
       const booking = await this.bookingModel.findOneAndUpdate(
          { _id: bookingId },
          {
             $set: {
                status,
-               updatedAt: new Date()
+               paymentStatus,
+               updatedAt: new Date(),
+               expiresAt: null
             }
          },
          { new: true, session }
       );
       return booking;
    }
+
 }
 
 

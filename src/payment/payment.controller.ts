@@ -1,34 +1,59 @@
-import { Controller, Post, Req, Res, Headers } from '@nestjs/common';
+import {
+   Controller, Post, Req, Res,
+   Headers, Param, UseGuards,
+   HttpCode, HttpStatus
+} from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import type { Request, Response } from 'express';
 import Stripe from 'stripe';
-import { StripeService } from 'src/stripe/stripe.service';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { Throttle } from '@nestjs/throttler';
 
-@Controller('payments')
+
+@Controller({ path: 'payments', version: '1' })
 export class PaymentController {
 
-   constructor(
-      private readonly paymentService: PaymentService,
-      private readonly stripeService: StripeService
-   ) { }
+   constructor(private readonly paymentService: PaymentService) { }
 
 
-   // @Post('webhook')
-   // async stripeWebhook(
-   //    @Req() req: Request & { rawBody: Buffer },
-   //    @Res() res: Response,
-   //    @Headers('stripe-signature') signature: string,
-   // ) {
-   //    try {
-   //       const event = this.stripeService.constructEvent(
-   //          req.rawBody,
-   //          signature,
-   //       );
+   @Post('test-payment/:id')
+   async testPayment(@Param('id') paymentIntentId: string) {
+      return this.paymentService.testPayment(paymentIntentId);
+   }
 
-   //       await this.paymentService.handleStripeWebhook(event);
-   //       res.status(200).json({ received: true });
-   //    } catch (err) {
-   //       res.status(400).send(`Webhook Error: ${err.message}`);
-   //    }
-   // }
+
+   @UseGuards(JwtAuthGuard)
+   @Throttle({ default: { limit: 5, ttl: 60000 } })
+   @Post('refund-booking/:id')
+   @HttpCode(HttpStatus.OK)
+   refundPayment(@Param('id') bookingId: string) {
+      return this.paymentService.refundPayment(bookingId);
+   }
+
+
+   @Post('webhook')
+   async stripeWebhook(
+      @Req() req: Request & { rawBody: Buffer },
+      @Res() res: Response,
+      @Headers('stripe-signature') signature: string,
+   ) {
+      try {
+
+         // const event = this.stripeService.constructEvent(
+         //    req.rawBody,
+         //    signature,
+         // );
+
+         // await this.paymentService.handleStripeWebhook(event);
+
+         const event: Stripe.Event = req.body;
+
+         await this.paymentService.handleStripeWebhook(event);
+
+         res.status(200).json({ received: true });
+
+      } catch (err) {
+         res.status(400).send(`Webhook Error: ${err.message}`);
+      }
+   }
 }
