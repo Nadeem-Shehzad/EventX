@@ -4,7 +4,7 @@ import { ClientSession, Model, PipelineStage, Types } from "mongoose";
 import { BookingDocument } from "../schema/booking.schema";
 import { BookingStatus } from "../enum/booking-status.enum";
 import { Pipeline } from "ioredis";
-import { PaymentStatus } from "../enum/payment-status.enum";
+import { PaymentStatus } from "../../../constants/payment-status.enum";
 
 @Injectable()
 export class BookingRepository {
@@ -107,6 +107,19 @@ export class BookingRepository {
    async findBookingByPaymentIntentId(paymentIntentId: string, session: ClientSession) {
       const booking = await this.bookingModel.findOne({ paymentIntentId, session });
       return booking;
+   }
+
+
+   async findBookingsByEventIdAndPaymentStatus(eventId: string) {
+
+      const objId = new Types.ObjectId(eventId);
+      
+      const bookings = await this.bookingModel.find({
+         eventId: objId,
+         paymentStatus: PaymentStatus.SUCCEEDED
+      });
+
+      return bookings;
    }
 
 

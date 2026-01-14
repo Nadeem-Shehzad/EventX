@@ -26,8 +26,17 @@ export class PaymentController {
    @Throttle({ default: { limit: 5, ttl: 60000 } })
    @Post('refund-booking/:id')
    @HttpCode(HttpStatus.OK)
-   refundPayment(@Param('id') bookingId: string) {
-      return this.paymentService.refundPayment(bookingId);
+   refundBookingPayment(@Param('id') bookingId: string) {
+      return this.paymentService.refundBookingPayment(bookingId);
+   }
+
+
+   @UseGuards(JwtAuthGuard)
+   @Throttle({ default: { limit: 5, ttl: 60000 } })
+   @Post('refund-event/:id')
+   @HttpCode(HttpStatus.OK)
+   refundEventPayment(@Param('id') eventId: string) {
+      return this.paymentService.refundEventPayment(eventId);
    }
 
 

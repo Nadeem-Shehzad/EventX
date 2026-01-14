@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { BookingStatus } from '../enum/booking-status.enum';
-import { PaymentStatus } from '../enum/payment-status.enum';
+import { PaymentStatus } from '../../../constants/payment-status.enum';
 
 export type BookingDocument = Booking & Document;
 

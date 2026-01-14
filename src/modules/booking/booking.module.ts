@@ -8,19 +8,24 @@ import { CommonModule } from "src/common/common.module";
 import { EventModule } from "../event/event.module";
 import { PaymentModule } from "src/payment/payment.module";
 import { MyRedisModule } from "src/redis/redis.module";
-import { BookingCacheListener } from "./cache/booking-cache-listener";
+import { BookingCacheListener } from "./listeners/booking-cache-listener";
+import { UserModule } from "../user/user.module";
+import { BookingEmailListener } from "./listeners/booking-email-listener";
+import { EmailQueueModule } from "src/queue/email/email.queue.module";
 
 
 @Module({
    imports: [
       MongooseModule.forFeature([{ name: 'Booking', schema: BookingSchema }]),
+      UserModule,
       EventModule,
       forwardRef(() => PaymentModule),
       CommonModule,
-      MyRedisModule
+      MyRedisModule,
+      EmailQueueModule
    ],
    controllers: [BookingController],
-   providers: [BookingService, BookingRepository, BookingCacheListener],
+   providers: [BookingService, BookingRepository, BookingCacheListener, BookingEmailListener],
    exports: [BookingService]
 })
 
