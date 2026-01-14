@@ -1,5 +1,7 @@
 import { BullModule } from "@nestjs/bullmq";
 import { Module } from "@nestjs/common";
+import { EmailQueueModule } from "./email/email.queue.module";
+import { ImageQueueModule } from "./event-image/image.queue.module";
 
 
 const isTest = process.env.NODE_ENV === 'test';
@@ -12,7 +14,10 @@ const isTest = process.env.NODE_ENV === 'test';
             host: 'localhost',
             port: 6379
          }
-      })
+      }),
+
+      ImageQueueModule,
+      EmailQueueModule
    ],
    exports: isTest ? []: [BullModule]
 })

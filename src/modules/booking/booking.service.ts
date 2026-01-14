@@ -11,11 +11,13 @@ import { plainToInstance } from "class-transformer";
 import { BookingResponseDTO } from "./dto/booking.response.dto";
 import { RedisService } from "src/redis/redis.service";
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { PaymentStatus } from "./enum/payment-status.enum";
+import { PaymentStatus } from "../../constants/payment-status.enum";
+import { BookingJob, EmailJob } from "src/constants/email-queue.constants";
 
 
 @Injectable()
 export class BookingService {
+
 
    constructor(
       @InjectConnection() private readonly connection: Connection,
@@ -106,7 +108,7 @@ export class BookingService {
 
          await session.commitTransaction();
 
-         this.eventEmitter.emit('booking.created', {
+         this.eventEmitter.emit(BookingJob.BOOKING_CREATED, {
             bookingId: bookingObj._id.toString(),
             eventId: bookingObj.eventId.toString(),
             userId
@@ -126,7 +128,14 @@ export class BookingService {
          };
 
       } catch (error) {
+
          await session.abortTransaction();
+
+         this.eventEmitter.emit(EmailJob.BOOKING_FAILED, {
+            userId,
+            reason: error.message
+         });
+
          throw error;
 
       } finally {
@@ -271,6 +280,12 @@ export class BookingService {
             userId: booking.userId.toString()
          });
 
+         this.eventEmitter.emit(EmailJob.BOOKING_SUCCESS, {
+            bookingId: booking._id.toString(),
+            eventId: booking.eventId.toString(),
+            userId: booking.userId.toString()
+         });
+
          return true;
 
       } catch (error) {
@@ -363,6 +378,12 @@ export class BookingService {
             userId: booking.userId.toString()
          });
 
+         this.eventEmitter.emit(EmailJob.BOOKING_CANCEL, {
+            bookingId: booking._id.toString(),
+            eventId: booking.eventId.toString(),
+            userId: booking.userId.toString()
+         });
+
          return true;
 
       } catch (error) {
@@ -378,5 +399,10 @@ export class BookingService {
    // public 
    async getBookingById(id: string) {
       return await this.bookingRepo.findBookingById(id);
+   }
+
+
+   async findBookingsByEventIdAndPaymentStatus(eventId: string) {
+      return await this.bookingRepo.findBookingsByEventIdAndPaymentStatus(eventId);
    }
 }

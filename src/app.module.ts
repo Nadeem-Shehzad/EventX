@@ -22,6 +22,7 @@ import { DB_QUERY_TIMEOUTS } from './constants/db-timeout.constants';
 import { BookingModule } from './modules/booking/booking.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { PaymentModule } from './payment/payment.module';
+import { EmailQueueModule } from './queue/email/email.queue.module';
 
 
 
@@ -50,7 +51,7 @@ import { PaymentModule } from './payment/payment.module';
 
     EventEmitterModule.forRoot(),
     QueuesModule,
-    ImageQueueModule,
+    //ImageQueueModule,
 
     MongooseModule.forRootAsync({
       inject: [ConfigService],

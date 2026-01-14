@@ -5,8 +5,10 @@ import {
 import { InjectConnection } from "@nestjs/mongoose";
 import { Connection } from "mongoose";
 import { BookingService } from "src/modules/booking/booking.service";
-import { PaymentStatus } from "src/modules/booking/enum/payment-status.enum";
+import { PaymentStatus } from "src/constants/payment-status.enum";
 import { StripeService } from "src/stripe/stripe.service";
+import { EventEmitter2 } from "@nestjs/event-emitter";
+import { EmailJob } from "src/constants/email-queue.constants";
 
 
 @Injectable()
@@ -15,7 +17,8 @@ export class PaymentService {
       @InjectConnection() private readonly connection: Connection,
       private readonly stripe: StripeService,
       @Inject(forwardRef(() => BookingService))
-      private readonly bookingService: BookingService
+      private readonly bookingService: BookingService,
+      private readonly eventEmitter: EventEmitter2
    ) { }
 
    private readonly logger = new Logger(PaymentService.name);
@@ -49,7 +52,7 @@ export class PaymentService {
    }
 
 
-   async refundPayment(bookingId: string) {
+   async refundBookingPayment(bookingId: string) {
 
       const booking = await this.bookingService.getBookingById(bookingId);
 
@@ -69,6 +72,12 @@ export class PaymentService {
 
          await session.commitTransaction();
 
+         this.eventEmitter.emit(EmailJob.BOOKING_CANCEL, {
+            bookingId: booking._id.toString(),
+            eventId: booking.eventId.toString(),
+            userId: booking.userId.toString()
+         });
+
          return refund;
 
       } catch (error) {
@@ -78,6 +87,30 @@ export class PaymentService {
       } finally {
          session.endSession();
       }
+   }
+
+
+   async refundEventPayment(eventId: string) {
+
+      const refunds: Array<{ bookingId: any; refund: any }> = [];
+
+      const bookings = await this.bookingService.findBookingsByEventIdAndPaymentStatus(eventId);
+
+      for (const booking of bookings) {
+
+         if (!booking.paymentIntentId) {
+            continue;
+         }
+
+         const refund = await this.stripe.refundPayment(booking.paymentIntentId);
+
+         booking.paymentStatus = PaymentStatus.REFUNDED;
+         await booking.save();
+
+         refunds.push({ bookingId: booking._id, refund });
+      }
+
+      return refunds;
    }
 
 
@@ -104,7 +137,7 @@ export class PaymentService {
             break;
          }
 
-         case 'refund.succeeded': {
+         case 'charge.refunded': {
             const refund = event.data.object;
             const paymentIntentId = refund.payment_intent;
 

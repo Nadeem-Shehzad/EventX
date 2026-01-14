@@ -30,6 +30,8 @@ export class BookingCacheListener {
       userId: string
    }) {
 
+      console.log('inside cache listener -> booking-update');
+
       await this.redis.delPattern(`event-bookings:${payload.eventId}-*`);
       await this.redis.del(`event-bookings:${payload.eventId}`);
 
