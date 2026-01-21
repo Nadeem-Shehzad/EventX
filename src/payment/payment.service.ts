@@ -62,31 +62,7 @@ export class PaymentService {
 
       const refund = await this.stripe.refundPayment(booking.paymentIntentId);;
 
-      const session = await this.connection.startSession();
-      session.startTransaction();
-
-      try {
-
-         booking.paymentStatus = PaymentStatus.REFUNDED;
-         await booking.save({ session });
-
-         await session.commitTransaction();
-
-         this.eventEmitter.emit(EmailJob.BOOKING_CANCEL, {
-            bookingId: booking._id.toString(),
-            eventId: booking.eventId.toString(),
-            userId: booking.userId.toString()
-         });
-
-         return refund;
-
-      } catch (error) {
-         await session.abortTransaction();
-         throw error;
-
-      } finally {
-         session.endSession();
-      }
+      return refund; 
    }
 
 

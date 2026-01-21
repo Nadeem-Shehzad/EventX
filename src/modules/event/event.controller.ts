@@ -262,7 +262,7 @@ export class EventController {
    @Post('/recover/:id')
    @HttpCode(HttpStatus.OK)
    recoverDeletedEvent(@Param('id') eventId: string, @GetUserID() organizerId: string) {
-      return this.eventService.recoverDeleteEvent(eventId, organizerId);
+      return this.eventService.recoverDeletedEvent(eventId, organizerId);
    }
 
 
