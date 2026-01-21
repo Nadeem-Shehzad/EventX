@@ -877,7 +877,7 @@ export class EventRespository {
    }
 
 
-   async recoverDeleteEvent(eventId: string, organizerId: string) {
+   async recoverDeletedEvent(eventId: string, organizerId: string) {
       return await this.eventModel.findOneAndUpdate(
          {
             _id: eventId,

@@ -426,8 +426,8 @@ export class EventService {
    }
 
 
-   async recoverDeleteEvent(eventId: string, organizerId: string) {
-      const result = await this.eventRepo.recoverDeleteEvent(eventId, organizerId);
+   async recoverDeletedEvent(eventId: string, organizerId: string) {
+      const result = await this.eventRepo.recoverDeletedEvent(eventId, organizerId);
       if (!result) {
          throw new BadRequestException(
             'Event cannot be Recovered or you are not authorized',

@@ -3,7 +3,6 @@ import { InjectModel } from "@nestjs/mongoose";
 import { ClientSession, Model, PipelineStage, Types } from "mongoose";
 import { BookingDocument } from "../schema/booking.schema";
 import { BookingStatus } from "../enum/booking-status.enum";
-import { Pipeline } from "ioredis";
 import { PaymentStatus } from "../../../constants/payment-status.enum";
 
 @Injectable()
@@ -105,7 +104,7 @@ export class BookingRepository {
 
 
    async findBookingByPaymentIntentId(paymentIntentId: string, session: ClientSession) {
-      const booking = await this.bookingModel.findOne({ paymentIntentId, session });
+      const booking = await this.bookingModel.findOne({ paymentIntentId}).session(session);
       return booking;
    }
 
