@@ -7,19 +7,19 @@ import {
    UnauthorizedException
 } from "@nestjs/common";
 
-import { RegisterDTO } from "./dto/register.dto";
+import { RegisterDTO } from "./dto/request/register.dto";
 import { UserService } from "../user/user.service";
 import * as bcrypt from 'bcrypt';
 import { UserResponseDTO } from "../user/dto/user-response.dto";
 import { plainToInstance } from "class-transformer";
-import { LoginDTO } from "./dto/login.dto";
+import { LoginDTO } from "./dto/request/login.dto";
 import { JwtService, JwtSignOptions } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
-import { ChangePasswordDTO } from "./dto/change-password.dto";
+import { ChangePasswordDTO } from "./dto/request/change-password.dto";
 import { MailerService } from "@nestjs-modules/mailer";
 import { randomBytes } from "crypto";
 import { RedisService } from "src/redis/redis.service";
-import { ResetPasswordDTO } from "./dto/reset-password.dto";
+import { ResetPasswordDTO } from "./dto/request/reset-password.dto";
 
 
 @Injectable()

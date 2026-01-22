@@ -1,12 +1,15 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer";
 import { IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MaxLength, MinLength, ValidateNested } from "class-validator";
 
 
 export class ImageDTO {
    @IsString()
+   @ApiProperty({ example: 'http://example.com/user/pic.gif' })
    url: string;
 
    @IsString()
+   @ApiProperty({ example: 'user/pic.gif' })
    publicId: string;
 }
 
@@ -17,11 +20,13 @@ export class RegisterDTO {
    @MinLength(3, { message: 'Name must be at least 3 characters!' })
    @MaxLength(22, { message: 'Name must not exceed 22 characters!' })
    @Transform(({ value }) => value?.trim())
+   @ApiProperty({ example: 'Kashif' })
    name: string
 
    @IsNotEmpty({ message: 'Email Required!' })
    @IsEmail()
    @Transform(({ value }) => value?.trim().toLowerCase())
+   @ApiProperty({ example: 'kashif@gmail.com' })
    email: string
 
    @IsNotEmpty({ message: 'Password Required!' })
@@ -33,6 +38,7 @@ export class RegisterDTO {
    @Matches(/[0-9]/, { message: 'Password must contain at least one number.' })
    @Matches(/[@$!%*?&]/, { message: 'Password must contain at least one special character.' })
    @Transform(({ value }) => value?.trim())
+   @ApiProperty({ example: '$Abc123456' })
    password: string
 
    @IsOptional()
@@ -50,10 +56,12 @@ export class RegisterDTO {
    })
    @ValidateNested()
    @Type(() => ImageDTO)
+   @ApiProperty({ type: ImageDTO })
    image: ImageDTO;
 
    @IsOptional()
    @IsString()
    @Transform(({ value }) => value?.trim())
+   @ApiProperty({ example: 'user' })
    role?: string;
 }
