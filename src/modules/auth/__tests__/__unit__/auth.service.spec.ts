@@ -14,12 +14,12 @@ import { JwtService } from "@nestjs/jwt";
 import { randomBytes } from "crypto";
 import { AuthService } from "../../auth.service";
 import { UserService } from "src/modules/user/user.service";
-import { RegisterDTO } from "../../dto/register.dto";
+import { RegisterDTO } from "../../dto/request/register.dto";
 import { UserResponseDTO } from "src/modules/user/dto/user-response.dto";
 import { RedisService } from "src/redis/redis.service";
-import { LoginDTO } from "../../dto/login.dto";
-import { ChangePasswordDTO } from "../../dto/change-password.dto";
-import { ResetPasswordDTO } from "../../dto/reset-password.dto";
+import { LoginDTO } from "../../dto/request/login.dto";
+import { ChangePasswordDTO } from "../../dto/request/change-password.dto";
+import { ResetPasswordDTO } from "../../dto/request/reset-password.dto";
 
 
 jest.mock('bcrypt');
