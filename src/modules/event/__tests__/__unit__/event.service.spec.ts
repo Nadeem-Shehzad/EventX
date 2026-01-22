@@ -1,5 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { EventResponseDTO } from "../../dto/event-response.dto";
+import { EventResponseDTO } from "../../dto/response/event-response.dto";
 import { EventService } from "../../event.service";
 import { EventRespository } from "../../event.repository";
 import { RedisService } from "src/redis/redis.service";

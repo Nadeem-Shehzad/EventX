@@ -1,12 +1,12 @@
-import { BadRequestException, Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
 import { EventRespository } from "./event.repository";
 import slugify from "slugify";
 import { plainToInstance } from "class-transformer";
-import { EventResponseDTO } from "./dto/event-response.dto";
-import { CreateEventDTO } from "./dto/create-event.dto";
-import { EventQueryDTO } from "./dto/event-query.dto";
+import { EventResponseDTO } from "./dto/response/event-response.dto";
+import { CreateEventDTO } from "./dto/request/create-event.dto";
+import { EventQueryDTO } from "./dto/request/event-query.dto";
 import { RedisService } from "src/redis/redis.service";
-import { UpdateEventDTO } from "./dto/update-event.dto";
+import { UpdateEventDTO } from "./dto/request/update-event.dto";
 import { InjectQueue } from "@nestjs/bullmq";
 import { QUEUES } from "src/queue/queue.constants";
 import { Queue } from "bullmq";
@@ -24,7 +24,7 @@ export class EventService {
    private readonly logger = new Logger(EventService.name);
 
 
-   async createEvent(id: string, dto: CreateEventDTO): Promise<string> {
+   async createEvent(id: string, dto: CreateEventDTO) {
 
       const slug = slugify(dto.title);
 
@@ -32,12 +32,16 @@ export class EventService {
       const slugObj = { slug };
       const dataObject = { ...dto, ...organizer, ...slugObj };
 
-      const result = await this.eventRepo.create(dataObject, dto);
+      const event = await this.eventRepo.create(dataObject, dto);
 
-      if (!result) {
-         return 'Event not Added!.';
+      if (!event) {
+         throw new InternalServerErrorException('Event not added')
       }
-      return 'Event Added successfully.';
+
+      return {
+         eventId: event._id.toString(),
+         message: 'Event created successfully'
+      };
    }
 
 
@@ -48,7 +52,7 @@ export class EventService {
          throw new NotFoundException('Event not Found!');
       }
 
-      if(dataToUpdate.title){
+      if (dataToUpdate.title) {
          const slug = slugify(dataToUpdate.title);
          dataToUpdate.slug = slug;
       }
@@ -57,7 +61,7 @@ export class EventService {
       const oldImagePublicId = event.bannerImage?.publicId;
 
       const result = await this.eventRepo.updateEvent(eventId, dataToUpdate);
-      
+
       if (newImagePublicId && newImagePublicId !== oldImagePublicId) {
          await this.imageQueue.add(
             'delete-old-event-image',
@@ -71,16 +75,16 @@ export class EventService {
             },
          );
       }
-      
+
       // const finalResult = plainToInstance(EventResponseDTO, result, {
       //    excludeExtraneousValues: true
       // });
-      if(result){
+      if (result) {
          return 'Event Record Updated.';
-      } 
+      }
 
       return 'Event Record not Updated!';
-      
+
       //console.log('Event in Service After Update -> ', finalResult);
       //return finalResult;
    }
@@ -422,7 +426,7 @@ export class EventService {
          );
       }
 
-      return 'Event deleted successfully';
+      return 'Event deleted Permanently';
    }
 
 

@@ -4,9 +4,9 @@ import { Connection, Model, PipelineStage, Types } from "mongoose";
 import { EventDocument } from "./schema/event.schema";
 import { MongoPerformanceHelper } from "src/common/helpers/db-performance-checker";
 import { EventType } from "./enums/event.enums";
-import { UpdateEventDTO } from "./dto/update-event.dto";
+import { UpdateEventDTO } from "./dto/request/update-event.dto";
 import { TicketTypeDocument } from "./schema/ticket-type.schema";
-import { CreateEventDTO } from "./dto/create-event.dto";
+import { CreateEventDTO } from "./dto/request/create-event.dto";
 
 
 @Injectable()
