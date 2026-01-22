@@ -23,6 +23,7 @@ export const validationSchema = Joi.object({
    CLOUDINARY_SECRET: Joi.string().required(),
 
    APP_URL: Joi.string().required(),
+   SWAGGER_URL: Joi.string().required(),
    NODE_ENV: Joi.string().required(),
    FRONTEND_URL: Joi.string().required(),
 

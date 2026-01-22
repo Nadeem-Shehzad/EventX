@@ -1,8 +1,8 @@
-import { EventQueryDTO } from "../../dto/event-query.dto";
-import { EventResponseDTO } from "../../dto/event-response.dto";
-import { EventStatusDTO } from "../../dto/event-status.dto";
-import { PaginationDTO } from "../../dto/pagination.dto";
-import { UpdateEventDTO } from "../../dto/update-event.dto";
+import { EventQueryDTO } from "../../dto/request/event-query.dto";
+import { EventResponseDTO } from "../../dto/response/event-response.dto";
+import { EventStatusDTO } from "../../dto/request/event-status.dto";
+import { PaginationDTO } from "../../dto/request/pagination.dto";
+import { UpdateEventDTO } from "../../dto/request/update-event.dto";
 import { EventStatus, EventType, EventVisibility } from "../../enums/event.enums";
 import { EventController } from "../../event.controller";
 import { EventService } from "../../event.service";
@@ -10,7 +10,7 @@ import { createEventTestingModule } from "./module.factories";
 import { Readable } from 'stream';
 
 import { BadRequestException } from '@nestjs/common';
-import { BannerImageDTO, CreateEventDTO, TicketTypeDto } from "../../dto/create-event.dto";
+import { BannerImageDTO, CreateEventDTO, TicketTypeDto } from "../../dto/request/create-event.dto";
 
 
 

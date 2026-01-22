@@ -1,4 +1,5 @@
 
+import { ApiProperty } from '@nestjs/swagger';
 import {
    IsString,
    IsNumber,
@@ -7,11 +8,14 @@ import {
 export class PriceRangeDTO {
 
    @IsNumber()
+   @ApiProperty({ example: 0 })
    min: number;
 
    @IsNumber()
+   @ApiProperty({ example: 100 })
    max: number;
 
    @IsString()
+   @ApiProperty({ example: 'PKR' })
    currency: string;
 }

@@ -11,6 +11,7 @@ import { corsConfig } from './config/cors.config';
 import { Logger } from 'nestjs-pino';
 import { VersioningType } from '@nestjs/common';
 import * as bodyParser from 'body-parser';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 
 async function bootstrap() {
@@ -23,15 +24,34 @@ async function bootstrap() {
    app.enableCors(corsConfig());
    app.use(compression());
 
-   // app.use(
-   //    '/payments/webhook',
-   //    bodyParser.raw({ type: 'application/json' }),
-   // );
-
    app.enableVersioning({
       type: VersioningType.URI,
       defaultVersion: '1',
    });
+
+   // 🔹 Swagger Configuration
+   const config = new DocumentBuilder()
+      .setTitle('EventX APIs')
+      .setDescription('EventX Backend API Documentation')
+      .setVersion('v1')
+      .addBearerAuth(
+         {
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'JWT',
+         },
+         'JWT-auth',
+      )
+      .build();
+
+   const document = SwaggerModule.createDocument(app, config);
+
+   SwaggerModule.setup('docs', app, document);
+
+   // app.use(
+   //    '/payments/webhook',
+   //    bodyParser.raw({ type: 'application/json' }),
+   // );
 
    app.useGlobalFilters(new GlobalExceptionFilter());
    app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
