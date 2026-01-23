@@ -359,8 +359,7 @@ export class EventController {
 
    // get archived events ... organizer and admin only
 
-   @UseGuards(JwtAuthGuard, RoleCheckGuard)
-   @UseGuards(EventOwnerShipGuard)
+   @UseGuards(JwtAuthGuard, RoleCheckGuard, EventOwnerShipGuard)
    @Roles('organizer')
    @Post('/publish/:id')
    @HttpCode(HttpStatus.OK)
@@ -384,8 +383,7 @@ export class EventController {
    }
 
 
-   @UseGuards(JwtAuthGuard, RoleCheckGuard)
-   @UseGuards(EventOwnerShipGuard)
+   @UseGuards(JwtAuthGuard, RoleCheckGuard, EventOwnerShipGuard)
    @Roles('organizer')
    @Post('/cancel/:id')
    @HttpCode(HttpStatus.OK)
@@ -409,8 +407,7 @@ export class EventController {
    }
 
 
-   @UseGuards(JwtAuthGuard, RoleCheckGuard)
-   @UseGuards(EventOwnerShipGuard)
+   @UseGuards(JwtAuthGuard, RoleCheckGuard, EventOwnerShipGuard)
    @Roles('organizer')
    @Delete('/delete/:id')
    @HttpCode(HttpStatus.OK)
@@ -433,8 +430,7 @@ export class EventController {
    }
 
 
-   @UseGuards(JwtAuthGuard, RoleCheckGuard)
-   @UseGuards(EventOwnerShipGuard)
+   @UseGuards(JwtAuthGuard, RoleCheckGuard, EventOwnerShipGuard)
    @Roles('organizer')
    @Post('/recover/:id')
    @HttpCode(HttpStatus.OK)

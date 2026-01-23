@@ -2,7 +2,7 @@ import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException 
 import { BookingRepository } from "./repository/booking.repository";
 import { Connection, Model, Types } from "mongoose";
 import { InjectConnection, InjectModel } from "@nestjs/mongoose";
-import { TicketTypeDocument } from "../event/schema/ticket-type.schema";
+import { TicketTypeDocument } from "../ticket/schema/ticket-type.schema";
 import { CreateBookingDTO } from "./dto/create-booking.dto";
 import { BookingStatus } from "./enum/booking-status.enum";
 import { PaymentService } from "src/payment/payment.service";
@@ -17,7 +17,6 @@ import { BookingJob, EmailJob } from "src/constants/email-queue.constants";
 
 @Injectable()
 export class BookingService {
-
 
    constructor(
       @InjectConnection() private readonly connection: Connection,

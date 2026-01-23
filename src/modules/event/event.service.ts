@@ -10,15 +10,21 @@ import { UpdateEventDTO } from "./dto/request/update-event.dto";
 import { InjectQueue } from "@nestjs/bullmq";
 import { QUEUES } from "src/queue/queue.constants";
 import { Queue } from "bullmq";
+import { TicketService } from "../ticket/ticket.service";
+import { Connection, Types } from "mongoose";
+import { InjectConnection } from "@nestjs/mongoose";
+import { CreateTicketDTO } from "../ticket/dto/request/create-ticket.dto";
 
 
 @Injectable()
 export class EventService {
    constructor(
+      @InjectConnection() private readonly connection: Connection,
       private readonly eventRepo: EventRespository,
       private readonly redis: RedisService,
       @InjectQueue(QUEUES.EVENT_IMAGE)
-      private readonly imageQueue: Queue
+      private readonly imageQueue: Queue,
+      private readonly ticketService: TicketService
    ) { }
 
    private readonly logger = new Logger(EventService.name);
@@ -26,26 +32,48 @@ export class EventService {
 
    async createEvent(id: string, dto: CreateEventDTO) {
 
-      const slug = slugify(dto.title);
+      const session = await this.connection.startSession();
+      session.startTransaction();
 
-      const organizer = { organizerId: id }
-      const slugObj = { slug };
-      const dataObject = { ...dto, ...organizer, ...slugObj };
+      try {
+         const slug = slugify(dto.title, { lower: true }) + '-' + Date.now();
 
-      const event = await this.eventRepo.create(dataObject, dto);
+         const organizer = { organizerId: id }
+         const slugObj = { slug };
+         const dataObject = { ...dto, ...organizer, ...slugObj };
 
-      if (!event) {
-         throw new InternalServerErrorException('Event not added')
+         const event = await this.eventRepo.create(dataObject, dto, session);
+
+         const ticketTypesData = dto.ticketTypes.map(tt => ({
+            ...tt,
+            eventId: event._id,
+            availableQuantity: tt.totalQuantity
+         }));
+
+         await this.ticketService.createTickets(ticketTypesData, session);
+
+         await session.commitTransaction();
+
+         return {
+            eventId: event._id.toString(),
+            message: 'Event created successfully'
+         };
+
+      } catch (error) {
+         await session.abortTransaction();
+         console.error('Transaction failed for createEvent', { error });
+         throw error;
+
+      } finally {
+         session.endSession();
       }
-
-      return {
-         eventId: event._id.toString(),
-         message: 'Event created successfully'
-      };
    }
 
 
    async updateEvent(eventId: string, dataToUpdate: UpdateEventDTO) {
+
+      const session = await this.connection.startSession();
+      session.startTransaction();
 
       const event = await this.eventRepo.findEventById(eventId);
       if (!event) {
@@ -60,33 +88,97 @@ export class EventService {
       const newImagePublicId = dataToUpdate.bannerImage?.publicId;
       const oldImagePublicId = event.bannerImage?.publicId;
 
-      const result = await this.eventRepo.updateEvent(eventId, dataToUpdate);
+      try {
+         if (dataToUpdate.ticketTypes?.length) {
+            for (const tt of dataToUpdate.ticketTypes) {
+               if (tt._id) {
 
-      if (newImagePublicId && newImagePublicId !== oldImagePublicId) {
-         await this.imageQueue.add(
-            'delete-old-event-image',
-            {
-               publicId: oldImagePublicId,
-               eventId,
-            },
-            {
-               attempts: 3,
-               backoff: { type: 'exponential', delay: 3000 },
-            },
-         );
+                  const existingTicket = await this.ticketService.findTicketById(tt._id, session);
+                  if (!existingTicket) throw new Error(`TicketType not found: ${tt._id}`);
+
+                  const sold = existingTicket.soldQuantity;
+                  const reserved = existingTicket.reservedQuantity;
+
+                  if (tt.totalQuantity !== undefined && tt.totalQuantity < sold + reserved) {
+                     throw new Error('Total quantity cannot be less than sold + reserved');
+                  }
+
+                  if (tt.name && tt.name !== existingTicket.name) {
+
+                     const conflict = await this.ticketService.findOne(
+                        eventId,
+                        tt.name,
+                        tt._id,
+                        session
+                     );
+
+                     if (conflict) throw new Error(`TicketType name "${tt.name}" already exists for this event`);
+                  }
+
+                  await this.ticketService.updateOne(
+                     tt._id,
+                     tt,
+                     sold,
+                     reserved,
+                     existingTicket,
+                     session
+                  );
+
+               } else {
+
+                  if (tt.name) {
+                     const conflict = await this.ticketService.findOne2(eventId, tt.name, session);
+
+                     if (conflict) {
+                        throw new Error(`TicketType name "${tt.name}" already exists for this event`);
+                     }
+                  }
+
+                  const ticket: CreateTicketDTO = {
+                     name: tt.name!,
+                     eventId: new Types.ObjectId(eventId),
+                     totalQuantity: tt.totalQuantity!,
+                     availableQuantity: tt.totalQuantity!,
+                     price: tt.price!,
+                     isPaidEvent: tt.isPaidEvent!,
+                     currency: tt.currency!
+                  };
+
+                  await this.ticketService.saveTickets(ticket, session);
+               }
+            }
+         }
+
+         const result = await this.eventRepo.updateEvent(eventId, dataToUpdate, session);
+         await session.commitTransaction();
+
+         if (newImagePublicId && newImagePublicId !== oldImagePublicId) {
+            await this.imageQueue.add(
+               'delete-old-event-image',
+               {
+                  publicId: oldImagePublicId,
+                  eventId,
+               },
+               {
+                  attempts: 3,
+                  backoff: { type: 'exponential', delay: 3000 },
+               },
+            );
+         }
+
+         if (result) {
+            return 'Event Record Updated.';
+         }
+
+         return 'Event Record not Updated!';
+
+      } catch (error) {
+         await session.abortTransaction();
+         throw error;
+
+      } finally {
+         session.endSession();
       }
-
-      // const finalResult = plainToInstance(EventResponseDTO, result, {
-      //    excludeExtraneousValues: true
-      // });
-      if (result) {
-         return 'Event Record Updated.';
-      }
-
-      return 'Event Record not Updated!';
-
-      //console.log('Event in Service After Update -> ', finalResult);
-      //return finalResult;
    }
 
 
@@ -391,6 +483,7 @@ export class EventService {
 
 
    async softDeleteEvent(eventId: string, organizerId: string) {
+      console.log('inside soft delete...');
       const result = await this.eventRepo.softDeleteEvent(eventId, organizerId);
       if (!result) {
          throw new BadRequestException(
@@ -404,29 +497,46 @@ export class EventService {
 
    async deleteEventPermanently(eventId: string, organizerId: string) {
 
-      const deletedEvent = await this.eventRepo.deleteEventPermanently(eventId, organizerId);
-      if (!deletedEvent) {
-         throw new BadRequestException(
-            'Event cannot be Deleted permanently or you are not authorized',
-         );
+      const session = await this.connection.startSession();
+      session.startTransaction();
+
+      try {
+
+         const deletedEvent = await this.eventRepo.deleteEventPermanently(eventId, organizerId, session);
+         if (!deletedEvent) {
+            throw new BadRequestException(
+               'Event cannot be Deleted permanently or you are not authorized',
+            );
+         }
+
+         await this.ticketService.deleteManyTickets(eventId, session);
+
+         await session.commitTransaction();
+
+         if (deletedEvent.bannerImage.publicId) {
+
+            await this.imageQueue.add(
+               'delete-event-image',
+               {
+                  publicId: deletedEvent.bannerImage.publicId,
+                  eventId,
+               },
+               {
+                  attempts: 3,
+                  backoff: { type: 'exponential', delay: 3000 },
+               },
+            );
+         }
+
+         return 'Event deleted Permanently';
+
+      } catch (error) {
+         await session.abortTransaction();
+         throw error;
+
+      } finally {
+         session.endSession();
       }
-
-      if (deletedEvent.bannerImage.publicId) {
-
-         await this.imageQueue.add(
-            'delete-event-image',
-            {
-               publicId: deletedEvent.bannerImage.publicId,
-               eventId,
-            },
-            {
-               attempts: 3,
-               backoff: { type: 'exponential', delay: 3000 },
-            },
-         );
-      }
-
-      return 'Event deleted Permanently';
    }
 
 
