@@ -22,6 +22,7 @@ export class EventOwnerShipGuard implements CanActivate {
 
       // console.log('************ For Testing **************');
       // console.log('userID', userId);
+      // console.log('eventID', eventId);
 
       if (!userId || !eventId) {
          throw new ForbiddenException('Invalid request');

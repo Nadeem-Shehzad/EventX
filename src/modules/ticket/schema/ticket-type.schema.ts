@@ -1,7 +1,9 @@
 import { Schema, SchemaFactory, Prop } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
+
 export type TicketTypeDocument = TicketType & Document;
+
 
 @Schema({ timestamps: true })
 export class TicketType {

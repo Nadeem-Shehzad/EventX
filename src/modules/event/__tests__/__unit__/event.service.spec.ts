@@ -5,6 +5,9 @@ import { EventRespository } from "../../event.repository";
 import { RedisService } from "src/redis/redis.service";
 import { Queue } from "bullmq";
 import { QUEUES } from "src/queue/queue.constants";
+import { getConnectionToken } from '@nestjs/mongoose';
+import { TicketService } from "src/modules/ticket/ticket.service";
+
 
 
 const mockQueue = {
@@ -59,14 +62,15 @@ describe('EventService - Get Events', () => {
       getEventsByAggregation: jest.fn()
    }
 
-
    beforeEach(async () => {
       const module: TestingModule = await Test.createTestingModule({
          providers: [
             EventService,
+            { provide: getConnectionToken(), useValue: {} },
+            { provide: TicketService, useValue: {} },
             { provide: EventRespository, useValue: eventRepository },
             { provide: RedisService, useValue: redisService },
-            { provide: `BullQueue_${QUEUES.EVENT_IMAGE}`, useValue: {} }
+            { provide: `BullQueue_${QUEUES.EVENT_IMAGE}`, useValue: {} },
          ]
       }).compile();
 
@@ -133,6 +137,8 @@ describe('EventService - Get Free Events', () => {
       const module: TestingModule = await Test.createTestingModule({
          providers: [
             EventService,
+            { provide: getConnectionToken(), useValue: {} },
+            { provide: TicketService, useValue: {} },
             { provide: EventRespository, useValue: eventRepository },
             { provide: RedisService, useValue: redisService },
             { provide: `BullQueue_${QUEUES.EVENT_IMAGE}`, useValue: {} }
@@ -204,6 +210,8 @@ describe('EventService - Get Filter Based Events', () => {
       const module: TestingModule = await Test.createTestingModule({
          providers: [
             EventService,
+            { provide: getConnectionToken(), useValue: {} },
+            { provide: TicketService, useValue: {} },
             { provide: EventRespository, useValue: eventRepository },
             { provide: RedisService, useValue: {} },
             { provide: `BullQueue_${QUEUES.EVENT_IMAGE}`, useValue: {} }
@@ -350,6 +358,8 @@ describe('EventService - Get Free Events', () => {
       const module: TestingModule = await Test.createTestingModule({
          providers: [
             EventService,
+            { provide: getConnectionToken(), useValue: {} },
+            { provide: TicketService, useValue: {} },
             { provide: EventRespository, useValue: eventRepository },
             { provide: RedisService, useValue: {} },
             { provide: `BullQueue_${QUEUES.EVENT_IMAGE}`, useValue: {} }
@@ -394,6 +404,8 @@ describe('EventService - Get Visbility Summary', () => {
       const module: TestingModule = await Test.createTestingModule({
          providers: [
             EventService,
+            { provide: getConnectionToken(), useValue: {} },
+            { provide: TicketService, useValue: {} },
             { provide: EventRespository, useValue: eventRepository },
             { provide: RedisService, useValue: {} },
             { provide: `BullQueue_${QUEUES.EVENT_IMAGE}`, useValue: {} }

@@ -8,7 +8,8 @@ import { CommonModule } from "src/common/common.module";
 import { MyRedisModule } from "src/redis/redis.module";
 import { ImageQueueModule } from "src/queue/event-image/image.queue.module";
 import { EventOwnerShipGuard } from "./guards/ownership.guard";
-import { TicketTypeSchema } from "./schema/ticket-type.schema";
+import { TicketTypeSchema } from "../ticket/schema/ticket-type.schema";
+import { TicketModule } from "../ticket/ticket.module";
 
 @Module({
    imports: [
@@ -18,7 +19,8 @@ import { TicketTypeSchema } from "./schema/ticket-type.schema";
       ]),
       forwardRef(() => CommonModule),
       ImageQueueModule,
-      MyRedisModule
+      MyRedisModule,
+      TicketModule
    ],
    controllers: [EventController],
    providers: [EventService, EventRespository, EventOwnerShipGuard],
