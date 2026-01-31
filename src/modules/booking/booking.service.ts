@@ -13,6 +13,9 @@ import { RedisService } from "src/redis/redis.service";
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PaymentStatus } from "../../constants/payment-status.enum";
 import { BookingJob, EmailJob } from "src/constants/email-queue.constants";
+import { OutboxService } from "src/outbox/outbox.service";
+import { BookingCreatedPayload } from "src/constants/events/booking-created.event";
+import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
 
 
 @Injectable()
@@ -25,7 +28,8 @@ export class BookingService {
       @Inject(forwardRef(() => PaymentService))
       private readonly paymentService: PaymentService,
       private readonly redis: RedisService,
-      private readonly eventEmitter: EventEmitter2
+      private readonly eventEmitter: EventEmitter2,
+      private readonly outboxService: OutboxService
    ) { }
 
 
@@ -36,43 +40,22 @@ export class BookingService {
 
       try {
 
-         const ticketType = await this.ticketModel.findOneAndUpdate(
-            {
-               _id: dto.ticketTypeId,
-               availableQuantity: { $gte: dto.quantity }
-            },
-            {
-               $inc: {
-                  reservedQuantity: dto.quantity,
-                  availableQuantity: -dto.quantity
-               }
-            },
-            {
-               new: true,
-               session
-            }
-         );
-
-         if (!ticketType) {
-            throw new BadRequestException('Tickets not available');
-         }
-
          let status = BookingStatus.PENDING;
 
-         if (!ticketType.isPaidEvent) {
-            status = BookingStatus.CONFIRMED;
+         // if (!ticketType.isPaidEvent) {
+         //    status = BookingStatus.CONFIRMED;
 
-            await this.ticketModel.updateOne(
-               { _id: ticketType._id },
-               {
-                  $inc: {
-                     soldQuantity: dto.quantity,
-                     reservedQuantity: -dto.quantity,
-                  },
-               },
-               { session },
-            );
-         }
+         //    await this.ticketModel.updateOne(
+         //       { _id: ticketType._id },
+         //       {
+         //          $inc: {
+         //             soldQuantity: dto.quantity,
+         //             reservedQuantity: -dto.quantity,
+         //          },
+         //       },
+         //       { session },
+         //    );
+         // }
 
          const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
@@ -82,58 +65,63 @@ export class BookingService {
                eventId: new Types.ObjectId(dto.eventId),
                ticketTypeId: new Types.ObjectId(dto.ticketTypeId),
                quantity: dto.quantity,
-               amount: ticketType.isPaidEvent ? ticketType.price * dto.quantity : 0,
+               amount: 0,
                currency: 'PKR',
                status,
-               expiresAt: ticketType.isPaidEvent ? expiresAt : undefined,
+               expiresAt,
             },
             session,
          );
 
-         const bookingObj = booking.toObject();
-
-         let paymentData: { paymentIntentId: string; clientSecret: string | null } | null = null;
-
-         if (ticketType.isPaidEvent) {
-            paymentData = await this.paymentService.initiatePayment({
-               bookingId: bookingObj._id.toString(),
-               amount: bookingObj.amount,
-               currency: bookingObj.currency
-            });
-
-            booking.paymentIntentId = paymentData.paymentIntentId;
-            await booking.save({ session });
+         const payload: BookingCreatedPayload = {
+            bookingId: booking.id,
+            userId,
+            eventId: booking.eventId.toString(),
+            ticketTypeId: dto.ticketTypeId,
+            quantity: booking.quantity
          }
+
+         await this.outboxService.addEvent<BookingCreatedPayload>(
+            'Booking',
+            booking.id,
+            DOMAIN_EVENTS.BOOKING_CREATED,
+            payload,
+            session
+         );
+
+         //const bookingObj = booking.toObject();
+
+         //let paymentData: { paymentIntentId: string; clientSecret: string | null } | null = null;
+
+         // if (ticketType.isPaidEvent) {
+         //    paymentData = await this.paymentService.initiatePayment({
+         //       bookingId: bookingObj._id.toString(),
+         //       amount: bookingObj.amount,
+         //       currency: bookingObj.currency
+         //    });
+
+         //    booking.paymentIntentId = paymentData.paymentIntentId;
+         //    await booking.save({ session });
+         // }
 
          await session.commitTransaction();
 
-         this.eventEmitter.emit(BookingJob.BOOKING_CREATED, {
-            bookingId: bookingObj._id.toString(),
-            eventId: bookingObj.eventId.toString(),
-            userId
-         });
+         // this.eventEmitter.emit(BookingJob.BOOKING_CREATED, {
+         //    bookingId: bookingObj._id.toString(),
+         //    eventId: bookingObj.eventId.toString(),
+         //    userId
+         // });
 
-         return {
-            bookingId: bookingObj._id.toString(),
-            userId: bookingObj.userId.toString(),
-            eventId: bookingObj.eventId.toString(),
-            ticketTypeId: bookingObj.ticketTypeId.toString(),
-            quantity: bookingObj.quantity,
-            status: bookingObj.status,
-            amount: bookingObj.amount,
-            currency: bookingObj.currency,
-            confirmedAt: bookingObj.confirmedAt,
-            payment: paymentData
-         };
+         return { bookingId: booking._id.toString(), status: 'PENDING' };
 
       } catch (error) {
 
          await session.abortTransaction();
 
-         this.eventEmitter.emit(EmailJob.BOOKING_FAILED, {
-            userId,
-            reason: error.message
-         });
+         // this.eventEmitter.emit(EmailJob.BOOKING_FAILED, {
+         //    userId,
+         //    reason: error.message
+         // });
 
          throw error;
 
@@ -182,7 +170,7 @@ export class BookingService {
       if (dateFrom) filter.dateFrom = dateFrom;
       if (dateTo) filter.dateTo = dateTo;
 
-      console.log('filter -> ', filter);
+      //console.log('filter -> ', filter);
 
       return await this.bookingRepo.getBookingsByFilter(filter, { limit, skip });
    }

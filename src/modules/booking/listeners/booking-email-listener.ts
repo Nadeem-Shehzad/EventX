@@ -32,7 +32,7 @@ export class BookingEmailListener {
       const event = await this.eventService.findById(payload.eventId);
       if (!event) return true;
 
-      console.log('inside email listener of booking created');
+      //console.log('inside email listener of booking created');
 
       await this.emailQueue.add(
          EmailJob.BOOKING_SUCCESS,

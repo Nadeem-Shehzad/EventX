@@ -1,4 +1,3 @@
-// At the very top of your test file, before any imports
 process.env.CLOUDINARY_NAME = 'test_cloud';
 process.env.CLOUDINARY_KEY = 'test_key';
 process.env.CLOUDINARY_SECRET = 'test_secret';
@@ -17,8 +16,10 @@ import { UserService } from 'src/modules/user/user.service';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerStorage } from '@nestjs/throttler';
-import { PassThrough } from 'stream'; 
+import { PassThrough } from 'stream';
 import { EventService } from 'src/modules/event/event.service';
+import { QUEUES } from 'src/queue/queue.constants';
+import { getQueueToken } from '@nestjs/bullmq';
 
 
 const redisStore = new Map<string, string>();
@@ -123,9 +124,13 @@ beforeAll(async () => {
          {
             provide: APP_GUARD,
             useClass: ThrottlerGuard,
-         },
+         }
       ]
-   }).overrideProvider(MailerService)
+   }).overrideProvider(getQueueToken(QUEUES.TICKET_QUEUE))
+      .useValue({ add: jest.fn(), process: jest.fn() })
+      .overrideProvider(getQueueToken(QUEUES.BOOKING_QUEUE))
+      .useValue({ add: jest.fn(), process: jest.fn() })
+      .overrideProvider(MailerService)
       .useValue({ sendMail: jest.fn().mockResolvedValue(true) })
       .overrideProvider(EventService)
       .useValue({
@@ -159,7 +164,12 @@ beforeAll(async () => {
    });
 
    //app.getHttpAdapter().getInstance().set('trust proxy', true);
-   throttlerStorage = moduleRef.get<ThrottlerStorage>(ThrottlerStorage);
+   try {
+      throttlerStorage = moduleRef.get<ThrottlerStorage>(ThrottlerStorage);
+   } catch (e) {
+      console.warn("ThrottlerStorage provider not found");
+   }
+
    await app.init();
 
    connection = moduleRef.get(getConnectionToken());

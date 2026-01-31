@@ -12,6 +12,10 @@ import { BookingCacheListener } from "./listeners/booking-cache-listener";
 import { UserModule } from "../user/user.module";
 import { BookingEmailListener } from "./listeners/booking-email-listener";
 import { EmailQueueModule } from "src/queue/email/email.queue.module";
+import { OutboxModule } from "src/outbox/outbox.module";
+import { BookingSagaProcessor } from "./saga/booking-saga.processor";
+import { BookingSagaService } from "./saga/booking-saga.service";
+import { TicketsBookingHandler } from "./saga/handlers/ticket.handler";
 
 
 @Module({
@@ -19,13 +23,22 @@ import { EmailQueueModule } from "src/queue/email/email.queue.module";
       MongooseModule.forFeature([{ name: 'Booking', schema: BookingSchema }]),
       UserModule,
       EventModule,
+      OutboxModule,
       forwardRef(() => PaymentModule),
       CommonModule,
       MyRedisModule,
       EmailQueueModule
    ],
    controllers: [BookingController],
-   providers: [BookingService, BookingRepository, BookingCacheListener, BookingEmailListener],
+   providers: [
+      BookingService, 
+      BookingRepository, 
+      BookingCacheListener, 
+      BookingEmailListener,
+      BookingSagaProcessor,
+      BookingSagaService,
+      TicketsBookingHandler
+   ],
    exports: [BookingService]
 })
 

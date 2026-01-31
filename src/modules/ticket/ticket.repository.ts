@@ -13,11 +13,32 @@ export class TicketRepository {
    }
 
 
+   async ticketReserve(ticketTypeId: string, quantity: number, session?: ClientSession) {
+      return await this.ticketModel.findOneAndUpdate(
+         {
+            _id: ticketTypeId,
+            availableQuantity: { $gte: quantity }
+         },
+         {
+            $inc: {
+               reservedQuantity: quantity,
+               availableQuantity: -quantity
+            }
+         },
+         {
+            new: true,
+            session
+         }
+      );
+   }
+
+
 
    // public Queries
    async findById(id: string, session: ClientSession) {
       return await this.ticketModel.findById(id).session(session);
    }
+
 
    async findOne(eventId: string, name: string, ticketTypeId: string, session: ClientSession) {
       return await this.ticketModel.findOne({
@@ -27,6 +48,7 @@ export class TicketRepository {
       }).session(session)
    }
 
+
    async findOne2(eventId: string, name: string, session: ClientSession) {
       return await this.ticketModel.findOne({
          eventId,
@@ -34,9 +56,11 @@ export class TicketRepository {
       }).session(session)
    }
 
+
    async saveTicket(data: any, session: ClientSession) {
       return await this.ticketModel.create(data, { session });
    }
+
 
    async updateOne(id: string, ticketType: any, sold: number, reserved: number, existingTicket: any, session: ClientSession) {
       return await this.ticketModel.updateOne(

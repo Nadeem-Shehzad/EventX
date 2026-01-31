@@ -17,12 +17,11 @@ import { RateLimitModule } from './rateLimit/rate-limit.module';
 import { LoggerModule } from 'nestjs-pino';
 import { EventModule } from './modules/event/event.module';
 import { QueuesModule } from './queue/queues.module';
-import { ImageQueueModule } from './queue/event-image/image.queue.module';
 import { DB_QUERY_TIMEOUTS } from './constants/db-timeout.constants';
 import { BookingModule } from './modules/booking/booking.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { PaymentModule } from './payment/payment.module';
-import { EmailQueueModule } from './queue/email/email.queue.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 
 
@@ -52,6 +51,8 @@ import { EmailQueueModule } from './queue/email/email.queue.module';
     EventEmitterModule.forRoot(),
     QueuesModule,
     //ImageQueueModule,
+
+    ScheduleModule.forRoot(),
 
     MongooseModule.forRootAsync({
       inject: [ConfigService],
