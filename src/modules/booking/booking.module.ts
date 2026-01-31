@@ -16,6 +16,7 @@ import { OutboxModule } from "src/outbox/outbox.module";
 import { BookingSagaProcessor } from "./saga/booking-saga.processor";
 import { BookingSagaService } from "./saga/booking-saga.service";
 import { TicketsBookingHandler } from "./saga/handlers/ticket.handler";
+import { BookingsHandler } from "./saga/handlers/booking.handler";
 
 
 @Module({
@@ -37,7 +38,8 @@ import { TicketsBookingHandler } from "./saga/handlers/ticket.handler";
       BookingEmailListener,
       BookingSagaProcessor,
       BookingSagaService,
-      TicketsBookingHandler
+      TicketsBookingHandler,
+      BookingsHandler
    ],
    exports: [BookingService]
 })

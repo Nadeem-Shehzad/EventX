@@ -1,8 +1,14 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { BookingCreatedPayload } from "src/constants/events/booking-created.event";
+import {
+   BookingConfirmedRequestPayload,
+   BookingCreatedPayload,
+   PaymentRequestPayload,
+   TicketsReservedPayload
+} from "src/constants/events/domain-event-payloads";
 import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
 import { OutboxService } from "src/outbox/outbox.service";
 import { BookingService } from "../../booking.service";
+import { AGGREGATES } from "src/constants/events/domain-aggregate";
 
 
 
@@ -17,28 +23,28 @@ export class TicketsBookingHandler {
    ) { }
 
 
-   async handleTicketsReserved(data: BookingCreatedPayload) {
-      const { bookingId, userId, eventId, ticketTypeId, quantity } = data;
+   async handleTicketsReserved(data: TicketsReservedPayload) {
+      const { bookingId, isPaid, quantity } = data;
 
       this.logger.log('Inside TicketRserved Handler in Booking-module');
 
       try {
-         // //2️⃣ Emit NEXT EVENT via OUTBOX
-         // const payload: BookingCreatedPayload = {
-         //    bookingId,
-         //    userId,
-         //    eventId,
-         //    ticketTypeId,
-         //    quantity
-         // }
 
-         // await this.outboxService.addEvent<BookingCreatedPayload>(
-         //    'Booking',
-         //    bookingId,
-         //    DOMAIN_EVENTS.TICKETS_RESERVED,
-         //    payload,
-         //    undefined
-         // );
+         if (!isPaid) {
+            const payload: BookingConfirmedRequestPayload = { bookingId };
+            await this.emit(DOMAIN_EVENTS.BOOKING_CONFIRM_REQUESTED, bookingId, payload);
+         }
+
+
+         this.logger.warn('--- This is Paid Event ---');
+         //2️⃣ Emit NEXT EVENT via OUTBOX
+         const payload: PaymentRequestPayload = {
+            bookingId,
+            amount: 10000,
+            currency: 'PKR'
+         }
+
+         await this.emit(DOMAIN_EVENTS.PAYMENT_REQUEST, bookingId, payload);
 
       } catch (error) {
          // 3️⃣ Failure path → emit failure event
@@ -60,5 +66,17 @@ export class TicketsBookingHandler {
 
          throw error; // allow BullMQ retry
       }
+   }
+
+
+   async handleTicketsFailed(data: TicketsReservedPayload) {
+      const { bookingId, isPaid, quantity } = data;
+
+      this.logger.log('Inside handleTicketsFailed Handler in Booking-module');
+      this.logger.log('--- Ticket Reservation Failed ---');
+   }
+
+   private async emit(event: string, aggregateId: string, payload: any) {
+      await this.outboxService.addEvent(AGGREGATES.PAYMENT, aggregateId, event, payload);
    }
 }

@@ -1,14 +1,19 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { BookingCreatedPayload } from "src/constants/events/booking-created.event";
+import { BookingCreatedPayload, TicketsReservedPayload } from "src/constants/events/domain-event-payloads";
 import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
 import { OutboxService } from "src/outbox/outbox.service";
+import { TicketService } from "../../ticket.service";
 
 
 @Injectable()
 export class BookingTicketHandler {
 
    private readonly logger = new Logger(BookingTicketHandler.name);
-   constructor(private readonly outboxService: OutboxService) { }
+
+   constructor(
+      private readonly ticketService: TicketService,
+      private readonly outboxService: OutboxService
+   ) { }
 
    async handleBookingCreated(data: BookingCreatedPayload) {
 
@@ -17,51 +22,34 @@ export class BookingTicketHandler {
       const { bookingId, userId, eventId, ticketTypeId, quantity } = data;
 
       try {
-         // 1️⃣ Apply ticket business rules
-         // await this.ticketService.reserveTickets(
-         //    ticketTypeId,
-         //    quantity,
-         //    undefined
-         // );
 
-         //2️⃣ Emit NEXT EVENT via OUTBOX
-         const payload: BookingCreatedPayload = {
-            bookingId,
-            userId,
-            eventId,
+         const ticket = await this.ticketService.reserveTickets(
             ticketTypeId,
+            quantity,
+            undefined
+         );
+
+         const payload: TicketsReservedPayload = {
+            bookingId,
+            isPaid: ticket.isPaidEvent,
             quantity
          }
 
-         await this.outboxService.addEvent<BookingCreatedPayload>(
-            'Booking',
-            bookingId,
-            DOMAIN_EVENTS.TICKETS_RESERVED,
-            payload,
-            undefined
-         );
+         await this.emit(DOMAIN_EVENTS.TICKETS_RESERVED, bookingId, payload);
 
       } catch (error) {
 
-         // 3️⃣ Failure path → emit failure event
-         const payload: BookingCreatedPayload = {
+         await this.emit(DOMAIN_EVENTS.TICKETS_FAILED, bookingId, {
             bookingId,
-            userId,
-            eventId,
-            ticketTypeId,
-            quantity
-         }
-
-         await this.outboxService.addEvent<BookingCreatedPayload>(
-            'Booking',
-            bookingId,
-            DOMAIN_EVENTS.TICKETS_FAILED,
-            payload,
-            undefined
-         );
+            reason: error.message,
+         });
 
          throw error; // allow BullMQ retry
       }
 
+   }
+
+   private async emit(event: string, aggregateId: string, payload: any) {
+      await this.outboxService.addEvent('Ticket', aggregateId, event, payload);
    }
 }

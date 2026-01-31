@@ -14,7 +14,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PaymentStatus } from "../../constants/payment-status.enum";
 import { BookingJob, EmailJob } from "src/constants/email-queue.constants";
 import { OutboxService } from "src/outbox/outbox.service";
-import { BookingCreatedPayload } from "src/constants/events/booking-created.event";
+import { BookingCreatedPayload } from "src/constants/events/domain-event-payloads";
 import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
 
 
@@ -228,7 +228,7 @@ export class BookingService {
    }
 
 
-   async confirmBooking(bookingId: string) {
+   async confirmBooking(bookingId: string, paymentIntentId?: string) {
       const session = await this.connection.startSession();
       session.startTransaction();
 
@@ -241,10 +241,20 @@ export class BookingService {
             throw new BadRequestException('Booking already processed');
          }
 
-         await this.bookingRepo.updateStatus(
+         const patch: any = {
+            status: BookingStatus.CONFIRMED,
+            paymentStatus: paymentIntentId
+               ? PaymentStatus.SUCCEEDED
+               : PaymentStatus.NOT_REQUIRED
+         }
+
+         if (paymentIntentId) {
+            patch.paymentIntentId = paymentIntentId;
+         }
+
+         const updatedBooking = await this.bookingRepo.updateStatus(
             bookingId,
-            BookingStatus.CONFIRMED,
-            PaymentStatus.SUCCEEDED,
+            patch,
             session
          );
 
@@ -273,11 +283,12 @@ export class BookingService {
             userId: booking.userId.toString()
          });
 
-         return true;
+         return updatedBooking;
 
       } catch (error) {
          await session.abortTransaction();
          throw error;
+
       } finally {
          session.endSession();
       }
@@ -294,7 +305,7 @@ export class BookingService {
          if (!booking) throw new NotFoundException('Booking Not Found!');
 
          if (booking.status === BookingStatus.PENDING) {
-            await this.bookingRepo.updateStatus(bookingId, BookingStatus.CANCELLED, PaymentStatus.FAILED, session);
+            //await this.bookingRepo.updateStatus(bookingId, BookingStatus.CANCELLED, PaymentStatus.FAILED, session);
 
             await this.ticketModel.updateOne(
                { _id: booking.ticketTypeId },
@@ -339,12 +350,12 @@ export class BookingService {
          if (booking.paymentStatus === PaymentStatus.REFUNDED) return true;
          if (booking.status !== BookingStatus.CONFIRMED) return true;
 
-         await this.bookingRepo.updateStatus(
-            booking._id.toString(),
-            BookingStatus.CANCELLED,
-            PaymentStatus.REFUNDED,
-            session
-         );
+         // await this.bookingRepo.updateStatus(
+         //    booking._id.toString(),
+         //    BookingStatus.CANCELLED,
+         //    PaymentStatus.REFUNDED,
+         //    session
+         // );
 
          await this.ticketModel.updateOne(
             { _id: booking.ticketTypeId },

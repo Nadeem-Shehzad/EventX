@@ -14,6 +14,10 @@ const isTest = process.env.NODE_ENV === 'test';
          BullModule.registerQueue({
             name: QUEUES.BOOKING_QUEUE,
          }),
+
+         BullModule.registerQueue({
+            name: QUEUES.PAYMENT_QUEUE,
+         }),
       ],
    // providers: isTest ? [] : [BookingProcessor],
    exports: isTest ? [] : [BullModule],
