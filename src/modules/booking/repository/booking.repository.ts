@@ -104,7 +104,7 @@ export class BookingRepository {
 
 
    async findBookingByPaymentIntentId(paymentIntentId: string, session: ClientSession) {
-      const booking = await this.bookingModel.findOne({ paymentIntentId}).session(session);
+      const booking = await this.bookingModel.findOne({ paymentIntentId }).session(session);
       return booking;
    }
 
@@ -112,7 +112,7 @@ export class BookingRepository {
    async findBookingsByEventIdAndPaymentStatus(eventId: string) {
 
       const objId = new Types.ObjectId(eventId);
-      
+
       const bookings = await this.bookingModel.find({
          eventId: objId,
          paymentStatus: PaymentStatus.SUCCEEDED
@@ -198,13 +198,21 @@ export class BookingRepository {
    }
 
 
-   async updateStatus(bookingId: string, status: BookingStatus, paymentStatus: PaymentStatus, session: ClientSession) {
+   async updateStatus(
+      bookingId: string,
+      update: {
+         status: BookingStatus,
+         paymentStatus: PaymentStatus,
+         paymentIntentId?: string | null
+      },
+      session: ClientSession,
+   ) {
+
       const booking = await this.bookingModel.findOneAndUpdate(
          { _id: bookingId },
          {
             $set: {
-               status,
-               paymentStatus,
+               ...update,
                updatedAt: new Date(),
                expiresAt: null
             }

@@ -4,15 +4,25 @@ import { StripeModule } from '../stripe/stripe.module';
 import { BookingModule } from 'src/modules/booking/booking.module';
 import { PaymentController } from './payment.controller';
 import { CommonModule } from 'src/common/common.module';
+import { OutboxModule } from 'src/outbox/outbox.module';
+import { PaymentSagaProcessor } from './saga/payment-saga.processor';
+import { PaymentSagaService } from './saga/payment-saga.service';
+import { BookingPaymentHandler } from './saga/handlers/booking.handler';
 
 @Module({
    imports: [
       StripeModule,
       forwardRef(() => BookingModule),
+      OutboxModule,
       CommonModule
    ],
    controllers: [PaymentController],
-   providers: [PaymentService],
+   providers: [
+      PaymentService,
+      PaymentSagaProcessor,
+      PaymentSagaService,
+      BookingPaymentHandler
+   ],
    exports: [PaymentService],
 })
 export class PaymentModule { }

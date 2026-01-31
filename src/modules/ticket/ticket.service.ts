@@ -21,6 +21,8 @@ export class TicketService {
       if (!ticketType) {
          throw new BadRequestException('Tickets not available');
       }
+
+      return ticketType;
    }
 
 

@@ -48,10 +48,10 @@ async function bootstrap() {
 
    SwaggerModule.setup('docs', app, document);
 
-   // app.use(
-   //    '/payments/webhook',
-   //    bodyParser.raw({ type: 'application/json' }),
-   // );
+   app.use(
+      '/payments/webhook',
+      bodyParser.raw({ type: 'application/json' }),
+   );
 
    app.useGlobalFilters(new GlobalExceptionFilter());
    app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
