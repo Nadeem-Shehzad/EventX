@@ -9,6 +9,7 @@ import { EmailJob } from "src/constants/email-queue.constants";
 
 @Processor(QUEUES.EMAIL)
 export class EmailProcessor extends WorkerHost {
+   
    private readonly logger = new Logger(EmailProcessor.name);
 
    constructor(private readonly mailService: MailService) {
