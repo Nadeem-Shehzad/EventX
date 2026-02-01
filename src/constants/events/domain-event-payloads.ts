@@ -21,6 +21,10 @@ export interface BookingConfirmedPayload {
    quantity: number;
 }
 
+export interface BookingConfirmedFailedPayload {
+   bookingId: string;
+}
+
 
 
 // tickets
@@ -31,6 +35,11 @@ export interface TicketsReservedPayload {
    quantity: number;
 }
 
+export interface TicketsReservedFailedPayload {
+   bookingId: string;
+   reason: string;
+}
+
 
 
 // payment
@@ -38,4 +47,8 @@ export interface PaymentRequestPayload {
    bookingId: string;
    amount: number;
    currency: string;
+}
+
+export interface PaymentFailedPayload {
+   bookingId: string;
 }

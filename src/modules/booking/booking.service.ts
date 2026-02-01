@@ -1,4 +1,7 @@
-import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException } from "@nestjs/common";
+import {
+   BadRequestException, forwardRef, Inject,
+   Injectable, NotFoundException
+} from "@nestjs/common";
 import { BookingRepository } from "./repository/booking.repository";
 import { Connection, Model, Types } from "mongoose";
 import { InjectConnection, InjectModel } from "@nestjs/mongoose";
@@ -88,21 +91,6 @@ export class BookingService {
             payload,
             session
          );
-
-         //const bookingObj = booking.toObject();
-
-         //let paymentData: { paymentIntentId: string; clientSecret: string | null } | null = null;
-
-         // if (ticketType.isPaidEvent) {
-         //    paymentData = await this.paymentService.initiatePayment({
-         //       bookingId: bookingObj._id.toString(),
-         //       amount: bookingObj.amount,
-         //       currency: bookingObj.currency
-         //    });
-
-         //    booking.paymentIntentId = paymentData.paymentIntentId;
-         //    await booking.save({ session });
-         // }
 
          await session.commitTransaction();
 
@@ -305,7 +293,17 @@ export class BookingService {
          if (!booking) throw new NotFoundException('Booking Not Found!');
 
          if (booking.status === BookingStatus.PENDING) {
-            //await this.bookingRepo.updateStatus(bookingId, BookingStatus.CANCELLED, PaymentStatus.FAILED, session);
+
+            const patch: any = {
+               status: BookingStatus.CANCELLED,
+               paymentStatus: PaymentStatus.FAILED
+            }
+
+            const updatedBooking = await this.bookingRepo.updateStatus(
+               bookingId,
+               patch,
+               session
+            );
 
             await this.ticketModel.updateOne(
                { _id: booking.ticketTypeId },
@@ -332,6 +330,7 @@ export class BookingService {
       } catch (error) {
          await session.abortTransaction();
          throw error;
+
       } finally {
          session.endSession();
       }
@@ -391,6 +390,22 @@ export class BookingService {
       } finally {
          session.endSession();
       }
+   }
+
+
+   async bookingFailed(bookingId: string) {
+      const booking = await this.bookingRepo.findBookingById(bookingId);
+      if (!booking) throw new NotFoundException('Booking Not Found!');
+
+      const patch: any = {
+         status: BookingStatus.FAILED,
+         paymentStatus: PaymentStatus.NOT_REQUIRED
+      }
+
+      await this.bookingRepo.updateStatus(
+         bookingId,
+         patch
+      );
    }
 
 

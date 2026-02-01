@@ -13,8 +13,12 @@ export class PaymentSagaService {
 
    async handle(job: Job) {
       switch (job.name) {
+
          case DOMAIN_EVENTS.PAYMENT_REQUEST:
-         return this.bookingPaymentHandler.handleBookingPaymentRequest(job.data);
+            return this.bookingPaymentHandler.handleBookingPaymentRequest(job.data);
+
+         case DOMAIN_EVENTS.PAYMENT_FAILED:
+            return this.bookingPaymentHandler.handleBookingPaymentFailed(job.data);
 
          default:
             throw new Error(`Unknown job ${job.name}`);

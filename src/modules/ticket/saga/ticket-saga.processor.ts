@@ -1,8 +1,11 @@
-import { Processor, WorkerHost } from "@nestjs/bullmq";
+import { OnWorkerEvent, Processor, WorkerHost } from "@nestjs/bullmq";
 import { Injectable, Logger } from "@nestjs/common";
 import { Job } from "bullmq";
 import { QUEUES } from "src/queue/queue.constants";
 import { TicketSagaService } from "./ticket-saga.service";
+import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
+import { AGGREGATES } from "src/constants/events/domain-aggregate";
+import { OutboxService } from "src/outbox/outbox.service";
 
 
 @Processor(QUEUES.TICKET_QUEUE)
@@ -12,11 +15,45 @@ export class TicketSagaProcessor extends WorkerHost {
    private readonly logger = new Logger(TicketSagaProcessor.name);
 
    constructor(
-      private readonly sagaService: TicketSagaService
+      private readonly sagaService: TicketSagaService,
+      private readonly outboxService: OutboxService
    ) { super() }
+
 
    async process(job: Job) {
       this.logger.warn('Inside Ticket-Module-SAGA');
       return this.sagaService.handle(job);
+   }
+
+
+   @OnWorkerEvent('failed')
+   async onFailed(job: Job, err: Error) {
+
+      const maxAttempts = job.opts.attempts || 1;
+
+      // Check if we have attempts remaining
+      if (job.attemptsMade < maxAttempts) {
+         this.logger.warn(`Job ${job.id} failed (Attempt ${job.attemptsMade} of ${maxAttempts}). Retrying...`);
+         return;
+      }
+
+      this.logger.error(`Job ${job.id} failed permanently. Triggering Saga Rollback.`);
+
+      const failureEvent = this.failureMap[job.name];
+      if (!failureEvent) return;
+
+      await this.emit(failureEvent, job.data.bookingId, {
+         bookingId: job.data.bookingId,
+         reason: err.message,
+      });
+   }
+
+
+   private readonly failureMap = {
+      [DOMAIN_EVENTS.BOOKING_CREATED]: DOMAIN_EVENTS.TICKETS_FAILED,
+   };
+
+   private async emit(event: string, aggregateId: string, payload: any) {
+      await this.outboxService.addEvent(AGGREGATES.TICKET, aggregateId, event, payload);
    }
 }

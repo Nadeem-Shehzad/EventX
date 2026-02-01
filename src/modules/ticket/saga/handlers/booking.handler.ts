@@ -19,34 +19,21 @@ export class BookingTicketHandler {
 
       this.logger.log('Inside BookingCreated Handler in Ticket-module');
 
-      const { bookingId, userId, eventId, ticketTypeId, quantity } = data;
+      const { bookingId, ticketTypeId, quantity } = data;
 
-      try {
+      const ticket = await this.ticketService.reserveTickets(
+         ticketTypeId,
+         quantity,
+         undefined
+      );
 
-         const ticket = await this.ticketService.reserveTickets(
-            ticketTypeId,
-            quantity,
-            undefined
-         );
-
-         const payload: TicketsReservedPayload = {
-            bookingId,
-            isPaid: ticket.isPaidEvent,
-            quantity
-         }
-
-         await this.emit(DOMAIN_EVENTS.TICKETS_RESERVED, bookingId, payload);
-
-      } catch (error) {
-
-         await this.emit(DOMAIN_EVENTS.TICKETS_FAILED, bookingId, {
-            bookingId,
-            reason: error.message,
-         });
-
-         throw error; // allow BullMQ retry
+      const payload: TicketsReservedPayload = {
+         bookingId,
+         isPaid: ticket.isPaidEvent,
+         quantity
       }
 
+      await this.emit(DOMAIN_EVENTS.TICKETS_RESERVED, bookingId, payload);
    }
 
    private async emit(event: string, aggregateId: string, payload: any) {

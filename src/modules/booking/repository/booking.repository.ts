@@ -205,7 +205,7 @@ export class BookingRepository {
          paymentStatus: PaymentStatus,
          paymentIntentId?: string | null
       },
-      session: ClientSession,
+      session?: ClientSession,
    ) {
 
       const booking = await this.bookingModel.findOneAndUpdate(
