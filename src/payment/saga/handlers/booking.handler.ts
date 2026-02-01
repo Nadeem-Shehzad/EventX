@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { AGGREGATES } from "src/constants/events/domain-aggregate";
-import { BookingConfirmedRequestPayload, PaymentRequestPayload } from "src/constants/events/domain-event-payloads";
+import { BookingConfirmedFailedPayload, BookingConfirmedRequestPayload, PaymentFailedPayload, PaymentRequestPayload } from "src/constants/events/domain-event-payloads";
 import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
 import { OutboxService } from "src/outbox/outbox.service";
 import { PaymentService } from "src/payment/payment.service";
@@ -23,26 +23,33 @@ export class BookingPaymentHandler {
 
       let paymentData: { paymentIntentId: string; clientSecret: string | null } | null = null;
 
-      try {
+      // paymentData = await this.paymentService.initiatePayment({
+      //    bookingId: data.bookingId,
+      //    amount: data.amount,
+      //    currency: data.currency
+      // });
 
-         paymentData = await this.paymentService.initiatePayment({
-            bookingId: data.bookingId,
-            amount: data.amount,
-            currency: data.currency
-         });
-
-         const payload: BookingConfirmedRequestPayload = {
-            bookingId: data.bookingId,
-            paymentIntent: paymentData.paymentIntentId
-         }
-
-         await this.emit(DOMAIN_EVENTS.BOOKING_CONFIRM_REQUESTED, data.bookingId, payload);
-
-      } catch (error) {
-         throw error;
+      const payload: BookingConfirmedRequestPayload = {
+         bookingId: data.bookingId,
+         paymentIntent: ''//paymentData.paymentIntentId
       }
 
+      //await this.emit(DOMAIN_EVENTS.BOOKING_CONFIRM_REQUESTED, data.bookingId, payload);
+      await this.emit(DOMAIN_EVENTS.PAYMENT_FAILED, data.bookingId, payload);
    }
+
+
+   async handleBookingPaymentFailed(data: PaymentFailedPayload) {
+
+      this.logger.warn('Inside handleBookingPaymentFailed in Payment-Module');
+
+      const payload: BookingConfirmedFailedPayload = {
+         bookingId: data.bookingId,
+      }
+
+      await this.emit(DOMAIN_EVENTS.BOOKING_PAYMENT_FAILED, data.bookingId, payload);
+   }
+
 
    private async emit(event: string, aggregateId: string, payload: any) {
       await this.outboxService.addEvent(AGGREGATES.BOOKING, aggregateId, event, payload);

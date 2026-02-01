@@ -17,9 +17,6 @@ export class TicketSagaService {
          case DOMAIN_EVENTS.BOOKING_CREATED:
             return this.bookingHandler.handleBookingCreated(job.data);
 
-         //   case DOMAIN_EVENTS.TICKETS_FAILED:
-         //     return this.handleTicketsFailed(job.data);
-
          default:
             throw new Error(`Unknown job ${job.name}`);
       }

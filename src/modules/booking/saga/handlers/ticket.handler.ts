@@ -3,13 +3,13 @@ import {
    BookingConfirmedRequestPayload,
    BookingCreatedPayload,
    PaymentRequestPayload,
+   TicketsReservedFailedPayload,
    TicketsReservedPayload
 } from "src/constants/events/domain-event-payloads";
 import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
 import { OutboxService } from "src/outbox/outbox.service";
 import { BookingService } from "../../booking.service";
 import { AGGREGATES } from "src/constants/events/domain-aggregate";
-
 
 
 @Injectable()
@@ -24,7 +24,7 @@ export class TicketsBookingHandler {
 
 
    async handleTicketsReserved(data: TicketsReservedPayload) {
-      const { bookingId, isPaid, quantity } = data;
+      const { bookingId, isPaid } = data;
 
       this.logger.log('Inside TicketRserved Handler in Booking-module');
 
@@ -35,9 +35,6 @@ export class TicketsBookingHandler {
             await this.emit(DOMAIN_EVENTS.BOOKING_CONFIRM_REQUESTED, bookingId, payload);
          }
 
-
-         this.logger.warn('--- This is Paid Event ---');
-         //2️⃣ Emit NEXT EVENT via OUTBOX
          const payload: PaymentRequestPayload = {
             bookingId,
             amount: 10000,
@@ -69,12 +66,15 @@ export class TicketsBookingHandler {
    }
 
 
-   async handleTicketsFailed(data: TicketsReservedPayload) {
-      const { bookingId, isPaid, quantity } = data;
+   async handleTicketsFailed(data: TicketsReservedFailedPayload) {
 
-      this.logger.log('Inside handleTicketsFailed Handler in Booking-module');
-      this.logger.log('--- Ticket Reservation Failed ---');
+      // this.logger.log('Inside handleTicketsFailed Handler in Booking-module');
+      // console.log('---------------- INSIDE HANDLE-TICKETS-FAILED --------------');
+
+      const { bookingId, reason } = data;
+      await this.bookingService.bookingFailed(bookingId);
    }
+
 
    private async emit(event: string, aggregateId: string, payload: any) {
       await this.outboxService.addEvent(AGGREGATES.PAYMENT, aggregateId, event, payload);
