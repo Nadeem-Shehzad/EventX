@@ -231,7 +231,7 @@ export class BookingController {
    @ApiResponse({ status: 404, description: 'not found' })
    @ApiResponse({ status: 500, description: 'Server Error' })
    confirmBooking(@Param('id') bookingId: string) {
-      return this.service.confirmBooking(bookingId);
+      return this.service.confirmBookingRequest(bookingId);
    }
 
 
@@ -256,7 +256,7 @@ export class BookingController {
    @ApiResponse({ status: 404, description: 'not found' })
    @ApiResponse({ status: 500, description: 'Server Error' })
    cancelBooking(@Param('id') bookingId: string) {
-      return this.service.cancelBooking(bookingId);
+      return this.service.cancelBookingRequest(bookingId);
    }
 
 

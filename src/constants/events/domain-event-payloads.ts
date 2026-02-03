@@ -13,6 +13,11 @@ export interface BookingConfirmedRequestPayload {
    paymentIntent?: string;
 }
 
+export interface BookingConfirmedFailedPayload {
+   bookingId: string;
+   paymentIntent?: string;
+}
+
 export interface BookingConfirmedPayload {
    bookingId: string;
    userId: string;
@@ -21,9 +26,6 @@ export interface BookingConfirmedPayload {
    quantity: number;
 }
 
-export interface BookingConfirmedFailedPayload {
-   bookingId: string;
-}
 
 
 

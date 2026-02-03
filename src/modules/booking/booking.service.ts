@@ -17,8 +17,13 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PaymentStatus } from "../../constants/payment-status.enum";
 import { BookingJob, EmailJob } from "src/constants/email-queue.constants";
 import { OutboxService } from "src/outbox/outbox.service";
-import { BookingCreatedPayload } from "src/constants/events/domain-event-payloads";
+import {
+   BookingConfirmedFailedPayload,
+   BookingConfirmedPayload,
+   BookingCreatedPayload
+} from "src/constants/events/domain-event-payloads";
 import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
+import { AGGREGATES } from "src/constants/events/domain-aggregate";
 
 
 @Injectable()
@@ -94,11 +99,11 @@ export class BookingService {
 
          await session.commitTransaction();
 
-         // this.eventEmitter.emit(BookingJob.BOOKING_CREATED, {
-         //    bookingId: bookingObj._id.toString(),
-         //    eventId: bookingObj.eventId.toString(),
-         //    userId
-         // });
+         this.eventEmitter.emit(BookingJob.BOOKING_CREATED, {
+            bookingId: booking._id.toString(),
+            eventId: booking.eventId.toString(),
+            userId
+         });
 
          return { bookingId: booking._id.toString(), status: 'PENDING' };
 
@@ -106,10 +111,10 @@ export class BookingService {
 
          await session.abortTransaction();
 
-         // this.eventEmitter.emit(EmailJob.BOOKING_FAILED, {
-         //    userId,
-         //    reason: error.message
-         // });
+         this.eventEmitter.emit(EmailJob.BOOKING_FAILED, {
+            userId,
+            reason: error.message
+         });
 
          throw error;
 
@@ -216,7 +221,7 @@ export class BookingService {
    }
 
 
-   async confirmBooking(bookingId: string, paymentIntentId?: string) {
+   async confirmBookingRequest(bookingId: string, paymentIntentId?: string) {
       const session = await this.connection.startSession();
       session.startTransaction();
 
@@ -259,23 +264,10 @@ export class BookingService {
 
          await session.commitTransaction();
 
-         this.eventEmitter.emit('booking.updated', {
-            bookingId: booking._id.toString(),
-            eventId: booking.eventId.toString(),
-            userId: booking.userId.toString()
-         });
-
-         this.eventEmitter.emit(EmailJob.BOOKING_SUCCESS, {
-            bookingId: booking._id.toString(),
-            eventId: booking.eventId.toString(),
-            userId: booking.userId.toString()
-         });
-
          return updatedBooking;
 
       } catch (error) {
          await session.abortTransaction();
-         throw error;
 
       } finally {
          session.endSession();
@@ -283,7 +275,30 @@ export class BookingService {
    }
 
 
-   async cancelBooking(bookingId: string) {
+   async bookingConfirmed(bookingId: string, eventId: string, userId: string) {
+
+      try {
+         this.eventEmitter.emit('booking.updated', {
+            bookingId: bookingId,
+            eventId: eventId,
+            userId: userId
+         });
+
+         this.eventEmitter.emit(EmailJob.BOOKING_SUCCESS, {
+            bookingId: bookingId,
+            eventId: eventId,
+            userId: userId
+         });
+
+         return true;
+
+      } catch (error) {
+         console.log('----- Error in booking-Confirmed Service -----');
+      }
+   }
+
+
+   async cancelBookingRequest(bookingId: string) {
       const session = await this.connection.startSession();
       session.startTransaction();
 
@@ -292,11 +307,12 @@ export class BookingService {
          const booking = await this.bookingRepo.findBookingById(bookingId);
          if (!booking) throw new NotFoundException('Booking Not Found!');
 
-         if (booking.status === BookingStatus.PENDING) {
+         if (booking.status === BookingStatus.CANCELLED) return;
 
+         // free event
+         if (!booking.paymentIntentId) {
             const patch: any = {
                status: BookingStatus.CANCELLED,
-               paymentStatus: PaymentStatus.FAILED
             }
 
             const updatedBooking = await this.bookingRepo.updateStatus(
@@ -315,17 +331,28 @@ export class BookingService {
                },
                { session }
             );
+
+            await session.commitTransaction();
+
+            this.eventEmitter.emit('booking.updated', {
+               bookingId: booking._id.toString(),
+               eventId: booking.eventId.toString(),
+               userId: booking.userId.toString()
+            });
+
+            return updatedBooking;
          }
+
 
          await session.commitTransaction();
 
-         this.eventEmitter.emit('booking.updated', {
-            bookingId: booking._id.toString(),
-            eventId: booking.eventId.toString(),
-            userId: booking.userId.toString()
-         });
+         const payload: BookingConfirmedFailedPayload = {
+            bookingId: bookingId,
+            paymentIntent: booking.paymentIntentId
+         }
 
-         return true;
+         await this.emit(DOMAIN_EVENTS.PAYMENT_REFUND_REQUEST, bookingId, payload);
+         return booking;
 
       } catch (error) {
          await session.abortTransaction();
@@ -335,6 +362,9 @@ export class BookingService {
          session.endSession();
       }
    }
+
+
+   async cancelConfirmedBooking() { }
 
 
    async markBookingRefunded(paymentIntentId: string) {
@@ -349,19 +379,23 @@ export class BookingService {
          if (booking.paymentStatus === PaymentStatus.REFUNDED) return true;
          if (booking.status !== BookingStatus.CONFIRMED) return true;
 
-         // await this.bookingRepo.updateStatus(
-         //    booking._id.toString(),
-         //    BookingStatus.CANCELLED,
-         //    PaymentStatus.REFUNDED,
-         //    session
-         // );
+         const patch: any = {
+            status: BookingStatus.CANCELLED,
+            paymentStatus: PaymentStatus.REFUNDED
+         }
+
+         const updatedBooking = await this.bookingRepo.updateStatus(
+            booking._id.toString(),
+            patch,
+            session
+         );
 
          await this.ticketModel.updateOne(
             { _id: booking.ticketTypeId },
             {
                $inc: {
                   availableQuantity: booking.quantity,
-                  soldQuantity: -booking.quantity
+                  reservedQuantity: -booking.quantity
                }
             },
             { session }
@@ -417,5 +451,11 @@ export class BookingService {
 
    async findBookingsByEventIdAndPaymentStatus(eventId: string) {
       return await this.bookingRepo.findBookingsByEventIdAndPaymentStatus(eventId);
+   }
+
+
+   // private 
+   private async emit(event: string, aggregateId: string, payload: any) {
+      await this.outboxService.addEvent(AGGREGATES.BOOKING, aggregateId, event, payload);
    }
 }

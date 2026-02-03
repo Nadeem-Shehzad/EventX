@@ -20,6 +20,9 @@ export class PaymentSagaService {
          case DOMAIN_EVENTS.PAYMENT_FAILED:
             return this.bookingPaymentHandler.handleBookingPaymentFailed(job.data);
 
+         case DOMAIN_EVENTS.PAYMENT_REFUND_REQUEST:
+            return this.bookingPaymentHandler.handleBookingPaymentRefundRequest(job.data);   
+
          default:
             throw new Error(`Unknown job ${job.name}`);
       }

@@ -9,6 +9,7 @@ import { PaymentStatus } from "src/constants/payment-status.enum";
 import { StripeService } from "src/stripe/stripe.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { EmailJob } from "src/constants/email-queue.constants";
+import { OutboxService } from "src/outbox/outbox.service";
 
 
 @Injectable()
@@ -18,7 +19,8 @@ export class PaymentService {
       private readonly stripe: StripeService,
       @Inject(forwardRef(() => BookingService))
       private readonly bookingService: BookingService,
-      private readonly eventEmitter: EventEmitter2
+      private readonly eventEmitter: EventEmitter2,
+      private readonly outboxService: OutboxService
    ) { }
 
    private readonly logger = new Logger(PaymentService.name);
@@ -97,7 +99,8 @@ export class PaymentService {
             const paymentIntent = event.data.object;
             const bookingId = paymentIntent.metadata.bookingId;
 
-            await this.bookingService.confirmBooking(bookingId);
+            await this.bookingService.confirmBookingRequest(bookingId);
+            //await this.outboxService.addEvent();
             this.logger.log(`Booking ${bookingId} confirmed via payment_intent.succeeded`);
 
             break;
@@ -107,7 +110,7 @@ export class PaymentService {
             const paymentIntent = event.data.object;
             const bookingId = paymentIntent.metadata.bookingId;
 
-            await this.bookingService.cancelBooking(bookingId);
+            await this.bookingService.cancelBookingRequest(bookingId);
             this.logger.log(`Booking ${bookingId} cancelled due to payment failure`);
 
             break;

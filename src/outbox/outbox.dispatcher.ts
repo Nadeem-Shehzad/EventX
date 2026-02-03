@@ -14,9 +14,9 @@ export class OutboxDispatcher {
 
    constructor(
       private readonly outboxService: OutboxService,
-      //@InjectQueue(QUEUES.TICKET_QUEUE) private ticketQueue: Queue,
-      //@InjectQueue(QUEUES.BOOKING_QUEUE) private bookingQueue: Queue,
-      //@InjectQueue(QUEUES.PAYMENT_QUEUE) private paymentQueue: Queue
+      // @InjectQueue(QUEUES.TICKET_QUEUE) private ticketQueue: Queue,
+      // @InjectQueue(QUEUES.BOOKING_QUEUE) private bookingQueue: Queue,
+      // @InjectQueue(QUEUES.PAYMENT_QUEUE) private paymentQueue: Queue
    ) { }
 
 
@@ -56,16 +56,19 @@ export class OutboxDispatcher {
          eventType === DOMAIN_EVENTS.TICKETS_RESERVED ||
          eventType === DOMAIN_EVENTS.TICKETS_FAILED ||
          eventType === DOMAIN_EVENTS.BOOKING_CONFIRM_REQUESTED ||
-         eventType === DOMAIN_EVENTS.BOOKING_PAYMENT_FAILED
+         eventType === DOMAIN_EVENTS.BOOKING_CONFIRMED ||
+         eventType === DOMAIN_EVENTS.BOOKING_PAYMENT_FAILED ||
+         eventType === DOMAIN_EVENTS.BOOKING_PAYMENT_REFUNDED
       ) {
          //await this.bookingQueue.add(eventType, payload, this.jobOptions(_id.toString()));
       }
 
       else if (
          eventType === DOMAIN_EVENTS.PAYMENT_REQUEST ||
-         eventType === DOMAIN_EVENTS.PAYMENT_FAILED
+         eventType === DOMAIN_EVENTS.PAYMENT_FAILED ||
+         eventType === DOMAIN_EVENTS.PAYMENT_REFUND_REQUEST
       ) {
-         //await this.paymentQueue.add(eventType, payload, this.jobOptions(_id.toString()));
+        // await this.paymentQueue.add(eventType, payload, this.jobOptions(_id.toString()));
       }
    }
 

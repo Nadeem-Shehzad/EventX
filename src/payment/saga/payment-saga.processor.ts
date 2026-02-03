@@ -50,6 +50,7 @@ export class PaymentSagaProcessor extends WorkerHost {
 
    private readonly failureMap = {
       [DOMAIN_EVENTS.PAYMENT_REQUEST]: DOMAIN_EVENTS.PAYMENT_FAILED,
+      // payment refund failed
    };
 
    private async emit(event: string, aggregateId: string, payload: any) {
