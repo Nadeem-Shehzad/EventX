@@ -26,8 +26,17 @@ export class BookingSagaService {
          case DOMAIN_EVENTS.BOOKING_CONFIRM_REQUESTED:
             return this.bookingHandler.handleBookingConfirmedRequest(job.data);
 
+         case DOMAIN_EVENTS.BOOKING_CONFIRM_FAILED:
+            return this.bookingHandler.handleBookingConfirmedFailed(job.data);
+
+         case DOMAIN_EVENTS.BOOKING_CONFIRMED:
+            return this.bookingHandler.handleBookingConfirmed(job.data);
+
          case DOMAIN_EVENTS.BOOKING_PAYMENT_FAILED:
             return this.bookingHandler.handleBookingPaymentFailed(job.data);
+
+         case DOMAIN_EVENTS.BOOKING_PAYMENT_REFUNDED:
+            return this.bookingHandler.handleBookingPaymentRefunded(job.data);   
 
          default:
             throw new Error(`Unknown job ${job.name}`);

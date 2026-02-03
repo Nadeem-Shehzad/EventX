@@ -49,7 +49,7 @@ export class BookingSagaProcessor extends WorkerHost {
    }
 
    private readonly failureMap = {
-      [DOMAIN_EVENTS.BOOKING_CONFIRM_REQUESTED]: DOMAIN_EVENTS.BOOKING_CONFIRM_FAILED,
+      //[DOMAIN_EVENTS.BOOKING_CONFIRM_REQUESTED]: DOMAIN_EVENTS.BOOKING_CONFIRM_FAILED,
    };
 
    private async emit(event: string, aggregateId: string, payload: any) {

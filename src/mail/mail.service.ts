@@ -20,7 +20,7 @@ export class MailService {
    }
 
    async sendCancelBooking({ bookingId, eventName, userName, email }) {
-      console.log('inside mail booking cancel service');
+      console.log('inside mail booking payment refund service');
 
       return this.mailer.sendMail({
          to: email,
