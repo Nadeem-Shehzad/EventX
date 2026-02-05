@@ -7,6 +7,7 @@ import { ConfigService } from "@nestjs/config";
 import { CommonModule } from "src/common/common.module";
 import { MailerModule } from "@nestjs-modules/mailer";
 import { MyRedisModule } from "src/redis/redis.module";
+import { LoggingModule } from "src/logging/logging.module";
 
 
 @Module({
@@ -41,6 +42,7 @@ import { MyRedisModule } from "src/redis/redis.module";
          })
       }),
 
+      LoggingModule,
       MyRedisModule,
       CommonModule
    ],

@@ -7,6 +7,7 @@ import {
    PaymentRequestPayload
 } from "src/constants/events/domain-event-payloads";
 import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
+import { AppLogger } from "src/logging/logging.service";
 import { OutboxService } from "src/outbox/outbox.service";
 import { PaymentService } from "src/payment/payment.service";
 
@@ -14,17 +15,20 @@ import { PaymentService } from "src/payment/payment.service";
 @Injectable()
 export class BookingPaymentHandler {
 
-   private readonly logger = new Logger(BookingPaymentHandler.name);
-
    constructor(
       private readonly paymentService: PaymentService,
-      private readonly outboxService: OutboxService
+      private readonly outboxService: OutboxService,
+      private readonly logger: AppLogger
    ) { }
 
 
    async handleBookingPaymentRequest(data: PaymentRequestPayload) {
 
-      this.logger.warn('Inside handleBookingPaymentRequest in Payment-Module');
+      this.logger.info({
+         module: 'Payment',
+         service: BookingPaymentHandler.name,
+         msg: 'Inside handleBookingPaymentRequest',
+      });
 
       let paymentData: { paymentIntentId: string; clientSecret: string | null } | null = null;
 
@@ -46,7 +50,11 @@ export class BookingPaymentHandler {
 
    async handleBookingPaymentFailed(data: PaymentFailedPayload) {
 
-      this.logger.warn('Inside handleBookingPaymentFailed in Payment-Module');
+      this.logger.info({
+         module: 'Payment',
+         service: BookingPaymentHandler.name,
+         msg: 'Inside handleBookingPaymentFailed',
+      });
 
       const payload: BookingConfirmedFailedPayload = { bookingId: data.bookingId }
 
@@ -56,7 +64,11 @@ export class BookingPaymentHandler {
 
    async handleBookingPaymentRefundRequest(data: BookingConfirmedFailedPayload) {
 
-      this.logger.warn('Inside handleBookingPaymentRefundRequest in Payment-Module');
+      this.logger.info({
+         module: 'Payment',
+         service: BookingPaymentHandler.name,
+         msg: 'Inside handleBookingPaymentRefundRequest',
+      });
 
       await this.paymentService.refundBookingPayment(data.bookingId);
 

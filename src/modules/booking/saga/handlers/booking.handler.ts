@@ -8,22 +8,26 @@ import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
 import { OutboxService } from "src/outbox/outbox.service";
 import { BookingService } from "../../booking.service";
 import { AGGREGATES } from "src/constants/events/domain-aggregate";
+import { AppLogger } from "src/logging/logging.service";
 
 
 @Injectable()
 export class BookingsHandler {
 
-   private readonly logger = new Logger(BookingsHandler.name);
-
    constructor(
       private readonly bookingService: BookingService,
-      private readonly outboxService: OutboxService
+      private readonly outboxService: OutboxService,
+      private readonly logger: AppLogger
    ) { }
 
 
    async handleBookingConfirmedRequest(data: BookingConfirmedRequestPayload) {
 
-      this.logger.log('Inside handleBookingConfirmedRequest Handler in Booking-module');
+      this.logger.info({
+         module: 'Booking',
+         service: BookingsHandler.name,
+         msg: 'Inside handleBookingConfirmedRequest',
+      });
 
       const { bookingId } = data;
       const booking = await this.bookingService.confirmBookingRequest(bookingId, data.paymentIntent);
@@ -46,7 +50,11 @@ export class BookingsHandler {
 
    async handleBookingConfirmedFailed(data: BookingConfirmedFailedPayload) {
 
-      this.logger.log('Inside handleBookingConfirmedFailed Handler in Booking-module');
+      this.logger.info({
+         module: 'Booking',
+         service: BookingsHandler.name,
+         msg: 'Inside handleBookingConfirmedFailed ',
+      });
 
       const { bookingId } = data;
 
@@ -60,11 +68,11 @@ export class BookingsHandler {
             bookingId: bookingId,
             paymentIntent: booking.paymentIntentId
          }
-   
+
          await this.emit(DOMAIN_EVENTS.PAYMENT_REFUND_REQUEST, bookingId, payload);
          return;
       }
-      
+
       const payload = {};
       await this.emit(DOMAIN_EVENTS.BOOKING_CANCELLED, bookingId, payload);
    }
@@ -72,7 +80,11 @@ export class BookingsHandler {
 
    async handleBookingConfirmed(data: BookingConfirmedPayload) {
 
-      this.logger.log('Inside handleBookingConfirmed Handler in Booking-module');
+      this.logger.info({
+         module: 'Booking',
+         service: BookingsHandler.name,
+         msg: 'Inside handleBookingConfirmed',
+      });
 
       const { bookingId, eventId, userId } = data;
       await this.bookingService.bookingConfirmed(bookingId, eventId, userId);
@@ -81,7 +93,11 @@ export class BookingsHandler {
 
    async handleBookingPaymentFailed(data: BookingConfirmedRequestPayload) {
 
-      this.logger.log('Inside handleBookingPaymentFailed Handler in Booking-module');
+      this.logger.info({
+         module: 'Booking',
+         service: BookingsHandler.name,
+         msg: 'Inside handleBookingPaymentFailed',
+      });
 
       const { bookingId } = data;
       await this.bookingService.cancelBookingRequest(bookingId);
@@ -90,7 +106,11 @@ export class BookingsHandler {
 
    async handleBookingPaymentRefunded(data: BookingConfirmedRequestPayload) {
 
-      this.logger.log('Inside handleBookingPaymentRefunded Handler in Booking-module');
+      this.logger.info({
+         module: 'Booking',
+         service: BookingsHandler.name,
+         msg: 'Inside handleBookingPaymentRefunded',
+      });
 
       const { bookingId } = data;
       await this.bookingService.markBookingRefunded(bookingId);

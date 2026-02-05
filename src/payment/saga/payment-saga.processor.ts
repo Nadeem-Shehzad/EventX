@@ -2,25 +2,29 @@ import { OnWorkerEvent, Processor, WorkerHost } from "@nestjs/bullmq";
 import { Job } from "bullmq";
 import { QUEUES } from "src/queue/queue.constants";
 import { PaymentSagaService } from "./payment-saga.service";
-import { Logger } from "@nestjs/common";
 import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
 import { AGGREGATES } from "src/constants/events/domain-aggregate";
 import { OutboxService } from "src/outbox/outbox.service";
+import { AppLogger } from "src/logging/logging.service";
 
 
 @Processor(QUEUES.PAYMENT_QUEUE)
 export class PaymentSagaProcessor extends WorkerHost {
 
-   private readonly logger = new Logger(PaymentSagaProcessor.name);
-
    constructor(
       private readonly sagaService: PaymentSagaService,
-      private readonly outboxService: OutboxService
+      private readonly outboxService: OutboxService,
+      private readonly logger: AppLogger
    ) { super() }
 
 
    async process(job: Job) {
-      this.logger.warn('Inside Payment-Module-SAGA');
+      this.logger.info({
+         module: 'Payment',
+         service: PaymentSagaProcessor.name,
+         msg: 'Inside Payment-Module-SAGA',
+      });
+
       return this.sagaService.handle(job);
    }
 
@@ -32,11 +36,21 @@ export class PaymentSagaProcessor extends WorkerHost {
 
       // Check if we have attempts remaining
       if (job.attemptsMade < maxAttempts) {
-         this.logger.warn(`Job ${job.id} failed (Attempt ${job.attemptsMade} of ${maxAttempts}). Retrying...`);
+
+         this.logger.warn({
+            module: 'Payment',
+            service: PaymentSagaProcessor.name,
+            msg: `Job ${job.id} failed (Attempt ${job.attemptsMade} of ${maxAttempts}). Retrying...`,
+         });
+
          return;
       }
 
-      this.logger.error(`Job ${job.id} failed permanently. Triggering Saga Rollback.`);
+      this.logger.error({
+         module: 'Payment',
+         service: PaymentSagaProcessor.name,
+         msg: `Job ${job.id} failed permanently. Triggering Saga Rollback.`,
+      });
 
       const failureEvent = this.failureMap[job.name];
       if (!failureEvent) return;

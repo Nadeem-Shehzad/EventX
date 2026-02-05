@@ -10,23 +10,27 @@ import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
 import { OutboxService } from "src/outbox/outbox.service";
 import { BookingService } from "../../booking.service";
 import { AGGREGATES } from "src/constants/events/domain-aggregate";
+import { AppLogger } from "src/logging/logging.service";
 
 
 @Injectable()
 export class TicketsBookingHandler {
 
-   private readonly logger = new Logger(TicketsBookingHandler.name);
-
    constructor(
       private readonly bookingService: BookingService,
-      private readonly outboxService: OutboxService
+      private readonly outboxService: OutboxService,
+      private readonly logger: AppLogger
    ) { }
 
 
    async handleTicketsReserved(data: TicketsReservedPayload) {
       const { bookingId, isPaid } = data;
 
-      this.logger.log('Inside TicketRserved Handler in Booking-module');
+      this.logger.info({
+         module: 'Booking',
+         service: TicketsBookingHandler.name,
+         msg: 'Inside handleTicketRserved',
+      });
 
       try {
 
@@ -68,7 +72,12 @@ export class TicketsBookingHandler {
 
    async handleTicketsFailed(data: TicketsReservedFailedPayload) {
 
-      // this.logger.log('Inside handleTicketsFailed Handler in Booking-module');
+      // this.logger.info({
+      //    module: 'Booking',
+      //    service: TicketsBookingHandler.name,
+      //    msg: 'Inside handleTicketsFailed',
+      // });
+
       // console.log('---------------- INSIDE HANDLE-TICKETS-FAILED --------------');
 
       const { bookingId, reason } = data;

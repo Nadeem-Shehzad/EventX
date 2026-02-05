@@ -6,22 +6,28 @@ import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
 import { BookingSagaService } from "./booking-saga.service";
 import { AGGREGATES } from "src/constants/events/domain-aggregate";
 import { OutboxService } from "src/outbox/outbox.service";
+import { AppLogger } from "src/logging/logging.service";
 
 
 @Processor(QUEUES.BOOKING_QUEUE)
 @Injectable()
 export class BookingSagaProcessor extends WorkerHost {
 
-   private readonly logger = new Logger(BookingSagaProcessor.name);
-
    constructor(
       private readonly sagaService: BookingSagaService,
-      private readonly outboxService: OutboxService
+      private readonly outboxService: OutboxService,
+      private readonly logger: AppLogger
    ) { super() }
 
 
    async process(job: Job) {
-      this.logger.warn('Inside Booking-Module-SAGA');
+
+      this.logger.info({
+         module: 'Booking',
+         service: BookingSagaProcessor.name,
+         msg: 'Inside Booking-Module-SAGA',
+      });
+
       return this.sagaService.handle(job);
    }
 
@@ -31,13 +37,22 @@ export class BookingSagaProcessor extends WorkerHost {
 
       const maxAttempts = job.opts.attempts || 1;
 
-      // Check if we have attempts remaining
       if (job.attemptsMade < maxAttempts) {
-         this.logger.warn(`Job ${job.id} failed (Attempt ${job.attemptsMade} of ${maxAttempts}). Retrying...`);
+
+         this.logger.warn({
+            module: 'Booking',
+            service: BookingSagaProcessor.name,
+            msg: `Job ${job.id} failed (Attempt ${job.attemptsMade} of ${maxAttempts}). Retrying...`,
+         });
+
          return;
       }
 
-      this.logger.error(`Job ${job.id} failed permanently. Triggering Saga Rollback.`);
+      this.logger.error({
+         module: 'Booking',
+         service: BookingSagaProcessor.name,
+         msg: `Job ${job.id} failed permanently. Triggering Saga Rollback.`,
+      });
 
       const failureEvent = this.failureMap[job.name];
       if (!failureEvent) return;
