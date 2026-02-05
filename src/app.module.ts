@@ -23,27 +23,54 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { PaymentModule } from './payment/payment.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
-
+const isProd = process.env.NODE_ENV === 'production';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig, authConfig, databaseConfig, redisConfig, cloudinaryConfig, stripeConfig],
+      load: [
+        appConfig,
+        authConfig,
+        databaseConfig,
+        redisConfig,
+        cloudinaryConfig,
+        stripeConfig
+      ],
       validationSchema
     }),
 
     LoggerModule.forRoot({
       pinoHttp: {
+        level: 'info',
         autoLogging: false,
+
         transport: {
-          target: 'pino-pretty',
-          options: {
-            colorize: true,
-            translateTime: 'SYS:standard',
-            ignore: 'req,pid,hostname,context',
-            messageFormat: '[{context}] {msg}',
-          },
+          targets: [
+            // 👉 console only in dev
+            ...(!isProd
+              ? [
+                {
+                  target: 'pino-pretty',
+                  options: {
+                    colorize: true,
+                    translateTime: 'SYS:standard',
+                    ignore: 'req,pid,hostname,context',
+                    messageFormat: '[{context}] {msg}',
+                  },
+                },
+              ]
+              : []),
+
+            // 👉 ALWAYS write to file (dev + prod)
+            {
+              target: 'pino/file',
+              options: {
+                destination: './logs/app.log',
+                mkdir: true,
+              },
+            },
+          ],
         },
       },
     }),
