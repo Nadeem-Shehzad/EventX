@@ -49,7 +49,7 @@ export class OutboxDispatcher {
       await this.outboxService.markDispatched(event._id.toString());
 
       if (eventType === DOMAIN_EVENTS.BOOKING_CREATED) {
-         //await this.ticketQueue.add(eventType, payload, this.jobOptions(_id.toString()));
+        // await this.ticketQueue.add(eventType, payload, this.jobOptions(_id.toString()));
       }
 
       else if (
@@ -60,7 +60,7 @@ export class OutboxDispatcher {
          eventType === DOMAIN_EVENTS.BOOKING_PAYMENT_FAILED ||
          eventType === DOMAIN_EVENTS.BOOKING_PAYMENT_REFUNDED
       ) {
-         //await this.bookingQueue.add(eventType, payload, this.jobOptions(_id.toString()));
+        // await this.bookingQueue.add(eventType, payload, this.jobOptions(_id.toString()));
       }
 
       else if (
@@ -68,7 +68,7 @@ export class OutboxDispatcher {
          eventType === DOMAIN_EVENTS.PAYMENT_FAILED ||
          eventType === DOMAIN_EVENTS.PAYMENT_REFUND_REQUEST
       ) {
-         //await this.paymentQueue.add(eventType, payload, this.jobOptions(_id.toString()));
+        // await this.paymentQueue.add(eventType, payload, this.jobOptions(_id.toString()));
       }
    }
 

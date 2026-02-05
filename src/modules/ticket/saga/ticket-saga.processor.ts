@@ -6,22 +6,28 @@ import { TicketSagaService } from "./ticket-saga.service";
 import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
 import { AGGREGATES } from "src/constants/events/domain-aggregate";
 import { OutboxService } from "src/outbox/outbox.service";
+import { AppLogger } from "src/logging/logging.service";
 
 
 @Processor(QUEUES.TICKET_QUEUE)
 @Injectable()
 export class TicketSagaProcessor extends WorkerHost {
 
-   private readonly logger = new Logger(TicketSagaProcessor.name);
-
    constructor(
       private readonly sagaService: TicketSagaService,
-      private readonly outboxService: OutboxService
+      private readonly outboxService: OutboxService,
+      private readonly logger: AppLogger
    ) { super() }
 
 
    async process(job: Job) {
-      this.logger.warn('Inside Ticket-Module-SAGA');
+
+      this.logger.info({
+         module: 'Ticket',
+         service: TicketSagaProcessor.name,
+         msg: 'Inside Ticket-Module-SAGA',
+      });
+
       return this.sagaService.handle(job);
    }
 
@@ -31,13 +37,22 @@ export class TicketSagaProcessor extends WorkerHost {
 
       const maxAttempts = job.opts.attempts || 1;
 
-      // Check if we have attempts remaining
       if (job.attemptsMade < maxAttempts) {
-         this.logger.warn(`Job ${job.id} failed (Attempt ${job.attemptsMade} of ${maxAttempts}). Retrying...`);
+
+         this.logger.warn({
+            module: 'Ticket',
+            service: TicketSagaProcessor.name,
+            msg: `Job ${job.id} failed (Attempt ${job.attemptsMade} of ${maxAttempts}). Retrying...`,
+         });
+         
          return;
       }
 
-      this.logger.error(`Job ${job.id} failed permanently. Triggering Saga Rollback.`);
+      this.logger.error({
+         module: 'Ticket',
+         service: TicketSagaProcessor.name,
+         msg: `Job ${job.id} failed permanently. Triggering Saga Rollback.`,
+      });
 
       const failureEvent = this.failureMap[job.name];
       if (!failureEvent) return;

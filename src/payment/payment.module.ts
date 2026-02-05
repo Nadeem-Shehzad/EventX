@@ -8,11 +8,13 @@ import { OutboxModule } from 'src/outbox/outbox.module';
 import { PaymentSagaProcessor } from './saga/payment-saga.processor';
 import { PaymentSagaService } from './saga/payment-saga.service';
 import { BookingPaymentHandler } from './saga/handlers/booking.handler';
+import { LoggingModule } from 'src/logging/logging.module';
 
 @Module({
    imports: [
       StripeModule,
       forwardRef(() => BookingModule),
+      LoggingModule,
       OutboxModule,
       CommonModule
    ],

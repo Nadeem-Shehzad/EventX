@@ -8,11 +8,13 @@ import { OutboxModule } from "src/outbox/outbox.module";
 import { TicketSagaProcessor } from "./saga/ticket-saga.processor";
 import { TicketSagaService } from "./saga/ticket-saga.service";
 import { BookingTicketHandler } from "./saga/handlers/booking.handler";
+import { LoggingModule } from "src/logging/logging.module";
 
 
 @Module({
    imports: [
       MongooseModule.forFeature([{ name: 'TicketType', schema: TicketTypeSchema }]),
+      LoggingModule,
       OutboxModule
    ],
    controllers: [TicketController],

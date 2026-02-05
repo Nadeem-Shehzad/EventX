@@ -14,7 +14,6 @@ import { CommonModule } from './common/common.module';
 import { MyRedisModule } from './redis/redis.module';
 import redisConfig from './config/redis.config';
 import { RateLimitModule } from './rateLimit/rate-limit.module';
-import { LoggerModule } from 'nestjs-pino';
 import { EventModule } from './modules/event/event.module';
 import { QueuesModule } from './queue/queues.module';
 import { DB_QUERY_TIMEOUTS } from './constants/db-timeout.constants';
@@ -22,6 +21,7 @@ import { BookingModule } from './modules/booking/booking.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { PaymentModule } from './payment/payment.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { LoggingModule } from './logging/logging.module';
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -40,40 +40,7 @@ const isProd = process.env.NODE_ENV === 'production';
       validationSchema
     }),
 
-    LoggerModule.forRoot({
-      pinoHttp: {
-        level: 'info',
-        autoLogging: false,
-
-        transport: {
-          targets: [
-            // 👉 console only in dev
-            ...(!isProd
-              ? [
-                {
-                  target: 'pino-pretty',
-                  options: {
-                    colorize: true,
-                    translateTime: 'SYS:standard',
-                    ignore: 'req,pid,hostname,context',
-                    messageFormat: '[{context}] {msg}',
-                  },
-                },
-              ]
-              : []),
-
-            // 👉 ALWAYS write to file (dev + prod)
-            {
-              target: 'pino/file',
-              options: {
-                destination: './logs/app.log',
-                mkdir: true,
-              },
-            },
-          ],
-        },
-      },
-    }),
+    LoggingModule,
 
     EventEmitterModule.forRoot(),
     QueuesModule,

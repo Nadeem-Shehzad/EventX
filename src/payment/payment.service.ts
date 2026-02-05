@@ -1,6 +1,6 @@
 import {
    BadRequestException, forwardRef,
-   Inject, Injectable, Logger
+   Inject, Injectable
 } from "@nestjs/common";
 import { InjectConnection } from "@nestjs/mongoose";
 import { Connection } from "mongoose";
@@ -10,20 +10,21 @@ import { StripeService } from "src/stripe/stripe.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { EmailJob } from "src/constants/email-queue.constants";
 import { OutboxService } from "src/outbox/outbox.service";
+import { AppLogger } from "src/logging/logging.service";
 
 
 @Injectable()
 export class PaymentService {
+
    constructor(
       @InjectConnection() private readonly connection: Connection,
       private readonly stripe: StripeService,
       @Inject(forwardRef(() => BookingService))
       private readonly bookingService: BookingService,
       private readonly eventEmitter: EventEmitter2,
-      private readonly outboxService: OutboxService
+      private readonly outboxService: OutboxService,
+      private readonly logger: AppLogger
    ) { }
-
-   private readonly logger = new Logger(PaymentService.name);
 
 
    async initiatePayment(params: {
@@ -64,7 +65,7 @@ export class PaymentService {
 
       const refund = await this.stripe.refundPayment(booking.paymentIntentId);;
 
-      return refund; 
+      return refund;
    }
 
 
@@ -101,7 +102,11 @@ export class PaymentService {
 
             await this.bookingService.confirmBookingRequest(bookingId);
             //await this.outboxService.addEvent();
-            this.logger.log(`Booking ${bookingId} confirmed via payment_intent.succeeded`);
+            this.logger.info({
+               module: 'Payment',
+               service: 'handleStripeWebhook.payment_intent.succeeded',
+               msg: `Booking ${bookingId} confirmed via payment_intent.succeeded`,
+            });
 
             break;
          }
@@ -111,7 +116,12 @@ export class PaymentService {
             const bookingId = paymentIntent.metadata.bookingId;
 
             await this.bookingService.cancelBookingRequest(bookingId);
-            this.logger.log(`Booking ${bookingId} cancelled due to payment failure`);
+
+            this.logger.error({
+               module: 'Payment',
+               service: 'handleStripeWebhook.payment_intent.payment_failed',
+               msg: `Booking ${bookingId} cancelled due to payment failure`,
+            });
 
             break;
          }
@@ -121,13 +131,22 @@ export class PaymentService {
             const paymentIntentId = refund.payment_intent;
 
             await this.bookingService.markBookingRefunded(paymentIntentId);
-            this.logger.log(`Booking with ${paymentIntentId} refunded`);
+
+            this.logger.error({
+               module: 'Payment',
+               service: 'handleStripeWebhook.charge.refunded',
+               msg: `Booking with ${paymentIntentId} refunded`,
+            });
 
             break;
          }
 
          default:
-            this.logger.log(`Unhandled Stripe event: ${event.type}`);
+            this.logger.error({
+               module: 'Payment',
+               service: 'handleStripeWebhook.default',
+               msg: `Unhandled Stripe event: ${event.type}`,
+            });
       }
    }
 }

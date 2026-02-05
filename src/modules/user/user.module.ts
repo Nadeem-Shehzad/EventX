@@ -5,11 +5,13 @@ import { UserController } from "./user.controller";
 import { UserService } from "./user.service";
 import { UserRepository } from "./user.repository";
 import { CommonModule } from "src/common/common.module";
+import { LoggingModule } from "src/logging/logging.module";
 
 
 @Module({
    imports: [
       MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
+      LoggingModule,
       forwardRef(() => CommonModule),
    ],
    controllers: [UserController],

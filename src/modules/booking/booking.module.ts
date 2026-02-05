@@ -17,11 +17,13 @@ import { BookingSagaProcessor } from "./saga/booking-saga.processor";
 import { BookingSagaService } from "./saga/booking-saga.service";
 import { TicketsBookingHandler } from "./saga/handlers/ticket.handler";
 import { BookingsHandler } from "./saga/handlers/booking.handler";
+import { LoggingModule } from "src/logging/logging.module";
 
 
 @Module({
    imports: [
       MongooseModule.forFeature([{ name: 'Booking', schema: BookingSchema }]),
+      LoggingModule,
       UserModule,
       EventModule,
       OutboxModule,
