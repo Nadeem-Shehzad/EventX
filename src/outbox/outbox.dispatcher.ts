@@ -68,7 +68,7 @@ export class OutboxDispatcher {
          eventType === DOMAIN_EVENTS.PAYMENT_FAILED ||
          eventType === DOMAIN_EVENTS.PAYMENT_REFUND_REQUEST
       ) {
-        // await this.paymentQueue.add(eventType, payload, this.jobOptions(_id.toString()));
+         //await this.paymentQueue.add(eventType, payload, this.jobOptions(_id.toString()));
       }
    }
 
