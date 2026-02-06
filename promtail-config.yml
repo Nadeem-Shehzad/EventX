@@ -15,3 +15,22 @@ scrape_configs:
         labels:
           job: eventx
           __path__: /var/log/eventx/*.log
+
+    pipeline_stages:
+
+      # 1️⃣ parse each line as JSON (Pino logs)
+      - json:
+          expressions:
+            level:
+            module:
+            service:
+            msg:
+            eventId:
+            bookingId:
+            ticketId:
+
+      # 2️⃣ convert selected fields → Loki labels (indexed, fast)
+      - labels:
+          level:
+          module:
+          service:

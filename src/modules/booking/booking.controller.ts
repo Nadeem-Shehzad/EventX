@@ -11,7 +11,11 @@ import { Roles } from "src/common/decorators/user-roles";
 import { GetUserID } from "src/common/decorators/used-id";
 import { BookingQueryDTO } from "./dto/booking-query.dto";
 import { SkipThrottle, Throttle } from "@nestjs/throttler";
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
+import {
+   ApiBearerAuth, ApiBody,
+   ApiOperation, ApiQuery,
+   ApiResponse, ApiTags
+} from "@nestjs/swagger";
 import { CreateBookingResponseDTO } from "./swagger/response/create-booking-response.dto";
 import { BookingResponseDTO } from "./dto/booking.response.dto";
 import { PaginatedBookingsResponseDTO } from "./swagger/response/all-bookings-response.dto";

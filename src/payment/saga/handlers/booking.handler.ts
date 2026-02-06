@@ -28,6 +28,7 @@ export class BookingPaymentHandler {
          module: 'Payment',
          service: BookingPaymentHandler.name,
          msg: 'Inside handleBookingPaymentRequest',
+         bookingId: data.bookingId,
       });
 
       let paymentData: { paymentIntentId: string; clientSecret: string | null } | null = null;
@@ -54,6 +55,7 @@ export class BookingPaymentHandler {
          module: 'Payment',
          service: BookingPaymentHandler.name,
          msg: 'Inside handleBookingPaymentFailed',
+         bookingId: data.bookingId,
       });
 
       const payload: BookingConfirmedFailedPayload = { bookingId: data.bookingId }
@@ -68,6 +70,7 @@ export class BookingPaymentHandler {
          module: 'Payment',
          service: BookingPaymentHandler.name,
          msg: 'Inside handleBookingPaymentRefundRequest',
+         bookingId: data.bookingId,
       });
 
       await this.paymentService.refundBookingPayment(data.bookingId);

@@ -1,15 +1,13 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RedisModule } from '@nestjs-modules/ioredis';
 import { RedisService } from './redis.service';
 import { REDIS_TIMEOUTS } from 'src/constants/redis-timeout.constants';
 
 @Module({
    imports: [
-      //ConfigModule,
       RedisModule.forRoot({
          type: 'single',
-         url: 'redis://localhost:6379', 
+         url: 'redis://redis:6379',  // redis://localhost:6379 when runs on host machine
          options: {
             maxRetriesPerRequest: 3,
             connectTimeout: 10000,      
