@@ -24,6 +24,7 @@ import {
 } from "src/constants/events/domain-event-payloads";
 import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
 import { AGGREGATES } from "src/constants/events/domain-aggregate";
+import { MetricsService } from "src/monitoring/metrics.service";
 
 
 @Injectable()
@@ -37,7 +38,8 @@ export class BookingService {
       private readonly paymentService: PaymentService,
       private readonly redis: RedisService,
       private readonly eventEmitter: EventEmitter2,
-      private readonly outboxService: OutboxService
+      private readonly outboxService: OutboxService,
+      private readonly matricsService: MetricsService
    ) { }
 
 
@@ -267,6 +269,7 @@ export class BookingService {
          return updatedBooking;
 
       } catch (error) {
+         this.matricsService.incBookingFailed();
          await session.abortTransaction();
 
       } finally {
@@ -289,6 +292,8 @@ export class BookingService {
             eventId: eventId,
             userId: userId
          });
+
+         this.matricsService.incBookingCreated();
 
          return true;
 

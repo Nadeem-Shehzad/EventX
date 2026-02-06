@@ -22,6 +22,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { PaymentModule } from './payment/payment.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { LoggingModule } from './logging/logging.module';
+import { MonitoringModule } from './monitoring/monitoring.module';
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -41,6 +42,7 @@ const isProd = process.env.NODE_ENV === 'production';
     }),
 
     LoggingModule,
+    MonitoringModule,
 
     EventEmitterModule.forRoot(),
     QueuesModule,

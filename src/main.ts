@@ -12,6 +12,7 @@ import { Logger } from 'nestjs-pino';
 import { VersioningType } from '@nestjs/common';
 import * as bodyParser from 'body-parser';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { MetricsInterceptor } from './monitoring/metrics.interceptor';
 
 
 async function bootstrap() {
@@ -54,7 +55,9 @@ async function bootstrap() {
    );
 
    app.useGlobalFilters(new GlobalExceptionFilter());
-   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+   app.useGlobalInterceptors(
+      new ClassSerializerInterceptor(app.get(Reflector)),
+   );
    app.useGlobalPipes(new ValidationPipe({
       whitelist: true,
       transform: true,
@@ -63,6 +66,7 @@ async function bootstrap() {
       },
    }));
 
+   await app.init();
    await app.listen(process.env.PORT ?? 3000);
    app.useLogger(app.get(Logger));
 }

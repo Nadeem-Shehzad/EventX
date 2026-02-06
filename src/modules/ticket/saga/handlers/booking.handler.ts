@@ -1,4 +1,4 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { 
    BookingCreatedPayload, 
    TicketsReservedPayload 
@@ -24,6 +24,9 @@ export class BookingTicketHandler {
          module: 'Ticket',
          service: BookingTicketHandler.name,
          msg: 'Inside BookingCreated',
+         eventId: data.eventId,
+         bookingId: data.bookingId,
+         ticketId: data.ticketTypeId
       });
 
       const { bookingId, ticketTypeId, quantity } = data;

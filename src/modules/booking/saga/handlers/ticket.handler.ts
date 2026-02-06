@@ -30,6 +30,7 @@ export class TicketsBookingHandler {
          module: 'Booking',
          service: TicketsBookingHandler.name,
          msg: 'Inside handleTicketRserved',
+         bookingId: data.bookingId
       });
 
       try {

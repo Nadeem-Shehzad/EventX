@@ -18,12 +18,14 @@ import { BookingSagaService } from "./saga/booking-saga.service";
 import { TicketsBookingHandler } from "./saga/handlers/ticket.handler";
 import { BookingsHandler } from "./saga/handlers/booking.handler";
 import { LoggingModule } from "src/logging/logging.module";
+import { MonitoringModule } from "src/monitoring/monitoring.module";
 
 
 @Module({
    imports: [
       MongooseModule.forFeature([{ name: 'Booking', schema: BookingSchema }]),
       LoggingModule,
+      MonitoringModule,
       UserModule,
       EventModule,
       OutboxModule,

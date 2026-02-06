@@ -1,0 +1,8 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: 'eventx-api'
+    metrics_path: '/v1/metrics'  # matches your NestJS versioned metrics endpoint
+    static_configs:
+      - targets: ['eventx-api:3000']    # replace 'api' with your NestJS container name if using Docker, or 'host.docker.internal:3000' for local

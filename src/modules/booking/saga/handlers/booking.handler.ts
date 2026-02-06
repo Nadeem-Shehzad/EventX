@@ -27,6 +27,7 @@ export class BookingsHandler {
          module: 'Booking',
          service: BookingsHandler.name,
          msg: 'Inside handleBookingConfirmedRequest',
+         bookingId: data.bookingId,
       });
 
       const { bookingId } = data;
@@ -54,6 +55,7 @@ export class BookingsHandler {
          module: 'Booking',
          service: BookingsHandler.name,
          msg: 'Inside handleBookingConfirmedFailed ',
+         bookingId: data.bookingId,
       });
 
       const { bookingId } = data;
@@ -84,6 +86,9 @@ export class BookingsHandler {
          module: 'Booking',
          service: BookingsHandler.name,
          msg: 'Inside handleBookingConfirmed',
+         eventId: data.eventId,
+         bookingId: data.bookingId,
+         ticketId: data.ticketTypeId
       });
 
       const { bookingId, eventId, userId } = data;
@@ -97,6 +102,7 @@ export class BookingsHandler {
          module: 'Booking',
          service: BookingsHandler.name,
          msg: 'Inside handleBookingPaymentFailed',
+         bookingId: data.bookingId
       });
 
       const { bookingId } = data;
@@ -110,6 +116,7 @@ export class BookingsHandler {
          module: 'Booking',
          service: BookingsHandler.name,
          msg: 'Inside handleBookingPaymentRefunded',
+         bookingId: data.bookingId
       });
 
       const { bookingId } = data;
