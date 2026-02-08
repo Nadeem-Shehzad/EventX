@@ -13,11 +13,11 @@ const isTest = process.env.NODE_ENV === 'test';
          name: QUEUES.EMAIL,
       }),
 
-      MailModule
+      //MailModule
    ],
-   providers: isTest ? [] : [
-      EmailProcessor
-   ],
+   // providers: isTest ? [] : [
+   //    EmailProcessor
+   // ],
    exports: isTest ? [] : [BullModule],
 })
 

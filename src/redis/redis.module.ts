@@ -7,7 +7,7 @@ import { REDIS_TIMEOUTS } from 'src/constants/redis-timeout.constants';
    imports: [
       RedisModule.forRoot({
          type: 'single',
-         url: 'redis://redis:6379',  // redis://localhost:6379 when runs on host machine
+         url: 'redis://localhost:6379',  // redis://localhost:6379 when runs on host machine
          options: {
             maxRetriesPerRequest: 3,
             connectTimeout: 10000,      

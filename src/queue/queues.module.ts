@@ -12,7 +12,7 @@ const isTest = process.env.NODE_ENV === 'test';
    [
       BullModule.forRoot({
          connection: {
-            host: 'redis', // localhost if runs on host machine
+            host: 'localhost', // localhost if runs on host machine
             port: 6379
          }
       }),

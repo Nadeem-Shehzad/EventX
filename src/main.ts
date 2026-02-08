@@ -16,6 +16,7 @@ import { MetricsInterceptor } from './monitoring/metrics.interceptor';
 
 
 async function bootstrap() {
+   
    const app = await NestFactory.create(AppModule, {
       bufferLogs: false,
       logger: ['error', 'warn'],
