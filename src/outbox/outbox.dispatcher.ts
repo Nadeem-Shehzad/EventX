@@ -83,48 +83,4 @@ export class OutboxDispatcher {
       };
    }
 
-
-   // @Cron('*/1 * * * * *')
-   // async dispatch() {
-
-   //    // if (this.isProcessing) return; // Skip if previous run is still active
-   //    // this.isProcessing = true;
-
-   //    const events = await this.outboxService.findPending();
-
-   //    for (const event of events) {
-
-   //       const { eventType, payload, _id } = event;
-
-   //       try {
-
-   //          await this.outboxService.markDispatched(event._id.toString());
-
-   //          if (eventType === DOMAIN_EVENTS.BOOKING_CREATED) {
-   //             await this.ticketQueue.add(eventType, payload, this.jobOptions(_id.toString()));
-   //          }
-
-   //          else if (
-   //             eventType === DOMAIN_EVENTS.TICKETS_RESERVED ||
-   //             eventType === DOMAIN_EVENTS.TICKETS_FAILED ||
-   //             eventType === DOMAIN_EVENTS.BOOKING_CONFIRM_REQUESTED ||
-   //             eventType === DOMAIN_EVENTS.BOOKING_PAYMENT_FAILED
-   //          ) {
-   //             await this.bookingQueue.add(eventType, payload, this.jobOptions(_id.toString()));
-   //          }
-
-   //          else if (
-   //             eventType === DOMAIN_EVENTS.PAYMENT_REQUEST ||
-   //             eventType === DOMAIN_EVENTS.PAYMENT_FAILED
-   //          ) {
-   //             await this.paymentQueue.add(eventType, payload, this.jobOptions(_id.toString()));
-   //          }
-
-   //       } catch (error) {
-   //          throw error; // let retry by cron
-   //       } finally {
-   //          // this.isProcessing = false;
-   //       }
-   //    }
-   // }
 }

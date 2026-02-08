@@ -4,8 +4,10 @@ import * as client from 'prom-client';
 
 @Injectable()
 export class MetricsService {
+
    bookingCreated: client.Counter<string>;
    bookingFailed: client.Counter<string>;
+   bookingCancelled: client.Counter<string>;
 
    constructor() {
       // ⭐ VERY IMPORTANT (node/system metrics)
@@ -20,6 +22,11 @@ export class MetricsService {
          name: 'booking_failed_total',
          help: 'Total failed bookings',
       });
+
+      this.bookingCancelled = new client.Counter({
+         name: 'booking_cancelled_total',
+         help: 'Total Cancelled Bookings',
+      });
    }
 
    incBookingCreated() {
@@ -29,4 +36,9 @@ export class MetricsService {
    incBookingFailed() {
       this.bookingFailed.inc();
    }
+
+   incBookingCancelled() {
+      this.bookingCancelled.inc();
+   }
+
 }
