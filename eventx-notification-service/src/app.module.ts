@@ -1,5 +1,4 @@
 import { Module } from "@nestjs/common";
-import { NotificationRedisModule } from "./redis/redis.module";
 import { ConfigModule } from "@nestjs/config";
 import { validationSchema } from "./config/validation.schema";
 import appConfig from "./config/config.app";
@@ -20,7 +19,6 @@ import mailConfig from './config/mail.config'
          ],
          validationSchema
       }),
-      //NotificationRedisModule,
       EmailQueueModule,
       MailModule
    ],

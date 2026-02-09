@@ -11,8 +11,8 @@ const bullmq_1 = require("@nestjs/bullmq");
 const common_1 = require("@nestjs/common");
 const queues_1 = require("../constants/queues");
 const email_processor_1 = require("./email.processor");
-const mail_module_1 = require("../mail/mail.module");
 const config_1 = require("@nestjs/config");
+const mail_module_1 = require("../mail/mail.module");
 let EmailQueueModule = class EmailQueueModule {
 };
 exports.EmailQueueModule = EmailQueueModule;
