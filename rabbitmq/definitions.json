@@ -46,10 +46,7 @@
             "vhost": "/",
             "durable": true,
             "auto_delete": false,
-            "arguments": {
-                "x-dead-letter-exchange": "eventx.events",
-                "x-dead-letter-routing-key": "booking.confirmed.retry"
-            }
+            "arguments": {}
         },
         {
             "name": "notification.booking.confirmed.retry",
@@ -57,7 +54,7 @@
             "durable": true,
             "auto_delete": false,
             "arguments": {
-                "x-message-ttl": 10000,
+                "x-message-ttl": 5000,
                 "x-dead-letter-exchange": "eventx.events",
                 "x-dead-letter-routing-key": "booking.confirmed"
             }
@@ -84,7 +81,15 @@
             "vhost": "/",
             "destination": "notification.booking.confirmed.retry",
             "destination_type": "queue",
-            "routing_key": "booking.confirmed.retry",
+            "routing_key": "notification.booking.confirmed.retry",
+            "arguments": {}
+        },
+        {
+            "source": "eventx.dlx",
+            "vhost": "/",
+            "destination": "notification.booking.confirmed.failed",
+            "destination_type": "queue",
+            "routing_key": "notification.booking.confirmed.failed",
             "arguments": {}
         }
     ]
