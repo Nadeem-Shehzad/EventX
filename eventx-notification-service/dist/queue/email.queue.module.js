@@ -29,6 +29,13 @@ exports.EmailQueueModule = EmailQueueModule = __decorate([
                         },
                     ],
                     connectionInitOptions: { wait: true },
+                    defaultSubscribeErrorBehavior: nestjs_rabbitmq_1.MessageHandlerErrorBehavior.NACK,
+                    channels: {
+                        'channel-1': {
+                            prefetchCount: 1,
+                            default: true,
+                        },
+                    },
                 }),
             }),
             mail_module_1.MailModule,

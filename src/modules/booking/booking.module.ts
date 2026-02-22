@@ -37,7 +37,7 @@ import { RabbitMQModule } from "@golevelup/nestjs-rabbitmq";
       RabbitMQModule.forRootAsync({
          inject: [ConfigService],
          useFactory: (config: ConfigService) => ({
-            uri: config.get<string>('RABBITMQ_URI'),
+            uri: config.get<string>('RABBITMQ_URI')!,
             exchanges: [
                {
                   name: 'eventx.events',
