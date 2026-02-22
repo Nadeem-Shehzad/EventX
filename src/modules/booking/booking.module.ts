@@ -19,6 +19,8 @@ import { TicketsBookingHandler } from "./saga/handlers/ticket.handler";
 import { BookingsHandler } from "./saga/handlers/booking.handler";
 import { LoggingModule } from "src/logging/logging.module";
 import { MonitoringModule } from "src/monitoring/monitoring.module";
+import { ConfigService } from "@nestjs/config";
+import { RabbitMQModule } from "@golevelup/nestjs-rabbitmq";
 
 
 @Module({
@@ -32,13 +34,25 @@ import { MonitoringModule } from "src/monitoring/monitoring.module";
       forwardRef(() => PaymentModule),
       CommonModule,
       MyRedisModule,
-      EmailQueueModule
+      RabbitMQModule.forRootAsync({
+         inject: [ConfigService],
+         useFactory: (config: ConfigService) => ({
+            uri: config.get<string>('RABBITMQ_URI'),
+            exchanges: [
+               {
+                  name: 'eventx.events',
+                  type: 'topic',
+               },
+            ],
+            connectionInitOptions: { wait: true },
+         }),
+      }),
    ],
    controllers: [BookingController],
    providers: [
-      BookingService, 
-      BookingRepository, 
-      BookingCacheListener, 
+      BookingService,
+      BookingRepository,
+      BookingCacheListener,
       BookingEmailListener,
       BookingSagaProcessor,
       BookingSagaService,

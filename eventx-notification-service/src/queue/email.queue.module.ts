@@ -1,35 +1,27 @@
-import { BullModule } from "@nestjs/bullmq";
 import { Module } from "@nestjs/common";
-import { QUEUES } from "../constants/queues";
-import { EmailProcessor } from "./email.processor";
+import { RabbitMQModule } from "@golevelup/nestjs-rabbitmq";
 import { ConfigService } from "@nestjs/config";
-import { MailModule } from '../mail/mail.module'
-
+import { EmailConsumer } from './email.subscriber';
+import { MailModule } from "../mail/mail.module";
 
 @Module({
    imports: [
-
-      BullModule.forRootAsync({
+      RabbitMQModule.forRootAsync({
          inject: [ConfigService],
          useFactory: (config: ConfigService) => ({
-            connection: {
-               host: config.get('REDIS_HOST'),
-               port: config.get('REDIS_PORT'),
-            },
+            uri: config.get<string>("RABBITMQ_URI"),
+            exchanges: [
+               {
+                  name: "eventx.events",
+                  type: "topic",
+               },
+            ],
+            connectionInitOptions: { wait: true },
          }),
       }),
-
-      BullModule.registerQueue({
-         name: QUEUES.EMAIL,
-         defaultJobOptions: {
-            attempts: 5,
-            backoff: { type: 'exponential', delay: 5000 },
-         },
-      }),
-
-      MailModule
+      MailModule,
    ],
-   providers: [EmailProcessor]
+   providers: [EmailConsumer],
 })
 
 export class EmailQueueModule { }

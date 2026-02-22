@@ -1,0 +1,91 @@
+{
+    "vhosts": [
+        {
+            "name": "/"
+        }
+    ],
+    "users": [
+        {
+            "name": "admin",
+            "password": "admin",
+            "tags": "administrator"
+        }
+    ],
+    "permissions": [
+        {
+            "user": "admin",
+            "vhost": "/",
+            "configure": ".*",
+            "write": ".*",
+            "read": ".*"
+        }
+    ],
+    "exchanges": [
+        {
+            "name": "eventx.events",
+            "vhost": "/",
+            "type": "topic",
+            "durable": true,
+            "auto_delete": false,
+            "internal": false,
+            "arguments": {}
+        },
+        {
+            "name": "eventx.dlx",
+            "vhost": "/",
+            "type": "topic",
+            "durable": true,
+            "auto_delete": false,
+            "internal": false,
+            "arguments": {}
+        }
+    ],
+    "queues": [
+        {
+            "name": "notification.booking.confirmed",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {
+                "x-dead-letter-exchange": "eventx.events",
+                "x-dead-letter-routing-key": "booking.confirmed.retry"
+            }
+        },
+        {
+            "name": "notification.booking.confirmed.retry",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {
+                "x-message-ttl": 10000,
+                "x-dead-letter-exchange": "eventx.events",
+                "x-dead-letter-routing-key": "booking.confirmed"
+            }
+        },
+        {
+            "name": "notification.booking.confirmed.failed",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        }
+    ],
+    "bindings": [
+        {
+            "source": "eventx.events",
+            "vhost": "/",
+            "destination": "notification.booking.confirmed",
+            "destination_type": "queue",
+            "routing_key": "booking.confirmed",
+            "arguments": {}
+        },
+        {
+            "source": "eventx.events",
+            "vhost": "/",
+            "destination": "notification.booking.confirmed.retry",
+            "destination_type": "queue",
+            "routing_key": "booking.confirmed.retry",
+            "arguments": {}
+        }
+    ]
+}

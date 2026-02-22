@@ -14,10 +14,9 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const validation_schema_1 = require("./config/validation.schema");
 const config_app_1 = __importDefault(require("./config/config.app"));
-const config_redis_1 = __importDefault(require("./config/config.redis"));
+const mail_config_1 = __importDefault(require("./config/mail.config"));
 const mail_module_1 = require("./mail/mail.module");
 const email_queue_module_1 = require("./queue/email.queue.module");
-const mail_config_1 = __importDefault(require("./config/mail.config"));
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -26,15 +25,11 @@ exports.AppModule = AppModule = __decorate([
         imports: [
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
-                load: [
-                    config_app_1.default,
-                    config_redis_1.default,
-                    mail_config_1.default
-                ],
-                validationSchema: validation_schema_1.validationSchema
+                load: [config_app_1.default, mail_config_1.default],
+                validationSchema: validation_schema_1.validationSchema,
             }),
             email_queue_module_1.EmailQueueModule,
-            mail_module_1.MailModule
+            mail_module_1.MailModule,
         ],
     })
 ], AppModule);

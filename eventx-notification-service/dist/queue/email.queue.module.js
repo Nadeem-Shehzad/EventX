@@ -7,11 +7,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmailQueueModule = void 0;
-const bullmq_1 = require("@nestjs/bullmq");
 const common_1 = require("@nestjs/common");
-const queues_1 = require("../constants/queues");
-const email_processor_1 = require("./email.processor");
+const nestjs_rabbitmq_1 = require("@golevelup/nestjs-rabbitmq");
 const config_1 = require("@nestjs/config");
+const email_subscriber_1 = require("./email.subscriber");
 const mail_module_1 = require("../mail/mail.module");
 let EmailQueueModule = class EmailQueueModule {
 };
@@ -19,25 +18,22 @@ exports.EmailQueueModule = EmailQueueModule;
 exports.EmailQueueModule = EmailQueueModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            bullmq_1.BullModule.forRootAsync({
+            nestjs_rabbitmq_1.RabbitMQModule.forRootAsync({
                 inject: [config_1.ConfigService],
                 useFactory: (config) => ({
-                    connection: {
-                        host: config.get('REDIS_HOST'),
-                        port: config.get('REDIS_PORT'),
-                    },
+                    uri: config.get("RABBITMQ_URI"),
+                    exchanges: [
+                        {
+                            name: "eventx.events",
+                            type: "topic",
+                        },
+                    ],
+                    connectionInitOptions: { wait: true },
                 }),
             }),
-            bullmq_1.BullModule.registerQueue({
-                name: queues_1.QUEUES.EMAIL,
-                defaultJobOptions: {
-                    attempts: 5,
-                    backoff: { type: 'exponential', delay: 5000 },
-                },
-            }),
-            mail_module_1.MailModule
+            mail_module_1.MailModule,
         ],
-        providers: [email_processor_1.EmailProcessor]
+        providers: [email_subscriber_1.EmailConsumer],
     })
 ], EmailQueueModule);
 //# sourceMappingURL=email.queue.module.js.map
