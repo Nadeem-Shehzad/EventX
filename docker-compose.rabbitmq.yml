@@ -1,0 +1,21 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+      RABBITMQ_DEFAULT_VHOST: /
+    volumes:
+      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json
+    configs:
+      - source: rabbitmq_config
+        target: /etc/rabbitmq/rabbitmq.conf
+
+configs:
+  rabbitmq_config:
+    content: |
+      management.load_definitions = /etc/rabbitmq/definitions.json
