@@ -17,6 +17,7 @@ const config_app_1 = __importDefault(require("./config/config.app"));
 const mail_config_1 = __importDefault(require("./config/mail.config"));
 const mail_module_1 = require("./mail/mail.module");
 const email_queue_module_1 = require("./queue/email.queue.module");
+const mongoose_1 = require("@nestjs/mongoose");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -27,6 +28,12 @@ exports.AppModule = AppModule = __decorate([
                 isGlobal: true,
                 load: [config_app_1.default, mail_config_1.default],
                 validationSchema: validation_schema_1.validationSchema,
+            }),
+            mongoose_1.MongooseModule.forRootAsync({
+                inject: [config_1.ConfigService],
+                useFactory: (config) => ({
+                    uri: config.get('NOTIFICATION_MONGO_URI'),
+                }),
             }),
             email_queue_module_1.EmailQueueModule,
             mail_module_1.MailModule,

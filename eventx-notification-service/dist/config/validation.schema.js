@@ -44,6 +44,7 @@ exports.validationSchema = Joi.object({
     MAIL_PORT: Joi.number().required(),
     REDIS_HOST: Joi.string().required(),
     REDIS_PORT: Joi.number().required(),
-    RABBITMQ_URI: Joi.string().required()
+    RABBITMQ_URI: Joi.string().required(),
+    NOTIFICATION_MONGO_URI: Joi.string().required()
 });
 //# sourceMappingURL=validation.schema.js.map
