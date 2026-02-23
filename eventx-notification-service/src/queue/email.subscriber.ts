@@ -2,6 +2,7 @@ import { RabbitSubscribe, Nack, AmqpConnection } from "@golevelup/nestjs-rabbitm
 import { Injectable, Logger } from "@nestjs/common";
 import { MailService } from "../mail/mail.service";
 import type { ConsumeMessage } from 'amqplib';
+import { IdempotencyService } from "../idempotency/idempotency.service";
 
 
 const MAX_RETRIES = 3;
@@ -14,7 +15,8 @@ export class EmailConsumer {
 
    constructor(
       private readonly mailService: MailService,
-      private readonly amqpConnection: AmqpConnection
+      private readonly amqpConnection: AmqpConnection,
+      private readonly idempotencyService: IdempotencyService,
    ) { }
 
 
@@ -23,24 +25,39 @@ export class EmailConsumer {
       routingKey: "booking.confirmed",
       queue: "notification.booking.confirmed",
       queueOptions: { durable: true },
-      connection: 'channel-1'
    })
    async handleBookingConfirmed(msg: any, amqpMsg: ConsumeMessage) {
 
       this.logger.log("+++++ INSIDE MICROSERVICE - NOTIFICATION +++++");
+
       const retryCount = amqpMsg.properties.headers?.['x-retry-count'] ?? 0;
+
+      const messageId = amqpMsg.properties.messageId ?? `booking.confirmed.${msg.bookingId}`;
+
+      const isFirstTime = await this.idempotencyService.tryMarkAsProcessing(
+         messageId,
+         { bookingId: msg.bookingId, email: msg.email }
+      );
+
+      if (!isFirstTime) {
+         this.logger.warn(`Duplicate message: ${messageId} — skipping`);
+         return; // auto ack, skip
+      }
+
       this.logger.log(`📥 Attempt ${retryCount + 1}/${MAX_RETRIES + 1} for booking: ${msg.bookingId}`);
 
       try {
          await this.mailService.sendBookingSuccess(msg);
          //throw new Error('DB is down!');
-         this.logger.log(`✅ Email sent successfully for booking: ${msg.bookingId}`);
+         this.logger.log(`Email sent successfully for booking: ${msg.bookingId}`);
 
       } catch (error) {
-         this.logger.error(`❌ Failed attempt ${retryCount + 1}: ${error.message}`);
+         this.logger.error(`Failed attempt ${retryCount + 1}: ${error.message}`);
+
+         await this.idempotencyService.deleteRecord(messageId);
 
          if (retryCount < MAX_RETRIES) {
-            this.logger.log(`🔄 Retry ${retryCount + 1}/${MAX_RETRIES}...`);
+            this.logger.log(`Retry ${retryCount + 1}/${MAX_RETRIES}...`);
 
             await this.amqpConnection.publish(
                'eventx.events',
@@ -57,7 +74,7 @@ export class EmailConsumer {
          }
 
          // max retries reached → send to DLQ
-         this.logger.error(`🚨 Max retries reached. Sending to DLQ for booking: ${msg.bookingId}`);
+         this.logger.error(`Max retries reached. Sending to DLQ for booking: ${msg.bookingId}`);
 
          await this.amqpConnection.publish(
             'eventx.dlx',
@@ -70,7 +87,7 @@ export class EmailConsumer {
             }
          );
 
-         return new Nack(false); // false = don't requeue directly, let DLX handle retry
+         return new Nack(false);
       }
    }
 

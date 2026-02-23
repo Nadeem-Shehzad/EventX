@@ -293,7 +293,7 @@ export class BookingService {
             userId: userId
          });
 
-         this.matricsService.incBookingCreated();
+         this.matricsService.incBookingCreated(); 
 
          return true;
 

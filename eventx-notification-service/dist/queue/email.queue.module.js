@@ -12,6 +12,7 @@ const nestjs_rabbitmq_1 = require("@golevelup/nestjs-rabbitmq");
 const config_1 = require("@nestjs/config");
 const email_subscriber_1 = require("./email.subscriber");
 const mail_module_1 = require("../mail/mail.module");
+const idempotency_module_1 = require("../idempotency/idempotency.module");
 let EmailQueueModule = class EmailQueueModule {
 };
 exports.EmailQueueModule = EmailQueueModule;
@@ -31,13 +32,14 @@ exports.EmailQueueModule = EmailQueueModule = __decorate([
                     connectionInitOptions: { wait: true },
                     defaultSubscribeErrorBehavior: nestjs_rabbitmq_1.MessageHandlerErrorBehavior.NACK,
                     channels: {
-                        'channel-1': {
+                        'channel-main': {
                             prefetchCount: 1,
                             default: true,
                         },
                     },
                 }),
             }),
+            idempotency_module_1.IdempotencyModule,
             mail_module_1.MailModule,
         ],
         providers: [email_subscriber_1.EmailConsumer],

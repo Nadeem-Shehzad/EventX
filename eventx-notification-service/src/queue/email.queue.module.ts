@@ -3,6 +3,7 @@ import { MessageHandlerErrorBehavior, RabbitMQModule } from "@golevelup/nestjs-r
 import { ConfigService } from "@nestjs/config";
 import { EmailConsumer } from './email.subscriber';
 import { MailModule } from "../mail/mail.module";
+import { IdempotencyModule } from "../idempotency/idempotency.module";
 
 
 @Module({
@@ -27,6 +28,7 @@ import { MailModule } from "../mail/mail.module";
             },
          }),
       }),
+      IdempotencyModule,
       MailModule,
    ],
    providers: [EmailConsumer],

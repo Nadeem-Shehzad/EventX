@@ -14,27 +14,37 @@ exports.EmailConsumer = void 0;
 const nestjs_rabbitmq_1 = require("@golevelup/nestjs-rabbitmq");
 const common_1 = require("@nestjs/common");
 const mail_service_1 = require("../mail/mail.service");
+const idempotency_service_1 = require("../idempotency/idempotency.service");
 const MAX_RETRIES = 3;
 let EmailConsumer = EmailConsumer_1 = class EmailConsumer {
     mailService;
     amqpConnection;
+    idempotencyService;
     logger = new common_1.Logger(EmailConsumer_1.name);
-    constructor(mailService, amqpConnection) {
+    constructor(mailService, amqpConnection, idempotencyService) {
         this.mailService = mailService;
         this.amqpConnection = amqpConnection;
+        this.idempotencyService = idempotencyService;
     }
     async handleBookingConfirmed(msg, amqpMsg) {
         this.logger.log("+++++ INSIDE MICROSERVICE - NOTIFICATION +++++");
         const retryCount = amqpMsg.properties.headers?.['x-retry-count'] ?? 0;
+        const messageId = amqpMsg.properties.messageId ?? `booking.confirmed.${msg.bookingId}`;
+        const isFirstTime = await this.idempotencyService.tryMarkAsProcessing(messageId, { bookingId: msg.bookingId, email: msg.email });
+        if (!isFirstTime) {
+            this.logger.warn(`Duplicate message: ${messageId} — skipping`);
+            return;
+        }
         this.logger.log(`📥 Attempt ${retryCount + 1}/${MAX_RETRIES + 1} for booking: ${msg.bookingId}`);
         try {
             await this.mailService.sendBookingSuccess(msg);
-            this.logger.log(`✅ Email sent successfully for booking: ${msg.bookingId}`);
+            this.logger.log(`Email sent successfully for booking: ${msg.bookingId}`);
         }
         catch (error) {
-            this.logger.error(`❌ Failed attempt ${retryCount + 1}: ${error.message}`);
+            this.logger.error(`Failed attempt ${retryCount + 1}: ${error.message}`);
+            await this.idempotencyService.deleteRecord(messageId);
             if (retryCount < MAX_RETRIES) {
-                this.logger.log(`🔄 Retry ${retryCount + 1}/${MAX_RETRIES}...`);
+                this.logger.log(`Retry ${retryCount + 1}/${MAX_RETRIES}...`);
                 await this.amqpConnection.publish('eventx.events', 'notification.booking.confirmed.retry', msg, {
                     headers: {
                         'x-retry-count': retryCount + 1
@@ -42,7 +52,7 @@ let EmailConsumer = EmailConsumer_1 = class EmailConsumer {
                 });
                 return new nestjs_rabbitmq_1.Nack(false);
             }
-            this.logger.error(`🚨 Max retries reached. Sending to DLQ for booking: ${msg.bookingId}`);
+            this.logger.error(`Max retries reached. Sending to DLQ for booking: ${msg.bookingId}`);
             await this.amqpConnection.publish('eventx.dlx', 'notification.booking.confirmed.failed', {
                 ...msg,
                 failureReason: error.message,
@@ -74,9 +84,7 @@ __decorate([
         exchange: 'eventx.dlx',
         routingKey: 'notification.booking.confirmed.failed',
         queue: 'notification.booking.confirmed.failed',
-        queueOptions: {
-            durable: true
-        }
+        queueOptions: { durable: true }
     }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -85,6 +93,7 @@ __decorate([
 exports.EmailConsumer = EmailConsumer = EmailConsumer_1 = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [mail_service_1.MailService,
-        nestjs_rabbitmq_1.AmqpConnection])
+        nestjs_rabbitmq_1.AmqpConnection,
+        idempotency_service_1.IdempotencyService])
 ], EmailConsumer);
 //# sourceMappingURL=email.subscriber.js.map
