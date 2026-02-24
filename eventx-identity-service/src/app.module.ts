@@ -7,6 +7,7 @@ import cloudinaryConfig from './config/cloudinary.config';
 import redisConfig from './config/redis.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
+import serviceConfig from './config/service.config';
 
 
 @Module({
@@ -14,7 +15,7 @@ import { UserModule } from './modules/user/user.module';
 
       ConfigModule.forRoot({
          isGlobal: true,
-         load: [authConfig, cloudinaryConfig, redisConfig],
+         load: [authConfig, cloudinaryConfig, redisConfig, serviceConfig],
          validationSchema,
       }),
 

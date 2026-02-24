@@ -9,6 +9,7 @@ import databaseConfig from './config/database.config';
 import authConfig from './config/auth.config';
 import cloudinaryConfig from './config/cloudinary.config';
 import stripeConfig from './config/stripe.config'
+import serviceConfig from './config/service.config';
 import { validationSchema } from './config/validation.schema';
 import { CommonModule } from './common/common.module';
 import { MyRedisModule } from './redis/redis.module';
@@ -36,7 +37,8 @@ const isProd = process.env.NODE_ENV === 'production';
         databaseConfig,
         redisConfig,
         cloudinaryConfig,
-        stripeConfig
+        stripeConfig,
+        serviceConfig
       ],
       validationSchema
     }),

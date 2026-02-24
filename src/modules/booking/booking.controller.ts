@@ -26,6 +26,7 @@ import { BookingStatusResponseDTO } from "./swagger/response/booking-status-resp
 @ApiBearerAuth('JWT-auth')
 @Controller({ path: 'bookings', version: '1' })
 export class BookingController {
+   
    constructor(private readonly service: BookingService) { }
 
    @UseGuards(JwtAuthGuard, RoleCheckGuard)

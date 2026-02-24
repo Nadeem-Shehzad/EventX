@@ -31,5 +31,8 @@ export const validationSchema = Joi.object({
    STRIPE_SECRET_KEY: Joi.string().required(),
    //STRIPE_WEBHOOK_SECRET: Joi.string().required()
 
-   RABBITMQ_URI: Joi.string().required()
+   RABBITMQ_URI: Joi.string().required(),
+
+   IDENTITY_SERVICE_URL: Joi.string().required(),
+   INTERNAL_API_KEY: Joi.string().required()
 });

@@ -22,6 +22,7 @@ import { MonitoringModule } from "src/monitoring/monitoring.module";
 import { ConfigService } from "@nestjs/config";
 import { RabbitMQModule } from "@golevelup/nestjs-rabbitmq";
 import { NotificationOutboxModule } from "./outbox/notification/notification-outbox.module";
+import { IdentityModule } from "src/identity/identity.module";
 
 
 @Module({
@@ -49,6 +50,7 @@ import { NotificationOutboxModule } from "./outbox/notification/notification-out
       }),
       
       NotificationOutboxModule,
+      IdentityModule
    ],
    controllers: [BookingController],
    providers: [
