@@ -27,6 +27,7 @@ export class NotificationOutboxProcessor implements OnModuleInit, OnModuleDestro
    }
 
    private async startChangeStream() {
+      
       const model = this.notificationOutboxService.getModel();
 
       // watch only INSERT operations on outbox collection

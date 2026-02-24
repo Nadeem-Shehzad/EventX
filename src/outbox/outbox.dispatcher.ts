@@ -54,29 +54,6 @@ export class OutboxDispatcher {
    }
 
 
-   // @Cron('*/1 * * * * *')
-   // async dispatch() {
-
-   //    if (this.isProcessing) return;
-
-   //    this.isProcessing = true;
-
-   //    try {
-   //       const events = await this.outboxService.findPending();
-
-   //       for (const event of events) {
-   //          await this.processEvent(event);
-   //       }
-
-   //    } catch (e) {
-   //       console.error(e);
-
-   //    } finally {
-   //       this.isProcessing = false;
-   //    }
-   // }
-
-
    private async processEvent(event) {
       const { eventType, payload, _id } = event;
 
