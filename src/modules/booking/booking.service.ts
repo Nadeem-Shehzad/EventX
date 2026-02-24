@@ -28,6 +28,7 @@ import { MetricsService } from "src/monitoring/metrics.service";
 import { UserService } from "../user/user.service";
 import { EventService } from "../event/event.service";
 import { NotificationOutboxService } from "./outbox/notification/notification-outbox.service";
+import { IdentityClient } from "src/identity/identity.client";
 
 
 @Injectable()
@@ -39,10 +40,11 @@ export class BookingService {
       private readonly bookingRepo: BookingRepository,
       @Inject(forwardRef(() => PaymentService))
 
-      private readonly paymentService: PaymentService, 
+      private readonly paymentService: PaymentService,
       private readonly userService: UserService,
       private readonly eventService: EventService,
       private readonly notificationOutboxService: NotificationOutboxService,
+      private readonly identityClient: IdentityClient,
 
       private readonly redis: RedisService,
       private readonly eventEmitter: EventEmitter2,
@@ -244,8 +246,14 @@ export class BookingService {
          }
 
          // ✅ fetch user and event data for enriched payload
-         const user = await this.userService.getUserById(booking.userId.toString());
+         //const user = await this.userService.getUserById(booking.userId.toString());
+
+         const user = await this.identityClient.getUserById(booking.userId.toString());
          const event = await this.eventService.findById(booking.eventId.toString());
+
+         console.log('---------------------');
+         console.log(`UserName -> ${user?.name} ::: UserEmail -> ${user?.email}`);
+         console.log('---------------------');
 
          const patch: any = {
             status: BookingStatus.CONFIRMED,

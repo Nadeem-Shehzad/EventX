@@ -1,7 +1,7 @@
 import {
    Body, Controller, Delete, Get, HttpCode,
-   HttpStatus, Param, Put, UploadedFile,
-   UseGuards, UseInterceptors
+   HttpStatus, Param, Put, UnauthorizedException, UploadedFile,
+   UseGuards, UseInterceptors, Headers
 } from "@nestjs/common";
 
 import { UserService } from "./user.service";
@@ -22,12 +22,12 @@ import { AccountOwnerShipGuard } from "../../common/guards/ownership.guard";
 
 @ApiTags('user')
 @ApiBearerAuth('JWT-auth')
-@UseGuards(JwtAuthGuard, RoleCheckGuard)
 @Controller({ path: 'user', version: '1' })
 export class UserController {
 
    constructor(private readonly userService: UserService) { }
 
+   @UseGuards(JwtAuthGuard, RoleCheckGuard)
    @Get('profile')
    @HttpCode(HttpStatus.OK)
    @ApiOperation({ summary: 'Get user profile' })
@@ -43,7 +43,7 @@ export class UserController {
    }
 
 
-   @UseGuards(AccountOwnerShipGuard)
+   @UseGuards(JwtAuthGuard, RoleCheckGuard, AccountOwnerShipGuard)
    @Put(':id')
    @HttpCode(HttpStatus.CREATED)
    @ApiOperation({ summary: 'Update profile' })
@@ -88,7 +88,7 @@ export class UserController {
    }
 
 
-   @UseGuards(AccountOwnerShipGuard)
+   @UseGuards(JwtAuthGuard, RoleCheckGuard, AccountOwnerShipGuard)
    @Delete(':id')
    @HttpCode(HttpStatus.OK)
    @ApiOperation({ summary: 'Delete profile' })
@@ -115,6 +115,7 @@ export class UserController {
 
    // <------ Admin Apis ------>
 
+   @UseGuards(JwtAuthGuard, RoleCheckGuard)
    @Get('')
    @Roles('admin')
    @HttpCode(HttpStatus.OK)
@@ -129,8 +130,9 @@ export class UserController {
    }
 
 
+   @UseGuards(JwtAuthGuard, RoleCheckGuard)
    @Get(':id')
-   @Roles('admin')
+   //@Roles('admin')
    @HttpCode(HttpStatus.OK)
    @ApiOperation({ summary: 'Get user by id' })
    @ApiParam({
@@ -154,6 +156,7 @@ export class UserController {
    }
 
 
+   @UseGuards(JwtAuthGuard, RoleCheckGuard)
    @Put(':id/admin')
    @Roles('admin')
    @HttpCode(HttpStatus.CREATED)
@@ -183,6 +186,7 @@ export class UserController {
    }
 
 
+   @UseGuards(JwtAuthGuard, RoleCheckGuard)
    @Delete(':id/admin')
    @Roles('admin')
    @HttpCode(HttpStatus.OK)
@@ -205,5 +209,21 @@ export class UserController {
    @ApiResponse({ status: 500, description: 'server error' })
    deleteUserAccount(@Param('id') id: string) {
       return this.userService.deleteAccount(id);
+   }
+
+
+   // internal Services Communications
+   
+   @Get('internal/:id')
+   async getUserInternal(
+      @Param('id') id: string,
+      @Headers('x-internal-api-key') apiKey: string,
+   ) {
+      
+      if (apiKey !== process.env.INTERNAL_API_KEY) {
+         throw new UnauthorizedException('Invalid internal API key');
+      }
+
+      return this.userService.getUserDataByID(id);
    }
 }
