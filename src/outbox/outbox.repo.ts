@@ -41,4 +41,8 @@ export class OutboxRepo {
          { $set: { status: OutboxStatus.PUBLISHED } }
       );
    }
+
+   getModel() {
+      return this.outboxModel;
+   }
 }

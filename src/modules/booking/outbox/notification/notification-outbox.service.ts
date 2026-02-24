@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
-import { OutboxRepo } from "./outbox.repo";
 import { ClientSession } from "mongoose";
+import { NotificationOutboxRepo } from "./notification-outbox.repo";
 
 
 @Injectable()
-export class OutboxService {
+export class NotificationOutboxService {
 
-   constructor(private readonly outboxRepo: OutboxRepo) { }
+   constructor(private readonly outboxRepo: NotificationOutboxRepo) { }
 
    async addEvent<TPayload extends Record<string, any>>(
       aggregateType: string,
@@ -24,16 +24,12 @@ export class OutboxService {
       );
    }
 
-   async findPending() {
-      return await this.outboxRepo.findPending();
+   async markPublished(eventId: string) {
+      return this.outboxRepo.markPublished(eventId);
    }
 
-   async markDispatched(id: string) {
-      return await this.outboxRepo.markDispatched(id);
-   }
-
-   async markPublished(id: string) {
-      return await this.outboxRepo.markPublished(id);
+   async markFailed(eventId: string, error: string) {
+      return this.outboxRepo.markFailed(eventId, error);
    }
 
    getModel() {

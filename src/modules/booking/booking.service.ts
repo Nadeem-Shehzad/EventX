@@ -25,6 +25,9 @@ import {
 import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
 import { AGGREGATES } from "src/constants/events/domain-aggregate";
 import { MetricsService } from "src/monitoring/metrics.service";
+import { UserService } from "../user/user.service";
+import { EventService } from "../event/event.service";
+import { NotificationOutboxService } from "./outbox/notification/notification-outbox.service";
 
 
 @Injectable()
@@ -35,7 +38,12 @@ export class BookingService {
       @InjectModel('TicketType') private ticketModel: Model<TicketTypeDocument>,
       private readonly bookingRepo: BookingRepository,
       @Inject(forwardRef(() => PaymentService))
-      private readonly paymentService: PaymentService,
+
+      private readonly paymentService: PaymentService, 
+      private readonly userService: UserService,
+      private readonly eventService: EventService,
+      private readonly notificationOutboxService: NotificationOutboxService,
+
       private readonly redis: RedisService,
       private readonly eventEmitter: EventEmitter2,
       private readonly outboxService: OutboxService,
@@ -228,13 +236,16 @@ export class BookingService {
       session.startTransaction();
 
       try {
-
          const booking = await this.bookingRepo.findBookingById(bookingId);
          if (!booking) throw new NotFoundException('Booking Not Found!');
 
          if (booking.status !== BookingStatus.PENDING) {
             throw new BadRequestException('Booking already processed');
          }
+
+         // ✅ fetch user and event data for enriched payload
+         const user = await this.userService.getUserById(booking.userId.toString());
+         const event = await this.eventService.findById(booking.eventId.toString());
 
          const patch: any = {
             status: BookingStatus.CONFIRMED,
@@ -264,8 +275,20 @@ export class BookingService {
             { session }
          );
 
-         await session.commitTransaction();
+         await this.notificationOutboxService.addEvent(
+            'Booking',
+            bookingId,
+            'booking.confirmed',
+            {
+               bookingId: booking._id.toString(),
+               eventName: event?.title ?? 'N/A',
+               userName: user?.name ?? 'N/A',
+               email: user?.email ?? 'N/A',
+            },
+            session
+         );
 
+         await session.commitTransaction();
          return updatedBooking;
 
       } catch (error) {
@@ -281,19 +304,14 @@ export class BookingService {
    async bookingConfirmed(bookingId: string, eventId: string, userId: string) {
 
       try {
+
          this.eventEmitter.emit('booking.updated', {
             bookingId: bookingId,
             eventId: eventId,
             userId: userId
          });
 
-         this.eventEmitter.emit(EmailJob.BOOKING_SUCCESS, {
-            bookingId: bookingId,
-            eventId: eventId,
-            userId: userId
-         });
-
-         this.matricsService.incBookingCreated(); 
+         this.matricsService.incBookingCreated();
 
          return true;
 

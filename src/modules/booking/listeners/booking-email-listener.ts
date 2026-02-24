@@ -14,30 +14,7 @@ export class BookingEmailListener {
       private readonly eventService: EventService
    ) { }
 
-   @OnEvent(EmailJob.BOOKING_SUCCESS)
-   async handleBookingCreated(payload: {
-      bookingId: string,
-      eventId: string,
-      userId: string
-   }) {
-      const user = await this.userService.getUserById(payload.userId);
-      if (!user) return;
-
-      const event = await this.eventService.findById(payload.eventId);
-      if (!event) return;
-
-      await this.amqpConnection.publish(
-         'eventx.events',          // exchange
-         'booking.confirmed',      // routing key
-         {
-            bookingId: payload.bookingId,
-            eventName: event.title,
-            userName: user.name,
-            email: user.email
-         }
-      );
-   }
-
+   
    @OnEvent(EmailJob.BOOKING_CANCEL)
    async handleBookingCancel(payload: {
       bookingId: string,
