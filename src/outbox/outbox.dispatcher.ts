@@ -16,9 +16,9 @@ export class OutboxDispatcher {
 
    constructor(
       private readonly outboxService: OutboxService,
-      // @InjectQueue(QUEUES.TICKET_QUEUE) private ticketQueue: Queue,
-      // @InjectQueue(QUEUES.BOOKING_QUEUE) private bookingQueue: Queue,
-      // @InjectQueue(QUEUES.PAYMENT_QUEUE) private paymentQueue: Queue
+      @InjectQueue(QUEUES.TICKET_QUEUE) private ticketQueue: Queue,
+      @InjectQueue(QUEUES.BOOKING_QUEUE) private bookingQueue: Queue,
+      @InjectQueue(QUEUES.PAYMENT_QUEUE) private paymentQueue: Queue
    ) { }
 
    async onModuleInit() {
@@ -54,36 +54,13 @@ export class OutboxDispatcher {
    }
 
 
-   // @Cron('*/1 * * * * *')
-   // async dispatch() {
-
-   //    if (this.isProcessing) return;
-
-   //    this.isProcessing = true;
-
-   //    try {
-   //       const events = await this.outboxService.findPending();
-
-   //       for (const event of events) {
-   //          await this.processEvent(event);
-   //       }
-
-   //    } catch (e) {
-   //       console.error(e);
-
-   //    } finally {
-   //       this.isProcessing = false;
-   //    }
-   // }
-
-
    private async processEvent(event) {
       const { eventType, payload, _id } = event;
 
       await this.outboxService.markDispatched(event._id.toString());
 
       if (eventType === DOMAIN_EVENTS.BOOKING_CREATED) {
-         //await this.ticketQueue.add(eventType, payload, this.jobOptions(_id.toString()));
+         await this.ticketQueue.add(eventType, payload, this.jobOptions(_id.toString()));
       }
 
       else if (
@@ -94,7 +71,7 @@ export class OutboxDispatcher {
          eventType === DOMAIN_EVENTS.BOOKING_PAYMENT_FAILED ||
          eventType === DOMAIN_EVENTS.BOOKING_PAYMENT_REFUNDED
       ) {
-         //await this.bookingQueue.add(eventType, payload, this.jobOptions(_id.toString()));
+         await this.bookingQueue.add(eventType, payload, this.jobOptions(_id.toString()));
       }
 
       else if (
@@ -102,7 +79,7 @@ export class OutboxDispatcher {
          eventType === DOMAIN_EVENTS.PAYMENT_FAILED ||
          eventType === DOMAIN_EVENTS.PAYMENT_REFUND_REQUEST
       ) {
-         //await this.paymentQueue.add(eventType, payload, this.jobOptions(_id.toString()));
+         await this.paymentQueue.add(eventType, payload, this.jobOptions(_id.toString()));
       }
    }
 
