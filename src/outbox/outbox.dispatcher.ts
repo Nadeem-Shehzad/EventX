@@ -1,5 +1,5 @@
 import { InjectQueue } from "@nestjs/bullmq";
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { Queue } from "bullmq";
 import { Cron } from "@nestjs/schedule";
 import { QUEUES } from "src/queue/queue.constants";
@@ -11,6 +11,8 @@ import { OutboxService } from "./outbox.service";
 export class OutboxDispatcher {
 
    private isProcessing = false;
+   private changeStream: any;
+   private readonly logger = new Logger(OutboxDispatcher.name);
 
    constructor(
       private readonly outboxService: OutboxService,
@@ -19,28 +21,60 @@ export class OutboxDispatcher {
       // @InjectQueue(QUEUES.PAYMENT_QUEUE) private paymentQueue: Queue
    ) { }
 
+   async onModuleInit() {
+      await this.startChangeStream();
+   }
 
-   @Cron('*/1 * * * * *')
-   async dispatch() {
-
-      if (this.isProcessing) return;
-
-      this.isProcessing = true;
-
-      try {
-         const events = await this.outboxService.findPending();
-
-         for (const event of events) {
-            await this.processEvent(event);
-         }
-
-      } catch (e) {
-         console.error(e);
-
-      } finally {
-         this.isProcessing = false;
+   async onModuleDestroy() {
+      if (this.changeStream) {
+         await this.changeStream.close();
+         this.logger.log('OutboxDispatcher Change Stream closed');
       }
    }
+
+   private async startChangeStream() {
+      const model = this.outboxService.getModel();
+
+      this.changeStream = model.watch(
+         [{ $match: { operationType: 'insert' } }],
+         { fullDocument: 'updateLookup' }
+      );
+
+      this.logger.log('📡 OutboxDispatcher Change Stream started');
+
+      this.changeStream.on('change', async (change: any) => {
+         const event = change.fullDocument;
+         this.logger.log(`⚡ New outbox event detected: ${event.eventType}`);
+         await this.processEvent(event);
+      });
+
+      this.changeStream.on('error', (error: any) => {
+         this.logger.error(`Change Stream error: ${error.message}`);
+      });
+   }
+
+
+   // @Cron('*/1 * * * * *')
+   // async dispatch() {
+
+   //    if (this.isProcessing) return;
+
+   //    this.isProcessing = true;
+
+   //    try {
+   //       const events = await this.outboxService.findPending();
+
+   //       for (const event of events) {
+   //          await this.processEvent(event);
+   //       }
+
+   //    } catch (e) {
+   //       console.error(e);
+
+   //    } finally {
+   //       this.isProcessing = false;
+   //    }
+   // }
 
 
    private async processEvent(event) {

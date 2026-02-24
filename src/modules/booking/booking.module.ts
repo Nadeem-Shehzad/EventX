@@ -21,6 +21,7 @@ import { LoggingModule } from "src/logging/logging.module";
 import { MonitoringModule } from "src/monitoring/monitoring.module";
 import { ConfigService } from "@nestjs/config";
 import { RabbitMQModule } from "@golevelup/nestjs-rabbitmq";
+import { NotificationOutboxModule } from "./outbox/notification/notification-outbox.module";
 
 
 @Module({
@@ -34,19 +35,20 @@ import { RabbitMQModule } from "@golevelup/nestjs-rabbitmq";
       forwardRef(() => PaymentModule),
       CommonModule,
       MyRedisModule,
+      
       RabbitMQModule.forRootAsync({
          inject: [ConfigService],
          useFactory: (config: ConfigService) => ({
             uri: config.get<string>('RABBITMQ_URI')!,
             exchanges: [
-               {
-                  name: 'eventx.events',
-                  type: 'topic',
-               },
+               { name: 'eventx.events', type: 'topic' },
+               { name: 'eventx.dlx', type: 'topic' },
             ],
             connectionInitOptions: { wait: true },
          }),
       }),
+      
+      NotificationOutboxModule,
    ],
    controllers: [BookingController],
    providers: [
