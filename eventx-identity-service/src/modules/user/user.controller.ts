@@ -3,17 +3,21 @@ import {
    HttpStatus, Param, Put, UploadedFile,
    UseGuards, UseInterceptors
 } from "@nestjs/common";
-import { JwtAuthGuard } from "src/common/guards/jwt-auth.guard";
+
 import { UserService } from "./user.service";
-import { GetUserID } from "src/common/decorators/used-id";
-import { AccountOwnerShipGuard } from "src/common/guards/ownership.guard";
 import { UpdateUserDTO } from "./dto/update-user.dto";
-import { RoleCheckGuard } from "src/common/guards/role.guard";
-import { Roles } from "src/common/decorators/user-roles";
-import { getCloudinaryStorage } from "src/common/uploads/cloudinary.storage";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
+import {
+   ApiBearerAuth, ApiBody, ApiOperation,
+   ApiParam, ApiResponse, ApiTags
+} from "@nestjs/swagger";
 import { UserResponseDTO } from "./dto/user-response.dto";
+import { JwtAuthGuard } from "../../common/guards/jwt-auth.guard";
+import { getCloudinaryStorage } from "../../common/uploads/cloudinary.storage";
+import { Roles } from "../../common/decorators/user-roles";
+import { RoleCheckGuard } from "../../common/guards/role.guard";
+import { GetUserID } from "../../common/decorators/used-id";
+import { AccountOwnerShipGuard } from "../../common/guards/ownership.guard";
 
 
 @ApiTags('user')
