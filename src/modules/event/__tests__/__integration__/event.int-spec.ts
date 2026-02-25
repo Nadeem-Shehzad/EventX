@@ -17,6 +17,9 @@ import { eventsList, singleEvent } from "./fake-events-list";
 import { generateTestToken } from "./auth.helper";
 import axios from "axios";
 import { JwtModule } from "@nestjs/jwt";
+import { EventOutboxModule } from "../../outbox/event-outbox.module";
+import { MockEventOutboxModule } from "./mock-outbox";
+import { EventOutboxService } from "../../outbox/event-outbox.service";
 
 
 const redisStore = new Map<string, string>();
@@ -76,6 +79,8 @@ let connection: Connection;
 let eventService: EventService;
 let throttlerStorage: any;
 
+process.env.NODE_ENV = 'test';
+
 
 beforeAll(async () => {
    mongoServer = await MongoMemoryServer.create({
@@ -134,6 +139,11 @@ beforeAll(async () => {
    })
       .overrideModule(ImageQueueModule)
       .useModule(MockQueueModule)
+      .overrideProvider(EventOutboxService)
+      .useValue({
+         create: jest.fn(),
+         publish: jest.fn(),
+      })
       .compile();
 
    app = moduleRef.createNestApplication();

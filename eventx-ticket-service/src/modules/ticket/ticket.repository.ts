@@ -8,8 +8,8 @@ export class TicketRepository {
 
    constructor(@InjectModel('TicketType') private ticketModel: Model<TicketTypeDocument>) { }
 
-   async createTickets(data: CreateTicketDTO[], session: ClientSession) {
-      return await this.ticketModel.insertMany(data, { session, ordered: true });
+   async createTickets(data: CreateTicketDTO[]) {
+      return await this.ticketModel.insertMany(data, { ordered: true });
    }
 
 

@@ -16,9 +16,7 @@ export class OutboxDispatcher {
 
    constructor(
       private readonly outboxService: OutboxService,
-      @InjectQueue(QUEUES.TICKET_QUEUE) private ticketQueue: Queue,
       @InjectQueue(QUEUES.BOOKING_QUEUE) private bookingQueue: Queue,
-      @InjectQueue(QUEUES.PAYMENT_QUEUE) private paymentQueue: Queue
    ) { }
 
    async onModuleInit() {
@@ -32,7 +30,9 @@ export class OutboxDispatcher {
       }
    }
 
+
    private async startChangeStream() {
+
       const model = this.outboxService.getModel();
 
       this.changeStream = model.watch(
@@ -54,32 +54,17 @@ export class OutboxDispatcher {
    }
 
 
-   private async processEvent(event) {
+   private async processEvent(event: any) {
+
       const { eventType, payload, _id } = event;
 
       await this.outboxService.markDispatched(event._id.toString());
 
-      if (eventType === DOMAIN_EVENTS.BOOKING_CREATED) {
-         await this.ticketQueue.add(eventType, payload, this.jobOptions(_id.toString()));
-      }
-
-      else if (
+      if (
          eventType === DOMAIN_EVENTS.TICKETS_RESERVED ||
-         eventType === DOMAIN_EVENTS.TICKETS_FAILED ||
-         eventType === DOMAIN_EVENTS.BOOKING_CONFIRM_REQUESTED ||
-         eventType === DOMAIN_EVENTS.BOOKING_CONFIRMED ||
-         eventType === DOMAIN_EVENTS.BOOKING_PAYMENT_FAILED ||
-         eventType === DOMAIN_EVENTS.BOOKING_PAYMENT_REFUNDED
+         eventType === DOMAIN_EVENTS.TICKETS_FAILED
       ) {
          await this.bookingQueue.add(eventType, payload, this.jobOptions(_id.toString()));
-      }
-
-      else if (
-         eventType === DOMAIN_EVENTS.PAYMENT_REQUEST ||
-         eventType === DOMAIN_EVENTS.PAYMENT_FAILED ||
-         eventType === DOMAIN_EVENTS.PAYMENT_REFUND_REQUEST
-      ) {
-         await this.paymentQueue.add(eventType, payload, this.jobOptions(_id.toString()));
       }
    }
 

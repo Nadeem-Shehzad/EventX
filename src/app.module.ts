@@ -23,11 +23,13 @@ import { PaymentModule } from './payment/payment.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { LoggingModule } from './logging/logging.module';
 import { MonitoringModule } from './monitoring/monitoring.module';
+import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 
 const isProd = process.env.NODE_ENV === 'production';
 
 @Module({
   imports: [
+
     ConfigModule.forRoot({
       isGlobal: true,
       load: [

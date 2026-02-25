@@ -10,6 +10,7 @@ import { ImageQueueModule } from "src/queue/event-image/image.queue.module";
 import { EventOwnerShipGuard } from "./guards/ownership.guard";
 import { TicketTypeSchema } from "../ticket/schema/ticket-type.schema";
 import { TicketModule } from "../ticket/ticket.module";
+import { EventOutboxModule } from "./outbox/event-outbox.module";
 
 @Module({
    imports: [
@@ -18,6 +19,7 @@ import { TicketModule } from "../ticket/ticket.module";
          { name: 'TicketType', schema: TicketTypeSchema }
       ]),
       forwardRef(() => CommonModule),
+      EventOutboxModule,
       ImageQueueModule,
       MyRedisModule,
       TicketModule
