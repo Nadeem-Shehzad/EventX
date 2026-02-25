@@ -560,6 +560,7 @@ export class EventService {
    // export services
 
    async findById(id: string) {
+      console.log('####### inside findEventById SERVICE #######');
       return await this.eventRepo.findEventById(id);
    }
 

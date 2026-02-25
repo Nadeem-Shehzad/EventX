@@ -777,6 +777,7 @@ export class EventRespository {
 
    // export services
    async findEventById(id: string) {
+      console.log('####### inside findEventById REPO #######');
       return await this.eventModel.findById(id);
    }
 

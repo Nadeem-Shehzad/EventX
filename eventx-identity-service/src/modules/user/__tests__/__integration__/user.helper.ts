@@ -1,7 +1,5 @@
 import request from 'supertest';
 import { INestApplication } from "@nestjs/common";
-import { plainToInstance } from "class-transformer";
-import { RegisterDTO } from "src/modules/auth/dto/request/register.dto";
 
 export const registerTestUser = async (
    app: INestApplication,

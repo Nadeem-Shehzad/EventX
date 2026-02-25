@@ -3,7 +3,6 @@ import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 import { JwtModule } from "@nestjs/jwt";
 import { JwtRefreshTokenGuard } from "./guards/ref-token.guard";
 import { AccountOwnerShipGuard } from "./guards/ownership.guard";
-import { UserModule } from "src/modules/user/user.module";
 import { RoleCheckGuard } from "./guards/role.guard";
 import { MyRedisModule } from "src/redis/redis.module";
 
