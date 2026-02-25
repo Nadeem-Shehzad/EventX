@@ -29,21 +29,28 @@ export class BookingTicketHandler {
          ticketId: data.ticketTypeId
       });
 
-      const { bookingId, ticketTypeId, quantity } = data;
-
-      const ticket = await this.ticketService.reserveTickets(
-         ticketTypeId,
-         quantity,
-         undefined
-      );
-
-      const payload: TicketsReservedPayload = {
-         bookingId,
-         isPaid: ticket.isPaidEvent,
-         quantity
+      try {
+         const { bookingId, ticketTypeId, quantity } = data;
+   
+         const ticket = await this.ticketService.reserveTickets(
+            ticketTypeId,
+            quantity,
+            undefined
+         );
+   
+         const payload: TicketsReservedPayload = {
+            bookingId,
+            isPaid: ticket.isPaidEvent,
+            quantity
+         }
+   
+         await this.emit(DOMAIN_EVENTS.TICKETS_RESERVED, bookingId, payload);
+         
+      } catch (error) {
+         console.log('===============');
+         console.log(error.message);
+         console.log('===============');
       }
-
-      await this.emit(DOMAIN_EVENTS.TICKETS_RESERVED, bookingId, payload);
    }
 
    private async emit(event: string, aggregateId: string, payload: any) {

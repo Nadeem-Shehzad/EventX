@@ -7,6 +7,7 @@ import { Queue } from "bullmq";
 import { QUEUES } from "src/queue/queue.constants";
 import { getConnectionToken } from '@nestjs/mongoose';
 import { TicketService } from "src/modules/ticket/ticket.service";
+import { EventOutboxService } from "../../outbox/event-outbox.service";
 
 
 
@@ -71,6 +72,7 @@ describe('EventService - Get Events', () => {
             { provide: EventRespository, useValue: eventRepository },
             { provide: RedisService, useValue: redisService },
             { provide: `BullQueue_${QUEUES.EVENT_IMAGE}`, useValue: {} },
+            { provide: EventOutboxService, useValue: {} },
          ]
       }).compile();
 
@@ -141,7 +143,8 @@ describe('EventService - Get Free Events', () => {
             { provide: TicketService, useValue: {} },
             { provide: EventRespository, useValue: eventRepository },
             { provide: RedisService, useValue: redisService },
-            { provide: `BullQueue_${QUEUES.EVENT_IMAGE}`, useValue: {} }
+            { provide: `BullQueue_${QUEUES.EVENT_IMAGE}`, useValue: {} },
+            { provide: EventOutboxService, useValue: {} },
          ]
       }).compile();
 
@@ -214,7 +217,8 @@ describe('EventService - Get Filter Based Events', () => {
             { provide: TicketService, useValue: {} },
             { provide: EventRespository, useValue: eventRepository },
             { provide: RedisService, useValue: {} },
-            { provide: `BullQueue_${QUEUES.EVENT_IMAGE}`, useValue: {} }
+            { provide: `BullQueue_${QUEUES.EVENT_IMAGE}`, useValue: {} },
+            { provide: EventOutboxService, useValue: {} },
          ]
       }).compile();
 
@@ -362,7 +366,8 @@ describe('EventService - Get Free Events', () => {
             { provide: TicketService, useValue: {} },
             { provide: EventRespository, useValue: eventRepository },
             { provide: RedisService, useValue: {} },
-            { provide: `BullQueue_${QUEUES.EVENT_IMAGE}`, useValue: {} }
+            { provide: `BullQueue_${QUEUES.EVENT_IMAGE}`, useValue: {} },
+            { provide: EventOutboxService, useValue: {} },
          ]
       }).compile();
 
@@ -408,7 +413,8 @@ describe('EventService - Get Visbility Summary', () => {
             { provide: TicketService, useValue: {} },
             { provide: EventRespository, useValue: eventRepository },
             { provide: RedisService, useValue: {} },
-            { provide: `BullQueue_${QUEUES.EVENT_IMAGE}`, useValue: {} }
+            { provide: `BullQueue_${QUEUES.EVENT_IMAGE}`, useValue: {} },
+            { provide: EventOutboxService, useValue: {} },
          ]
       }).compile();
 

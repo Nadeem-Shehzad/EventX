@@ -7,17 +7,10 @@ const isTest = process.env.NODE_ENV === 'test';
 @Module({
    imports: isTest ? [] :
       [
-         BullModule.registerQueue({
-            name: QUEUES.TICKET_QUEUE,
-         }),
-
-         BullModule.registerQueue({
-            name: QUEUES.BOOKING_QUEUE,
-         }),
-
-         BullModule.registerQueue({
-            name: QUEUES.PAYMENT_QUEUE,
-         }),
+         BullModule.registerQueue(
+            { name: QUEUES.TICKET_QUEUE },
+            { name: QUEUES.BOOKING_QUEUE },
+         )
       ],
    // providers: isTest ? [] : [BookingProcessor],
    exports: isTest ? [] : [BullModule],

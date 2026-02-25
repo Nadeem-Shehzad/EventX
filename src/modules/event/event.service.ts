@@ -14,6 +14,7 @@ import { TicketService } from "../ticket/ticket.service";
 import { Connection, Types } from "mongoose";
 import { InjectConnection } from "@nestjs/mongoose";
 import { CreateTicketDTO } from "../ticket/dto/request/create-ticket.dto";
+import { EventOutboxService } from "./outbox/event-outbox.service";
 
 
 @Injectable()
@@ -22,9 +23,9 @@ export class EventService {
       @InjectConnection() private readonly connection: Connection,
       private readonly eventRepo: EventRespository,
       private readonly redis: RedisService,
-      @InjectQueue(QUEUES.EVENT_IMAGE)
-      private readonly imageQueue: Queue,
-      private readonly ticketService: TicketService
+      @InjectQueue(QUEUES.EVENT_IMAGE) private readonly imageQueue: Queue,
+      private readonly ticketService: TicketService,
+      private readonly eventOutboxService: EventOutboxService
    ) { }
 
    private readonly logger = new Logger(EventService.name);
@@ -46,11 +47,20 @@ export class EventService {
 
          const ticketTypesData = dto.ticketTypes.map(tt => ({
             ...tt,
-            eventId: event._id,
-            availableQuantity: tt.totalQuantity
+            eventId: event._id.toString(),
+            availableQuantity: tt.totalQuantity  
          }));
 
-         await this.ticketService.createTickets(ticketTypesData, session);
+         await this.eventOutboxService.addEvent(
+            'Event',
+            event._id.toString(),
+            'event.created',
+            {
+               eventId: event._id.toString(),
+               ticketTypes: ticketTypesData  
+            },
+            session
+         );
 
          await session.commitTransaction();
 

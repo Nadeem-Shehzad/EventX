@@ -10,8 +10,8 @@ export class TicketService {
    constructor(private readonly ticketRepo: TicketRepository) { }
 
 
-   async createTickets(tickets: CreateTicketDTO[], session: ClientSession) {
-      return await this.ticketRepo.createTickets(tickets, session);
+   async createTickets(tickets: CreateTicketDTO[]) {
+      return await this.ticketRepo.createTickets(tickets);
    }
 
 

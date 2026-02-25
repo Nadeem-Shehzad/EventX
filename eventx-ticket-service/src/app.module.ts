@@ -8,6 +8,9 @@ import serviceConfig from './config/service.config';
 import { validationSchema } from './config/validation.schema';
 import { corsConfig } from './config/cors.config';
 import { MyRedisModule } from './redis/redis.module';
+import { QueuesModule } from './queue/queues.module';
+import rabbitConfig from './config/rabbit.config';
+import { CustomRabbitMQModule } from './rabbitmq/rabbitmq.module';
 
 
 @Module({
@@ -15,7 +18,7 @@ import { MyRedisModule } from './redis/redis.module';
 
       ConfigModule.forRoot({
          isGlobal: true,
-         load: [corsConfig, redisConfig, serviceConfig],
+         load: [corsConfig, redisConfig, serviceConfig, rabbitConfig],
          validationSchema,
       }),
 
@@ -26,7 +29,9 @@ import { MyRedisModule } from './redis/redis.module';
          }),
       }),
 
+      CustomRabbitMQModule,
       MyRedisModule,
+      QueuesModule,
       TicketModule
    ],
 })

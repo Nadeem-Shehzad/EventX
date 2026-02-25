@@ -65,6 +65,13 @@
             "durable": true,
             "auto_delete": false,
             "arguments": {}
+        },
+        {
+            "name": "ticket.creation",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
         }
     ],
     "bindings": [
@@ -90,6 +97,14 @@
             "destination": "notification.booking.confirmed.failed",
             "destination_type": "queue",
             "routing_key": "notification.booking.confirmed.failed",
+            "arguments": {}
+        },
+        {
+            "source": "eventx.events",
+            "vhost": "/",
+            "destination": "ticket.creation",
+            "destination_type": "queue",
+            "routing_key": "event.created",
             "arguments": {}
         }
     ]

@@ -1,7 +1,6 @@
 import { InjectQueue } from "@nestjs/bullmq";
 import { Injectable, Logger } from "@nestjs/common";
 import { Queue } from "bullmq";
-import { Cron } from "@nestjs/schedule";
 import { QUEUES } from "src/queue/queue.constants";
 import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
 import { OutboxService } from "./outbox.service";
@@ -54,7 +53,7 @@ export class OutboxDispatcher {
    }
 
 
-   private async processEvent(event) {
+   private async processEvent(event: any) {
       const { eventType, payload, _id } = event;
 
       await this.outboxService.markDispatched(event._id.toString());
@@ -64,8 +63,6 @@ export class OutboxDispatcher {
       }
 
       else if (
-         eventType === DOMAIN_EVENTS.TICKETS_RESERVED ||
-         eventType === DOMAIN_EVENTS.TICKETS_FAILED ||
          eventType === DOMAIN_EVENTS.BOOKING_CONFIRM_REQUESTED ||
          eventType === DOMAIN_EVENTS.BOOKING_CONFIRMED ||
          eventType === DOMAIN_EVENTS.BOOKING_PAYMENT_FAILED ||
