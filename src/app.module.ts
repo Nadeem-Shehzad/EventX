@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AuthModule } from './modules/auth/auth.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -66,7 +65,6 @@ const isProd = process.env.NODE_ENV === 'production';
     RateLimitModule,
 
     PaymentModule,
-    AuthModule,
     EventModule,
     CommonModule,
     BookingModule

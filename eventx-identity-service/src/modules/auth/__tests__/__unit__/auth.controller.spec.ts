@@ -1,5 +1,5 @@
 
-import { UserResponseDTO } from "src/modules/user/dto/user-response.dto";
+import { UserResponseDTO } from '../../../user/dto/user-response.dto'
 import { CanActivate, ExecutionContext } from "@nestjs/common";
 import { createAuthTestingModule } from "./module.factories";
 import { AuthController } from "../../auth.controller";

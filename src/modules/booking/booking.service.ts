@@ -25,7 +25,6 @@ import {
 import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
 import { AGGREGATES } from "src/constants/events/domain-aggregate";
 import { MetricsService } from "src/monitoring/metrics.service";
-import { UserService } from "../user/user.service";
 import { EventService } from "../event/event.service";
 import { NotificationOutboxService } from "./outbox/notification/notification-outbox.service";
 import { IdentityClient } from "src/identity/identity.client";
@@ -38,10 +37,8 @@ export class BookingService {
       @InjectConnection() private readonly connection: Connection,
       @InjectModel('TicketType') private ticketModel: Model<TicketTypeDocument>,
       private readonly bookingRepo: BookingRepository,
-      @Inject(forwardRef(() => PaymentService))
-
-      private readonly paymentService: PaymentService,
-      private readonly userService: UserService,
+      //@Inject(forwardRef(() => PaymentService))
+      //private readonly paymentService: PaymentService,
       private readonly eventService: EventService,
       private readonly notificationOutboxService: NotificationOutboxService,
       private readonly identityClient: IdentityClient,
@@ -123,10 +120,10 @@ export class BookingService {
 
          await session.abortTransaction();
 
-         this.eventEmitter.emit(EmailJob.BOOKING_FAILED, {
-            userId,
-            reason: error.message
-         });
+         // this.eventEmitter.emit(EmailJob.BOOKING_FAILED, {
+         //    userId,
+         //    reason: error.message
+         // });
 
          throw error;
 
@@ -234,6 +231,7 @@ export class BookingService {
 
 
    async confirmBookingRequest(bookingId: string, paymentIntentId?: string) {
+
       const session = await this.connection.startSession();
       session.startTransaction();
 
@@ -245,15 +243,8 @@ export class BookingService {
             throw new BadRequestException('Booking already processed');
          }
 
-         // ✅ fetch user and event data for enriched payload
-         //const user = await this.userService.getUserById(booking.userId.toString());
-
          const user = await this.identityClient.getUserById(booking.userId.toString());
          const event = await this.eventService.findById(booking.eventId.toString());
-
-         console.log('---------------------');
-         console.log(`UserName -> ${user?.name} ::: UserEmail -> ${user?.email}`);
-         console.log('---------------------');
 
          const patch: any = {
             status: BookingStatus.CONFIRMED,
@@ -302,6 +293,12 @@ export class BookingService {
       } catch (error) {
          this.matricsService.incBookingFailed();
          await session.abortTransaction();
+
+         console.log('***********************************');
+         console.log(`confirmBookingRequest failed: ${error.message}`, error.stack);
+         console.log('***********************************');
+
+         throw error; // ← rethrow so SAGA knows it failed
 
       } finally {
          session.endSession();
@@ -440,11 +437,11 @@ export class BookingService {
             userId: booking.userId.toString()
          });
 
-         this.eventEmitter.emit(EmailJob.BOOKING_CANCEL, {
-            bookingId: booking._id.toString(),
-            eventId: booking.eventId.toString(),
-            userId: booking.userId.toString()
-         });
+         // this.eventEmitter.emit(EmailJob.BOOKING_CANCEL, {
+         //    bookingId: booking._id.toString(),
+         //    eventId: booking.eventId.toString(),
+         //    userId: booking.userId.toString()
+         // });
 
          return true;
 

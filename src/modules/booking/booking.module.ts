@@ -9,8 +9,7 @@ import { EventModule } from "../event/event.module";
 import { PaymentModule } from "src/payment/payment.module";
 import { MyRedisModule } from "src/redis/redis.module";
 import { BookingCacheListener } from "./listeners/booking-cache-listener";
-import { UserModule } from "../user/user.module";
-import { BookingEmailListener } from "./listeners/booking-email-listener";
+//import { BookingEmailListener } from "./listeners/booking-email-listener";
 import { EmailQueueModule } from "src/queue/email/email.queue.module";
 import { OutboxModule } from "src/outbox/outbox.module";
 import { BookingSagaProcessor } from "./saga/booking-saga.processor";
@@ -30,7 +29,6 @@ import { IdentityModule } from "src/identity/identity.module";
       MongooseModule.forFeature([{ name: 'Booking', schema: BookingSchema }]),
       LoggingModule,
       MonitoringModule,
-      UserModule,
       EventModule,
       OutboxModule,
       forwardRef(() => PaymentModule),
@@ -57,7 +55,7 @@ import { IdentityModule } from "src/identity/identity.module";
       BookingService,
       BookingRepository,
       BookingCacheListener,
-      BookingEmailListener,
+      //BookingEmailListener,
       BookingSagaProcessor,
       BookingSagaService,
       TicketsBookingHandler,
