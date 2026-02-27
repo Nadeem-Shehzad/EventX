@@ -18,8 +18,6 @@ import { TicketsBookingHandler } from "./saga/handlers/ticket.handler";
 import { BookingsHandler } from "./saga/handlers/booking.handler";
 import { LoggingModule } from "src/logging/logging.module";
 import { MonitoringModule } from "src/monitoring/monitoring.module";
-import { ConfigService } from "@nestjs/config";
-import { RabbitMQModule } from "@golevelup/nestjs-rabbitmq";
 import { NotificationOutboxModule } from "./outbox/notification/notification-outbox.module";
 import { IdentityModule } from "src/identity/identity.module";
 

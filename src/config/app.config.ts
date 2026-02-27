@@ -3,5 +3,6 @@ export default () => ({
    app_url: process.env.APP_URL,
    redis_url: process.env.REDIS_URL,
    RABBITMQ_URI: process.env.RABBITMQ_URI,
-   IDENTITY_SERVICE_URL: process.env.IDENTITY_SERVICE_URL
+   IDENTITY_SERVICE_URL: process.env.IDENTITY_SERVICE_URL,
+   TICKET_SERVICE_URL: process.env.TICKET_SERVICE_URL
 })
