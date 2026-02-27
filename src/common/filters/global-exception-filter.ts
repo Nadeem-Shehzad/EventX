@@ -1,15 +1,25 @@
-import { 
-   Catch, 
-   ExceptionFilter, 
-   ArgumentsHost, 
-   HttpException, 
-   HttpStatus 
+import {
+   Catch,
+   ExceptionFilter,
+   ArgumentsHost,
+   HttpException,
+   HttpStatus,
+   Logger
 } from '@nestjs/common';
-
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
+   private readonly logger = new Logger(GlobalExceptionFilter.name);
+
    catch(exception: any, host: ArgumentsHost) {
+
+      // ✅ handle non-HTTP contexts (RabbitMQ, WebSocket, gRPC etc)
+      if (host.getType() !== 'http') {
+         this.logger.error(`Non-HTTP exception: ${exception.message}`, exception.stack);
+         return;
+      }
+
+      // existing HTTP handling
       const ctx = host.switchToHttp();
       const response = ctx.getResponse();
       const request = ctx.getRequest();
@@ -30,7 +40,6 @@ export class GlobalExceptionFilter implements ExceptionFilter {
          statusCode: status,
          path: request.url,
          message,
-         //error: exception.response || 'No details',
       });
    }
 }

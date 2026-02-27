@@ -792,6 +792,10 @@ export class EventRespository {
 
       return result[0] || null;
    }
+
+   async deleteEventHard(eventId: string) {
+      return this.eventModel.findByIdAndDelete(eventId);
+   }
 }
 
 

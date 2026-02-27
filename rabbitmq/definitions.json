@@ -72,6 +72,13 @@
             "durable": true,
             "auto_delete": false,
             "arguments": {}
+        },
+        {
+            "name": "ticket.creation.failed",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
         }
     ],
     "bindings": [
@@ -105,6 +112,14 @@
             "destination": "ticket.creation",
             "destination_type": "queue",
             "routing_key": "event.created",
+            "arguments": {}
+        },
+        {
+            "source": "eventx.events",
+            "vhost": "/",
+            "destination": "ticket.creation.failed",
+            "destination_type": "queue",
+            "routing_key": "event.creation.compensate",
             "arguments": {}
         }
     ]

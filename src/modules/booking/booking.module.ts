@@ -35,18 +35,6 @@ import { IdentityModule } from "src/identity/identity.module";
       CommonModule,
       MyRedisModule,
       
-      RabbitMQModule.forRootAsync({
-         inject: [ConfigService],
-         useFactory: (config: ConfigService) => ({
-            uri: config.get<string>('RABBITMQ_URI')!,
-            exchanges: [
-               { name: 'eventx.events', type: 'topic' },
-               { name: 'eventx.dlx', type: 'topic' },
-            ],
-            connectionInitOptions: { wait: true },
-         }),
-      }),
-      
       NotificationOutboxModule,
       IdentityModule
    ],
