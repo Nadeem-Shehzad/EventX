@@ -1,7 +1,7 @@
 import * as Joi from 'joi';
 
 export const validationSchema = Joi.object({
-   
+
    PORT: Joi.number().default(3000),
 
    MONGO_URI: Joi.string().required(),
@@ -34,5 +34,7 @@ export const validationSchema = Joi.object({
    RABBITMQ_URI: Joi.string().required(),
 
    IDENTITY_SERVICE_URL: Joi.string().required(),
+   TICKET_SERVICE_URL: Joi.string().required(),
+
    INTERNAL_API_KEY: Joi.string().required()
 });
