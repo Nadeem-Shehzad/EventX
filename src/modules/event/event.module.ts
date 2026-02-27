@@ -11,13 +11,17 @@ import { EventOwnerShipGuard } from "./guards/ownership.guard";
 import { TicketTypeSchema } from "../ticket/schema/ticket-type.schema";
 import { TicketModule } from "../ticket/ticket.module";
 import { EventOutboxModule } from "./outbox/event-outbox.module";
+import { TicketConsumer } from "./listeners/event-creation.listener";
+
 
 @Module({
    imports: [
+
       MongooseModule.forFeature([
          { name: 'Event', schema: EventSchema },
          { name: 'TicketType', schema: TicketTypeSchema }
       ]),
+
       forwardRef(() => CommonModule),
       EventOutboxModule,
       ImageQueueModule,
@@ -25,7 +29,12 @@ import { EventOutboxModule } from "./outbox/event-outbox.module";
       TicketModule
    ],
    controllers: [EventController],
-   providers: [EventService, EventRespository, EventOwnerShipGuard],
+   providers: [
+      EventService,
+      EventRespository,
+      EventOwnerShipGuard,
+      TicketConsumer
+   ],
    exports: [EventService, EventRespository, MongooseModule]
 })
 

@@ -48,7 +48,7 @@ export class EventService {
          const ticketTypesData = dto.ticketTypes.map(tt => ({
             ...tt,
             eventId: event._id.toString(),
-            availableQuantity: tt.totalQuantity  
+            availableQuantity: tt.totalQuantity
          }));
 
          await this.eventOutboxService.addEvent(
@@ -57,7 +57,7 @@ export class EventService {
             'event.created',
             {
                eventId: event._id.toString(),
-               ticketTypes: ticketTypesData  
+               ticketTypes: ticketTypesData
             },
             session
          );
@@ -575,5 +575,13 @@ export class EventService {
 
    async findEventOwner(id: string) {
       return await this.eventRepo.findEventOwner(id);
+   }
+
+   async deleteEventById(eventId: string) {
+      const result = await this.eventRepo.deleteEventHard(eventId);
+      if (!result) {
+         throw new NotFoundException('Event Not Found!');
+      }
+      return result;
    }
 }

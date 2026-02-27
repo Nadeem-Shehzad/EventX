@@ -14,18 +14,6 @@ import { NotificationOutboxService } from "./notification-outbox.service";
          name: NotificationOutbox.name,
          schema: NotificationOutboxSchema
       }]),
-
-      RabbitMQModule.forRootAsync({
-         inject: [ConfigService],
-         useFactory: (config: ConfigService) => ({
-            uri: config.get<string>('RABBITMQ_URI')!,
-            exchanges: [
-               { name: 'eventx.events', type: 'topic' },
-               { name: 'eventx.dlx', type: 'topic' },
-            ],
-            connectionInitOptions: { wait: true },
-         }),
-      }),
    ],
    providers: [
       NotificationOutboxRepo,
