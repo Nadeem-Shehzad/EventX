@@ -18,7 +18,7 @@ import { QueuesModule } from './queue/queues.module';
 import { DB_QUERY_TIMEOUTS } from './constants/db-timeout.constants';
 import { BookingModule } from './modules/booking/booking.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { PaymentModule } from './payment/payment.module';
+import { PaymentModule } from './modules/payment/payment.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { LoggingModule } from './logging/logging.module';
 import { MonitoringModule } from './monitoring/monitoring.module';

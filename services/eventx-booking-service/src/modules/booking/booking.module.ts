@@ -6,7 +6,7 @@ import { BookingSchema } from "./schema/booking.schema";
 import { BookingRepository } from "./repository/booking.repository";
 import { CommonModule } from "src/common/common.module";
 //import { EventModule } from "../event/event.module";
-import { PaymentModule } from "src/payment/payment.module";
+import { PaymentModule } from "src/modules/payment/payment.module";
 import { MyRedisModule } from "src/redis/redis.module";
 import { BookingCacheListener } from "./listeners/booking-cache-listener";
 //import { BookingEmailListener } from "./listeners/booking-email-listener";
@@ -19,7 +19,8 @@ import { BookingsHandler } from "./saga/handlers/booking.handler";
 import { LoggingModule } from "src/logging/logging.module";
 import { MonitoringModule } from "src/monitoring/monitoring.module";
 import { NotificationOutboxModule } from "./outbox/notification/notification-outbox.module";
-import { IdentityModule } from "src/identity/identity.module";
+import { IdentityModule } from "src/clients/identity/identity.module";
+import { EventClientModule } from "src/clients/catalog/catalog.module";
 
 
 @Module({
@@ -34,6 +35,7 @@ import { IdentityModule } from "src/identity/identity.module";
       MyRedisModule,
       
       NotificationOutboxModule,
+      EventClientModule,
       IdentityModule
    ],
    controllers: [BookingController],

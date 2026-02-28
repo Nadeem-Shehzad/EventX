@@ -34,7 +34,7 @@ export const validationSchema = Joi.object({
    RABBITMQ_URI: Joi.string().required(),
 
    IDENTITY_SERVICE_URL: Joi.string().required(),
-   TICKET_SERVICE_URL: Joi.string().required(),
+   CATALOG_SERVICE_URL: Joi.string().required(),
 
    INTERNAL_API_KEY: Joi.string().required()
 });

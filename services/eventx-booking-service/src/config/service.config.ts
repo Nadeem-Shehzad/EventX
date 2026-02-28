@@ -1,3 +1,5 @@
 export default () => ({
-   INTERNAL_API_KEY: process.env.INTERNAL_API_KEY
+   INTERNAL_API_KEY: process.env.INTERNAL_API_KEY,
+   IDENTITY_SERVICE_URL: process.env.IDENTITY_SERVICE_URL,
+   CATALOG_SERVICE_URL: process.env.CATALOG_SERVICE_URL
 })

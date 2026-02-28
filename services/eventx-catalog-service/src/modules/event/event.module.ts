@@ -22,8 +22,7 @@ import { TicketConsumer } from "./listeners/event-creation.listener";
       TicketModule,
       EventOutboxModule,
       ImageQueueModule,
-      MyRedisModule,
-      TicketModule
+      MyRedisModule
    ],
    controllers: [EventController],
    providers: [

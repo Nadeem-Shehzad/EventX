@@ -56,9 +56,11 @@ async function bootstrap() {
    );
 
    app.useGlobalFilters(new GlobalExceptionFilter());
+
    app.useGlobalInterceptors(
       new ClassSerializerInterceptor(app.get(Reflector)),
    );
+
    app.useGlobalPipes(new ValidationPipe({
       whitelist: true,
       transform: true,
@@ -68,7 +70,9 @@ async function bootstrap() {
    }));
 
    await app.init();
+   
    await app.listen(process.env.PORT ?? 3000);
+
    app.useLogger(app.get(Logger));
 }
 
