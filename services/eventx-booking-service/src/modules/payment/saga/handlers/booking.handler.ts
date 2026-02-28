@@ -9,7 +9,7 @@ import {
 import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
 import { AppLogger } from "src/logging/logging.service";
 import { OutboxService } from "src/outbox/outbox.service";
-import { PaymentService } from "src/payment/payment.service";
+import { PaymentService } from "src/modules/payment/payment.service";
 
 
 @Injectable()

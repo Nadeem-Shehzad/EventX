@@ -1,8 +1,9 @@
 import {
    BadRequestException,
-   Body, Controller, Delete, Get, HttpCode,
+   Body, Controller, Delete, Get, HttpCode, Headers,
    HttpStatus, Logger, Param, Post, Put, Query, UploadedFile,
-   UseGuards, UseInterceptors
+   UseGuards, UseInterceptors,
+   UnauthorizedException
 } from "@nestjs/common";
 import { EventService } from "./event.service";
 import { SkipThrottle, Throttle } from "@nestjs/throttler";
@@ -19,7 +20,10 @@ import { EventVisibilityDTO } from "./dto/request/event-visibility.dto";
 import { PaginationDTO } from "./dto/request/pagination.dto";
 import { UpdateEventDTO } from "./dto/request/update-event.dto";
 import { EventOwnerShipGuard } from "./guards/ownership.guard";
-import { ApiBearerAuth, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
+import {
+   ApiBearerAuth, ApiOperation, ApiParam,
+   ApiQuery, ApiResponse, ApiTags
+} from "@nestjs/swagger";
 import { CreateEventResponseDTO } from "./dto/response/create-event-response.dto";
 import { PaginatedEventsResponseDTO } from "./dto/response/paginated-events-response.dto";
 import { EventResponseDTO } from "./dto/response/event-response.dto";
@@ -474,5 +478,22 @@ export class EventController {
    @ApiResponse({ status: 500, description: 'Server Error' })
    deleteEventPermanently(@Param('id') id: string, @GetUserID() organizerId: string) {
       return this.eventService.deleteEventPermanently(id, organizerId);
+   }
+
+
+
+   // internal Services Communications
+   
+   @Get('internal/:id')
+   async getUserInternal(
+      @Param('id') id: string,
+      @Headers('x-internal-api-key') apiKey: string,
+   ) {
+      
+      if (apiKey !== process.env.INTERNAL_API_KEY) {
+         throw new UnauthorizedException('Invalid internal API key');
+      }
+
+      return this.eventService.findById(id);
    }
 }
