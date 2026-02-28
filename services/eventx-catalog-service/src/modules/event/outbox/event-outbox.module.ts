@@ -4,7 +4,6 @@ import { EventOutbox, EventOutboxSchema } from "./event-outbox-schema";
 import { EventOutboxRepo } from "./event-outbox-repo";
 import { EventOutboxService } from "./event-outbox.service";
 import { EventOutboxProcessor } from "./event-outbox-processor";
-import { CustomRabbitMQModule } from "src/rabbitmq/rabbitmq.module";
 
 
 @Module({
