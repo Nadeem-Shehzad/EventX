@@ -23,29 +23,29 @@ export class BookingsHandler {
 
    async handleBookingConfirmedRequest(data: BookingConfirmedRequestPayload) {
 
-      // this.logger.info({
-      //    module: 'Booking',
-      //    service: BookingsHandler.name,
-      //    msg: 'Inside handleBookingConfirmedRequest',
-      //    bookingId: data.bookingId,
-      // });
+      this.logger.info({
+         module: 'Booking',
+         service: BookingsHandler.name,
+         msg: 'Inside handleBookingConfirmedRequest',
+         bookingId: data.bookingId,
+      });
 
-      // const { bookingId } = data;
-      // const booking = await this.bookingService.confirmBookingRequest(bookingId, data.paymentIntent);
+      const { bookingId } = data;
+      const booking = await this.bookingService.confirmBookingRequest(bookingId, data.paymentIntent);
 
-      // if (!booking) {
-      //    throw new Error('Booking not Confirmed');
-      // }
+      if (!booking) {
+         throw new Error('Booking not Confirmed');
+      }
 
-      // const payload: BookingConfirmedPayload = {
-      //    bookingId: booking._id.toString(),
-      //    userId: booking.userId.toString(),
-      //    eventId: booking.eventId.toString(),
-      //    ticketTypeId: booking.ticketTypeId.toString(),
-      //    quantity: booking.quantity
-      // }
+      const payload: BookingConfirmedPayload = {
+         bookingId: booking._id.toString(),
+         userId: booking.userId.toString(),
+         eventId: booking.eventId.toString(),
+         ticketTypeId: booking.ticketTypeId.toString(),
+         quantity: booking.quantity
+      }
 
-      // await this.emit(DOMAIN_EVENTS.BOOKING_CONFIRMED, bookingId, payload);
+      await this.emit(DOMAIN_EVENTS.BOOKING_CONFIRMED, bookingId, payload);
    }
 
 
