@@ -393,7 +393,9 @@ export class BookingService {
    }
 
 
-   async cancelConfirmedBooking() { }
+   async cancelConfirmedBooking() {
+      // booking cancelled scenario
+    }
 
 
    async markBookingRefunded(paymentIntentId: string) {
