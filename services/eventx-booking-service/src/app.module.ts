@@ -29,7 +29,7 @@ const isProd = process.env.NODE_ENV === 'production';
 
 @Module({
   imports: [
-    
+
     RabbitMQConfigModule,
 
     ConfigModule.forRoot({
@@ -59,7 +59,7 @@ const isProd = process.env.NODE_ENV === 'production';
     MongooseModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        uri: config.get<string>('MONGO_URI'),
+        uri: config.get<string>('BOOKING_MONGO_URI'),
         serverSelectionTimeoutMS: 30000, // ⏱️ how long to wait to find a Mongo server
         socketTimeoutMS: DB_QUERY_TIMEOUTS.defaultSocketTimeoutMS,  // ⏱️ inactivity timeout for queries
         connectTimeoutMS: 20000,        // ⏱️ initial connection timeout

@@ -35,9 +35,9 @@ export class BookingService {
    constructor(
       @InjectConnection() private readonly connection: Connection,
       private readonly bookingRepo: BookingRepository,
-      
+
       //@Inject(forwardRef(() => PaymentService)) private readonly paymentService: PaymentService,
-      
+
       private readonly notificationOutboxService: NotificationOutboxService,
       private readonly identityClient: IdentityClient,
       private readonly eventClient: EventClient,
@@ -112,6 +112,8 @@ export class BookingService {
             eventId: booking.eventId.toString(),
             userId
          });
+
+         console.log(`Booking Created ID --> ${booking._id.toString()}`);
 
          return { bookingId: booking._id.toString(), status: 'PENDING' };
 

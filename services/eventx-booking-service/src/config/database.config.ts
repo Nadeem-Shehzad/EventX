@@ -1,3 +1,3 @@
 export default () => ({
-   mongoUri: process.env.MONGO_URI,
+   BOOKING_MONGO_URI: process.env.BOOKING_MONGO_URI
 });
