@@ -32,14 +32,21 @@ export interface BookingConfirmedPayload {
 // tickets
 export interface TicketsReservedPayload {
    bookingId: string;
-   //reservationId: string;
+   ticketTypeId: string;
    isPaid: boolean;
    quantity: number;
+   price: number
 }
 
 export interface TicketsReservedFailedPayload {
    bookingId: string;
    reason: string;
+}
+
+export interface TicketsSoldPayload {
+   bookingId: string;
+   ticketTypeId: string;
+   quantity: number;
 }
 
 

@@ -1,9 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import {
-   BookingCreatedPayload,
+   BookingConfirmedRequestPayload,
    TicketsReservedPayload,
    TicketsSoldPayload
-
 } from "src/constants/events/domain-event-payloads";
 import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
 import { OutboxService } from "src/outbox/outbox.service";
@@ -12,7 +11,7 @@ import { AppLogger } from "src/logging/logging.service";
 
 
 @Injectable()
-export class BookingTicketHandler {
+export class TicketHandler {
 
    constructor(
       private readonly ticketService: TicketService,
@@ -20,18 +19,13 @@ export class BookingTicketHandler {
       private readonly logger: AppLogger
    ) { }
 
-   async handleBookingCreated(data: BookingCreatedPayload) {
-
-
-      console.log('--------------------------------');
-      console.log('--- INSIDE TICKET RESERVAION ---');
-      console.log('--------------------------------');
+   async handleTicketSold(data: TicketsSoldPayload) {
 
       this.logger.info({
          module: 'Ticket',
-         service: BookingTicketHandler.name,
-         msg: 'Inside BookingCreated',
-         eventId: data.eventId,
+         service: TicketHandler.name,
+         msg: '----- Inside TicketSold -----',
+         //eventId: data.eventId,
          bookingId: data.bookingId,
          ticketId: data.ticketTypeId
       });
@@ -39,27 +33,14 @@ export class BookingTicketHandler {
       try {
          const { bookingId, ticketTypeId, quantity } = data;
 
-         const ticket = await this.ticketService.reserveTickets(
+         const ticket = await this.ticketService.confirmReservedTickets(
             ticketTypeId,
             quantity,
             undefined
          );
 
-         const payload: TicketsReservedPayload = {
-            bookingId,
-            ticketTypeId,
-            isPaid: ticket.isPaidEvent,
-            quantity,
-            price: ticket.price
-         }
-
-         if (!ticket.isPaidEvent) {
-            const payload: TicketsSoldPayload = { bookingId, ticketTypeId, quantity };
-            await this.emit(DOMAIN_EVENTS.TICKETS_SOLD, bookingId, payload);
-
-         } else {
-            await this.emit(DOMAIN_EVENTS.TICKETS_RESERVED, bookingId, payload);
-         }
+         const payload: BookingConfirmedRequestPayload = { bookingId };
+         await this.emit(DOMAIN_EVENTS.BOOKING_CONFIRM_REQUESTED, bookingId, payload);
 
       } catch (error) {
          console.log('===============');

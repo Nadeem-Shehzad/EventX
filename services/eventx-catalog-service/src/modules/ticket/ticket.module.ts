@@ -9,6 +9,7 @@ import { TicketSagaProcessor } from "./saga/ticket-saga.processor";
 import { TicketSagaService } from "./saga/ticket-saga.service";
 import { BookingTicketHandler } from "./saga/handlers/booking.handler";
 import { LoggingModule } from "../../logging/logging.module";
+import { TicketHandler } from "./saga/handlers/ticket.handler";
 
 
 @Module({
@@ -23,7 +24,8 @@ import { LoggingModule } from "../../logging/logging.module";
       TicketRepository,
       TicketSagaProcessor,
       TicketSagaService,
-      BookingTicketHandler
+      BookingTicketHandler,
+      TicketHandler
    ],
    exports: [TicketService]
 })

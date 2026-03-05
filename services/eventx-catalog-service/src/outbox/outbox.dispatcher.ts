@@ -1,7 +1,6 @@
 import { InjectQueue } from "@nestjs/bullmq";
 import { Injectable, Logger } from "@nestjs/common";
 import { Queue } from "bullmq";
-import { Cron } from "@nestjs/schedule";
 import { QUEUES } from "src/queue/queue.constants";
 import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
 import { OutboxService } from "./outbox.service";
@@ -17,6 +16,7 @@ export class OutboxDispatcher {
    constructor(
       private readonly outboxService: OutboxService,
       @InjectQueue(QUEUES.BOOKING_QUEUE) private bookingQueue: Queue,
+      @InjectQueue(QUEUES.TICKET_QUEUE) private ticketQueue: Queue
    ) { }
 
    async onModuleInit() {
@@ -65,6 +65,9 @@ export class OutboxDispatcher {
          eventType === DOMAIN_EVENTS.TICKETS_FAILED
       ) {
          await this.bookingQueue.add(eventType, payload, this.jobOptions(_id.toString()));
+
+      } else if (eventType === DOMAIN_EVENTS.TICKETS_SOLD) {
+         await this.ticketQueue.add(eventType, payload, this.jobOptions(_id.toString()));
       }
    }
 

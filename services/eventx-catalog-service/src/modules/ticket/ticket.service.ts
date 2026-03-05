@@ -25,6 +25,43 @@ export class TicketService {
       return ticketType;
    }
 
+   
+   async confirmReservedTickets(
+      ticketTypeId: string,
+      quantity: number,
+      session?: ClientSession,
+   ) {
+      const ticketType = await this.ticketRepo.confirmReservedTickets(
+         ticketTypeId,
+         quantity,
+         session,
+      );
+
+      if (!ticketType) {
+         throw new BadRequestException('Reserved tickets not found');
+      }
+
+      return ticketType;
+   }
+
+   async releaseReservedTickets(
+      ticketTypeId: string,
+      quantity: number,
+      session?: ClientSession,
+   ) {
+      const ticketType = await this.ticketRepo.releaseReservedTickets(
+         ticketTypeId,
+         quantity,
+         session,
+      );
+
+      if (!ticketType) {
+         throw new BadRequestException('Reserved tickets not found');
+      }
+
+      return ticketType;
+   }
+
 
    async saveTickets(tickets: CreateTicketDTO, session: ClientSession) {
       return await this.ticketRepo.saveTicket(tickets, session);

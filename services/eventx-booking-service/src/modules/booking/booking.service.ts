@@ -244,8 +244,8 @@ export class BookingService {
             throw new BadRequestException('Booking already processed');
          }
 
-         const user = await this.identityClient.getUserById(booking.userId.toString());
-         const event = await this.eventClient.findEventById(booking.eventId.toString());
+         // const user = await this.identityClient.getUserById(booking.userId.toString());
+         // const event = await this.eventClient.findEventById(booking.eventId.toString());
 
          const patch: any = {
             status: BookingStatus.CONFIRMED,
@@ -264,30 +264,18 @@ export class BookingService {
             session
          );
 
-         // do this via RabbitMQ-approach
-         // await this.ticketModel.updateOne(
-         //    { _id: booking.ticketTypeId },
+         // await this.notificationOutboxService.addEvent(
+         //    'Booking',
+         //    bookingId,
+         //    'booking.confirmed',
          //    {
-         //       $inc: {
-         //          soldQuantity: booking.quantity,
-         //          reservedQuantity: booking.quantity
-         //       }
+         //       bookingId: booking._id.toString(),
+         //       eventName: event?.title ?? 'N/A',
+         //       userName: user?.name ?? 'N/A',
+         //       email: user?.email ?? 'N/A',
          //    },
-         //    { session }
+         //    session
          // );
-
-         await this.notificationOutboxService.addEvent(
-            'Booking',
-            bookingId,
-            'booking.confirmed',
-            {
-               bookingId: booking._id.toString(),
-               eventName: event?.title ?? 'N/A',
-               userName: user?.name ?? 'N/A',
-               email: user?.email ?? 'N/A',
-            },
-            session
-         );
 
          await session.commitTransaction();
          return updatedBooking;
@@ -311,6 +299,28 @@ export class BookingService {
    async bookingConfirmed(bookingId: string, eventId: string, userId: string) {
 
       try {
+
+         console.log('******************************************');
+         console.log(`===== INSIDE FINAL BOOKING CONFIRMED =====`);
+         console.log('******************************************');
+
+         const booking = await this.bookingRepo.findBookingById(bookingId);
+         if (!booking) throw new NotFoundException('Booking Not Found!');
+
+         const user = await this.identityClient.getUserById(booking.userId.toString());
+         const event = await this.eventClient.findEventById(booking.eventId.toString());
+
+         await this.notificationOutboxService.addEvent(
+            'Booking',
+            bookingId,
+            'booking.confirmed',
+            {
+               bookingId: booking._id.toString(),
+               eventName: event?.title ?? 'N/A',
+               userName: user?.name ?? 'N/A',
+               email: user?.email ?? 'N/A',
+            }
+         );
 
          this.eventEmitter.emit('booking.updated', {
             bookingId: bookingId,
@@ -395,7 +405,7 @@ export class BookingService {
 
    async cancelConfirmedBooking() {
       // booking cancelled scenario
-    }
+   }
 
 
    async markBookingRefunded(paymentIntentId: string) {

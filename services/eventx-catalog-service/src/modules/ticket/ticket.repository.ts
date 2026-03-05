@@ -33,6 +33,53 @@ export class TicketRepository {
    }
 
 
+   async confirmReservedTickets(
+      ticketTypeId: string,
+      quantity: number,
+      session?: ClientSession,
+   ) {
+      return this.ticketModel.findOneAndUpdate(
+         {
+            _id: ticketTypeId,
+            reservedQuantity: { $gte: quantity },
+         },
+         {
+            $inc: {
+               reservedQuantity: -quantity,
+               soldQuantity: quantity,
+            },
+         },
+         {
+            new: true,
+            session,
+         },
+      );
+   }
+
+   async releaseReservedTickets(
+      ticketTypeId: string,
+      quantity: number,
+      session?: ClientSession,
+   ) {
+      return this.ticketModel.findOneAndUpdate(
+         {
+            _id: ticketTypeId,
+            reservedQuantity: { $gte: quantity },
+         },
+         {
+            $inc: {
+               reservedQuantity: -quantity,
+               availableQuantity: quantity,
+            },
+         },
+         {
+            new: true,
+            session,
+         },
+      );
+   }
+
+
 
    // public Queries
    async findById(id: string, session: ClientSession) {

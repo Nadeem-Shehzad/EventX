@@ -4,7 +4,8 @@ import {
    BookingCreatedPayload,
    PaymentRequestPayload,
    TicketsReservedFailedPayload,
-   TicketsReservedPayload
+   TicketsReservedPayload,
+   TicketsSoldPayload
 } from "src/constants/events/domain-event-payloads";
 import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
 import { OutboxService } from "src/outbox/outbox.service";
@@ -24,7 +25,12 @@ export class TicketsBookingHandler {
 
 
    async handleTicketsReserved(data: TicketsReservedPayload) {
-      const { bookingId, isPaid } = data;
+      const { bookingId, isPaid, quantity, ticketTypeId, price } = data;
+
+      console.log('...............................');
+      console.log('H E L L O  W O R L D');
+      console.log(`Event is Free -> ${isPaid}`);
+      console.log('...............................');
 
       this.logger.info({
          module: 'Booking',
@@ -40,14 +46,15 @@ export class TicketsBookingHandler {
          //    await this.emit(DOMAIN_EVENTS.BOOKING_CONFIRM_REQUESTED, bookingId, payload);
          // }
 
-         if (!isPaid) {
-            const payload: BookingConfirmedRequestPayload = { bookingId };
-            await this.emit(DOMAIN_EVENTS.TICKETS_SOLD, bookingId, payload);
+         if (isPaid) {
+            console.log('%%%%%%%%%%%%% FREE EVENT %%%%%%%%%%%%%%%%');
+            const payload: TicketsSoldPayload = { bookingId, ticketTypeId, quantity };
+            return await this.emit(DOMAIN_EVENTS.TICKETS_SOLD, bookingId, payload);
          }
 
          const payload: PaymentRequestPayload = {
             bookingId,
-            amount: 10000,
+            amount: quantity * price,
             currency: 'PKR'
          }
 

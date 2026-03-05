@@ -9,6 +9,7 @@ export const DOMAIN_EVENTS = {
 
    TICKETS_RESERVED: 'tickets.reserved',
    TICKETS_FAILED: 'tickets.failed',
+   TICKETS_SOLD: 'tickets.sold',
    
    PAYMENT_REQUEST: 'payment.request',
    PAYMENT_SUCCESS: 'payment.success',
