@@ -12,6 +12,8 @@ export class MailService {
 
    async sendBookingSuccess({ bookingId, eventName, userName, email }) {
 
+      // uncomment these loggers to track via loki + grafana 
+
       // this.logger.info({
       //    module: 'Mail',
       //    service: MailService.name,
