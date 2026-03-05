@@ -35,9 +35,14 @@ export class TicketsBookingHandler {
 
       try {
 
+         // if (!isPaid) {
+         //    const payload: BookingConfirmedRequestPayload = { bookingId };
+         //    await this.emit(DOMAIN_EVENTS.BOOKING_CONFIRM_REQUESTED, bookingId, payload);
+         // }
+
          if (!isPaid) {
             const payload: BookingConfirmedRequestPayload = { bookingId };
-            await this.emit(DOMAIN_EVENTS.BOOKING_CONFIRM_REQUESTED, bookingId, payload);
+            await this.emit(DOMAIN_EVENTS.TICKETS_SOLD, bookingId, payload);
          }
 
          const payload: PaymentRequestPayload = {

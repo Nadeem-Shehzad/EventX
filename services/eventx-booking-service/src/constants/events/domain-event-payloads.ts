@@ -42,6 +42,12 @@ export interface TicketsReservedFailedPayload {
    reason: string;
 }
 
+export interface TicketsSoldPayload {
+   bookingId: string;
+   reservationId: string;
+   quantity: number;
+}
+
 
 
 // payment

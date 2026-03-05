@@ -39,11 +39,11 @@ export class OutboxDispatcher {
          { fullDocument: 'updateLookup' }
       );
 
-      this.logger.log('📡 OutboxDispatcher Change Stream started');
+      this.logger.log('OutboxDispatcher Change Stream started');
 
       this.changeStream.on('change', async (change: any) => {
          const event = change.fullDocument;
-         this.logger.log(`⚡ New outbox event detected: ${event.eventType}`);
+         this.logger.log(`New outbox event detected: ${event.eventType}`);
          await this.processEvent(event);
       });
 
