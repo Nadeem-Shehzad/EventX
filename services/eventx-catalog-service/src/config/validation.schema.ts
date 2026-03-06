@@ -18,5 +18,7 @@ export const validationSchema = Joi.object({
    SWAGGER_URL: Joi.string().required(),
 
    INTERNAL_API_KEY: Joi.string().required(),
+   BOOKING_SERVICE_URL: Joi.string().required(),
+
    RABBITMQ_URI: Joi.string().required()
 });

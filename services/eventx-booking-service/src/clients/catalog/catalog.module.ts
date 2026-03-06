@@ -9,7 +9,7 @@ import { EventClient } from './event.client';
       HttpModule.registerAsync({
          inject: [ConfigService],
          useFactory: (config: ConfigService) => ({
-            baseURL: 'CATALOG_SERVICE_URL',
+            baseURL: config.get<string>('CATALOG_SERVICE_URL'),
             timeout: 5000
          })
       })

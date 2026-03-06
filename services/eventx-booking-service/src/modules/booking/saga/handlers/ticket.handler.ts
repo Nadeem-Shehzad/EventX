@@ -25,12 +25,8 @@ export class TicketsBookingHandler {
 
 
    async handleTicketsReserved(data: TicketsReservedPayload) {
-      const { bookingId, isPaid, quantity, ticketTypeId, price } = data;
 
-      console.log('...............................');
-      console.log('H E L L O  W O R L D');
-      console.log(`Event is Free -> ${isPaid}`);
-      console.log('...............................');
+      const { bookingId, isPaid, quantity, ticketTypeId, price } = data;
 
       this.logger.info({
          module: 'Booking',
@@ -40,17 +36,6 @@ export class TicketsBookingHandler {
       });
 
       try {
-
-         // if (!isPaid) {
-         //    const payload: BookingConfirmedRequestPayload = { bookingId };
-         //    await this.emit(DOMAIN_EVENTS.BOOKING_CONFIRM_REQUESTED, bookingId, payload);
-         // }
-
-         if (isPaid) {
-            console.log('%%%%%%%%%%%%% FREE EVENT %%%%%%%%%%%%%%%%');
-            const payload: TicketsSoldPayload = { bookingId, ticketTypeId, quantity };
-            return await this.emit(DOMAIN_EVENTS.TICKETS_SOLD, bookingId, payload);
-         }
 
          const payload: PaymentRequestPayload = {
             bookingId,

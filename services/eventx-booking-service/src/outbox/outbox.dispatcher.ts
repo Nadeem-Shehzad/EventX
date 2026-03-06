@@ -58,8 +58,10 @@ export class OutboxDispatcher {
 
       await this.outboxService.markDispatched(event._id.toString());
 
-      if (eventType === DOMAIN_EVENTS.BOOKING_CREATED) {
-         console.log('@@@@@@@ Inside Booking-created and Adding to Ticket-Queue @@@@@@@');
+      if (
+         eventType === DOMAIN_EVENTS.BOOKING_CREATED ||
+         eventType === DOMAIN_EVENTS.TICKETS_SOLD
+      ) {
          await this.ticketQueue.add(eventType, payload, this.jobOptions(_id.toString()));
       }
 

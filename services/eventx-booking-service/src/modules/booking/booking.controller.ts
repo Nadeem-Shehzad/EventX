@@ -1,7 +1,8 @@
 import {
    Body, Controller, DefaultValuePipe, Get,
    HttpCode, HttpStatus, Param, ParseIntPipe,
-   Post, Query, UseGuards
+   Post, Query, UseGuards, Headers,
+   UnauthorizedException
 } from "@nestjs/common";
 import { BookingService } from "./booking.service";
 import { CreateBookingDTO } from "./dto/create-booking.dto";
@@ -26,7 +27,7 @@ import { BookingStatusResponseDTO } from "./swagger/response/booking-status-resp
 @ApiBearerAuth('JWT-auth')
 @Controller({ path: 'bookings', version: '1' })
 export class BookingController {
-   
+
    constructor(private readonly service: BookingService) { }
 
    @UseGuards(JwtAuthGuard, RoleCheckGuard)
@@ -267,4 +268,29 @@ export class BookingController {
 
    // get bookings summary
    // get highgrossing bookings
+
+
+   // internal Services Communications
+
+   @Get('internal/:id')
+   async getBookingInternal(
+      @Param('id') id: string,
+      @Headers('x-internal-api-key') apiKey: string,
+   ) {
+
+      console.log('############# INSIDE BOOKING CONTROLLER #############');
+      console.log(`BookingID --> ${id}`);
+
+      if (apiKey !== process.env.INTERNAL_API_KEY) {
+         throw new UnauthorizedException('Invalid internal API key');
+      }
+
+      const data = await this.service.getOneBooking(id);
+
+      console.log(`Booking Amount -> ${data.amount}`);
+      console.log(`Booking Quantity -> ${data.quantity}`);
+
+      return data;
+   }
+
 }

@@ -10,13 +10,15 @@ import { TicketSagaService } from "./saga/ticket-saga.service";
 import { BookingTicketHandler } from "./saga/handlers/booking.handler";
 import { LoggingModule } from "../../logging/logging.module";
 import { TicketHandler } from "./saga/handlers/ticket.handler";
+import { BookingClientModule } from "src/clients/booking/booking.client.module";
 
 
 @Module({
    imports: [
       MongooseModule.forFeature([{ name: 'TicketType', schema: TicketTypeSchema }]),
       LoggingModule,
-      OutboxModule
+      OutboxModule, 
+      BookingClientModule
    ],
    controllers: [TicketController],
    providers: [

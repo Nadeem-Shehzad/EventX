@@ -244,9 +244,6 @@ export class BookingService {
             throw new BadRequestException('Booking already processed');
          }
 
-         // const user = await this.identityClient.getUserById(booking.userId.toString());
-         // const event = await this.eventClient.findEventById(booking.eventId.toString());
-
          const patch: any = {
             status: BookingStatus.CONFIRMED,
             paymentStatus: paymentIntentId
@@ -264,23 +261,11 @@ export class BookingService {
             session
          );
 
-         // await this.notificationOutboxService.addEvent(
-         //    'Booking',
-         //    bookingId,
-         //    'booking.confirmed',
-         //    {
-         //       bookingId: booking._id.toString(),
-         //       eventName: event?.title ?? 'N/A',
-         //       userName: user?.name ?? 'N/A',
-         //       email: user?.email ?? 'N/A',
-         //    },
-         //    session
-         // );
-
          await session.commitTransaction();
          return updatedBooking;
 
       } catch (error) {
+         
          this.matricsService.incBookingFailed();
          await session.abortTransaction();
 
@@ -288,7 +273,7 @@ export class BookingService {
          console.log(`confirmBookingRequest failed: ${error.message}`, error.stack);
          console.log('***********************************');
 
-         throw error; // ← rethrow so SAGA knows it failed
+         throw error;
 
       } finally {
          session.endSession();

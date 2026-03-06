@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import {
    BookingConfirmedRequestPayload,
    TicketsReservedPayload,
@@ -8,6 +8,7 @@ import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
 import { OutboxService } from "src/outbox/outbox.service";
 import { TicketService } from "../../ticket.service";
 import { AppLogger } from "src/logging/logging.service";
+import { BookingClient } from "src/clients/booking/booking.client";
 
 
 @Injectable()
@@ -16,7 +17,8 @@ export class TicketHandler {
    constructor(
       private readonly ticketService: TicketService,
       private readonly outboxService: OutboxService,
-      private readonly logger: AppLogger
+      private readonly logger: AppLogger,
+      private readonly bookingClient: BookingClient
    ) { }
 
    async handleTicketSold(data: TicketsSoldPayload) {
@@ -24,18 +26,26 @@ export class TicketHandler {
       this.logger.info({
          module: 'Ticket',
          service: TicketHandler.name,
-         msg: '----- Inside TicketSold -----',
+         msg: 'Inside TicketSold',
          //eventId: data.eventId,
          bookingId: data.bookingId,
-         ticketId: data.ticketTypeId
       });
 
       try {
-         const { bookingId, ticketTypeId, quantity } = data;
+
+         const { bookingId } = data;
+
+         const bookingResponse = await this.bookingClient.findBookingById(bookingId);
+
+         if (!bookingResponse) {
+            throw new NotFoundException('TicketSold ::: Booking Not Found');
+         }
+
+         const booking = bookingResponse.data;
 
          const ticket = await this.ticketService.confirmReservedTickets(
-            ticketTypeId,
-            quantity,
+            booking.ticketTypeId,
+            booking.quantity,
             undefined
          );
 

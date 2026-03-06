@@ -4,7 +4,8 @@ import {
    BookingConfirmedFailedPayload,
    BookingConfirmedRequestPayload,
    PaymentFailedPayload,
-   PaymentRequestPayload
+   PaymentRequestPayload,
+   TicketsSoldPayload
 } from "src/constants/events/domain-event-payloads";
 import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
 import { AppLogger } from "src/logging/logging.service";
@@ -39,12 +40,13 @@ export class BookingPaymentHandler {
          currency: data.currency
       });
 
-      const payload: BookingConfirmedRequestPayload = {
+      const payload: TicketsSoldPayload = {
          bookingId: data.bookingId,
          paymentIntent: paymentData.paymentIntentId
       }
 
-      await this.emit(DOMAIN_EVENTS.BOOKING_CONFIRM_REQUESTED, data.bookingId, payload);
+      await this.emit(DOMAIN_EVENTS.TICKETS_SOLD, data.bookingId, payload);
+      //await this.emit(DOMAIN_EVENTS.BOOKING_CONFIRM_REQUESTED, data.bookingId, payload);
       //await this.emit(DOMAIN_EVENTS.PAYMENT_FAILED, data.bookingId, payload);
    }
 

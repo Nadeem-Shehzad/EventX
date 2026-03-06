@@ -22,11 +22,6 @@ export class BookingTicketHandler {
 
    async handleBookingCreated(data: BookingCreatedPayload) {
 
-
-      console.log('--------------------------------');
-      console.log('--- INSIDE TICKET RESERVAION ---');
-      console.log('--------------------------------');
-
       this.logger.info({
          module: 'Ticket',
          service: BookingTicketHandler.name,
@@ -54,7 +49,7 @@ export class BookingTicketHandler {
          }
 
          if (!ticket.isPaidEvent) {
-            const payload: TicketsSoldPayload = { bookingId, ticketTypeId, quantity };
+            const payload: TicketsSoldPayload = { bookingId };
             await this.emit(DOMAIN_EVENTS.TICKETS_SOLD, bookingId, payload);
 
          } else {

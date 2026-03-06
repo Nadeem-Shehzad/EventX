@@ -45,8 +45,7 @@ export interface TicketsReservedFailedPayload {
 
 export interface TicketsSoldPayload {
    bookingId: string;
-   ticketTypeId: string;
-   quantity: number;
+   paymentIntent?: string
 }
 
 

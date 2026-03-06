@@ -19,6 +19,11 @@ export class BookingResponseDTO {
    eventId: string
 
    @Expose()
+   @Transform(({ obj }) => obj.ticketTypeId.toString())
+   @ApiProperty({ example: 'jsdhfksjfhsdjh12er' })
+   ticketTypeId: string
+
+   @Expose()
    @ApiProperty({ example: 1000 })
    amount: number
 
