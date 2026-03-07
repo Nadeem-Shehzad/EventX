@@ -17,14 +17,14 @@ export class BookingSagaService {
 
       switch (job.name) {
 
-         case DOMAIN_EVENTS.TICKETS_RESERVED:
+         case DOMAIN_EVENTS.TICKET_RESERVED:
             return this.ticketHandler.handleTicketsReserved(job.data);
 
          // implementation pending   
-         case DOMAIN_EVENTS.TICKETS_RESERVATION_FAILED:
+         case DOMAIN_EVENTS.TICKET_RESERVATION_FAILED:
             return this.ticketHandler.handleTicketsReservationFailed(job.data);
 
-         case DOMAIN_EVENTS.TICKETS_FAILED:
+         case DOMAIN_EVENTS.TICKET_FAILED:
             return this.ticketHandler.handleTicketsFailed(job.data);
 
          case DOMAIN_EVENTS.BOOKING_CONFIRM_REQUESTED:

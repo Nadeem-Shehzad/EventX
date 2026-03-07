@@ -61,14 +61,14 @@ export class OutboxDispatcher {
       await this.outboxService.markDispatched(event._id.toString());
 
       if (
-         eventType === DOMAIN_EVENTS.TICKETS_RESERVED ||
-         eventType === DOMAIN_EVENTS.TICKETS_FAILED   ||
-         eventType === DOMAIN_EVENTS.TICKETS_RESERVATION_FAILED ||
+         eventType === DOMAIN_EVENTS.TICKET_RESERVED ||
+         eventType === DOMAIN_EVENTS.TICKET_FAILED   ||
+         eventType === DOMAIN_EVENTS.TICKET_RESERVATION_FAILED ||
          eventType === DOMAIN_EVENTS.BOOKING_CONFIRM_REQUESTED
       ) {
          await this.bookingQueue.add(eventType, payload, this.jobOptions(_id.toString()));
 
-      } else if (eventType === DOMAIN_EVENTS.TICKETS_SOLD) {
+      } else if (eventType === DOMAIN_EVENTS.TICKET_SOLD) {
          await this.ticketQueue.add(eventType, payload, this.jobOptions(_id.toString()));
       }
    }

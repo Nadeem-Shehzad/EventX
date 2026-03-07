@@ -19,7 +19,7 @@ export class TicketSagaService {
          case DOMAIN_EVENTS.BOOKING_CREATED:
             return this.bookingHandler.handleBookingCreated(job.data);
 
-         case DOMAIN_EVENTS.TICKETS_SOLD:
+         case DOMAIN_EVENTS.TICKET_SOLD:
             return this.ticketHandler.handleTicketSold(job.data);
 
          default:

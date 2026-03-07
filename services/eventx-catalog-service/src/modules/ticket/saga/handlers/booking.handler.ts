@@ -50,10 +50,10 @@ export class BookingTicketHandler {
 
          if (!ticket.isPaidEvent) {
             const payload: TicketsSoldPayload = { bookingId };
-            await this.emit(DOMAIN_EVENTS.TICKETS_SOLD, bookingId, payload);
+            await this.emit(DOMAIN_EVENTS.TICKET_SOLD, bookingId, payload);
 
          } else {
-            await this.emit(DOMAIN_EVENTS.TICKETS_RESERVED, bookingId, payload);
+            await this.emit(DOMAIN_EVENTS.TICKET_RESERVED, bookingId, payload);
          }
 
       } catch (error) {
@@ -62,7 +62,7 @@ export class BookingTicketHandler {
          console.log('===============');
 
          const { bookingId } = data;
-         await this.emit(DOMAIN_EVENTS.TICKETS_RESERVATION_FAILED, bookingId, null);
+         await this.emit(DOMAIN_EVENTS.TICKET_RESERVATION_FAILED, bookingId, null);
       }
    }
 

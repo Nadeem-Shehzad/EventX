@@ -65,7 +65,7 @@ export class TicketSagaProcessor extends WorkerHost {
 
 
    private readonly failureMap = {
-      [DOMAIN_EVENTS.BOOKING_CREATED]: DOMAIN_EVENTS.TICKETS_FAILED,
+      [DOMAIN_EVENTS.BOOKING_CREATED]: DOMAIN_EVENTS.TICKET_FAILED,
    };
 
    private async emit(event: string, aggregateId: string, payload: any) {
