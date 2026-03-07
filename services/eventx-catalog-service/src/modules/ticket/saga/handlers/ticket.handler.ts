@@ -53,6 +53,7 @@ export class TicketHandler {
          await this.emit(DOMAIN_EVENTS.BOOKING_CONFIRM_REQUESTED, bookingId, payload);
 
       } catch (error) {
+         
          console.log('===============');
          console.log(error.message);
          console.log('===============');

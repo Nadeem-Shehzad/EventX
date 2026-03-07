@@ -20,6 +20,10 @@ export class BookingSagaService {
          case DOMAIN_EVENTS.TICKETS_RESERVED:
             return this.ticketHandler.handleTicketsReserved(job.data);
 
+         // implementation pending   
+         case DOMAIN_EVENTS.TICKETS_RESERVATION_FAILED:
+            return this.ticketHandler.handleTicketsReservationFailed(job.data);
+
          case DOMAIN_EVENTS.TICKETS_FAILED:
             return this.ticketHandler.handleTicketsFailed(job.data);
 
@@ -36,7 +40,7 @@ export class BookingSagaService {
             return this.bookingHandler.handleBookingPaymentFailed(job.data);
 
          case DOMAIN_EVENTS.BOOKING_PAYMENT_REFUNDED:
-            return this.bookingHandler.handleBookingPaymentRefunded(job.data);   
+            return this.bookingHandler.handleBookingPaymentRefunded(job.data);
 
          default:
             throw new Error(`Unknown job ${job.name}`);

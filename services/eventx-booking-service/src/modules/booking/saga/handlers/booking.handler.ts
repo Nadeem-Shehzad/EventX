@@ -51,32 +51,32 @@ export class BookingsHandler {
 
    async handleBookingConfirmedFailed(data: BookingConfirmedFailedPayload) {
 
-      // this.logger.info({
-      //    module: 'Booking',
-      //    service: BookingsHandler.name,
-      //    msg: 'Inside handleBookingConfirmedFailed ',
-      //    bookingId: data.bookingId,
-      // });
+      this.logger.info({
+         module: 'Booking',
+         service: BookingsHandler.name,
+         msg: 'Inside handleBookingConfirmedFailed ',
+         bookingId: data.bookingId,
+      });
 
-      // const { bookingId } = data;
+      const { bookingId } = data;
 
-      // const booking = await this.bookingService.cancelBookingRequest(bookingId);
-      // if (!booking) {
-      //    throw new Error('Booking not Cancelled');
-      // }
+      const booking = await this.bookingService.cancelBookingRequest(bookingId);
+      if (!booking) {
+         throw new Error('Booking not Cancelled');
+      }
 
-      // if (booking.paymentIntentId) {
-      //    const payload: BookingConfirmedFailedPayload = {
-      //       bookingId: bookingId,
-      //       paymentIntent: booking.paymentIntentId
-      //    }
+      if (booking.paymentIntentId) {
+         const payload: BookingConfirmedFailedPayload = {
+            bookingId: bookingId,
+            paymentIntent: booking.paymentIntentId
+         }
 
-      //    await this.emit(DOMAIN_EVENTS.PAYMENT_REFUND_REQUEST, bookingId, payload);
-      //    return;
-      // }
+         await this.emit(DOMAIN_EVENTS.PAYMENT_REFUND_REQUEST, bookingId, payload);
+         return;
+      }
 
-      // const payload = {};
-      // await this.emit(DOMAIN_EVENTS.BOOKING_CANCELLED, bookingId, payload);
+      const payload = {};
+      await this.emit(DOMAIN_EVENTS.BOOKING_CANCELLED, bookingId, payload);
    }
 
 

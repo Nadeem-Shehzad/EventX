@@ -62,7 +62,7 @@ export class BookingTicketHandler {
          console.log('===============');
 
          const { bookingId } = data;
-         await this.emit(DOMAIN_EVENTS.TICKETS_FAILED, bookingId, null);
+         await this.emit(DOMAIN_EVENTS.TICKETS_RESERVATION_FAILED, bookingId, null);
       }
    }
 

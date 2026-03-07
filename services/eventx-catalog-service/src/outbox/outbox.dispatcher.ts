@@ -63,6 +63,7 @@ export class OutboxDispatcher {
       if (
          eventType === DOMAIN_EVENTS.TICKETS_RESERVED ||
          eventType === DOMAIN_EVENTS.TICKETS_FAILED   ||
+         eventType === DOMAIN_EVENTS.TICKETS_RESERVATION_FAILED ||
          eventType === DOMAIN_EVENTS.BOOKING_CONFIRM_REQUESTED
       ) {
          await this.bookingQueue.add(eventType, payload, this.jobOptions(_id.toString()));

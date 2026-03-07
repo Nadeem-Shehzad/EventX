@@ -1,5 +1,7 @@
 
 export const DOMAIN_EVENTS = {
+   
+   // Booking Events
    BOOKING_CREATED: 'booking.created',
    BOOKING_CONFIRM_REQUESTED: 'booking.confirm.requested',
    BOOKING_CONFIRMED: 'booking.confirmed',
@@ -7,10 +9,14 @@ export const DOMAIN_EVENTS = {
    BOOKING_CANCELLED: 'booking.cancelled',
    BOOKING_PAYMENT_FAILED: 'booking.payment.failed',
 
+   // Ticket Events
    TICKETS_RESERVED: 'tickets.reserved',
+   TICKETS_RESERVATION_FAILED: 'tickets.reservation.failed',
+   
    TICKETS_FAILED: 'tickets.failed',
    TICKETS_SOLD: 'tickets.sold',
    
+   // Payment Events
    PAYMENT_REQUEST: 'payment.request',
    PAYMENT_SUCCESS: 'payment.success',
    PAYMENT_FAILED: 'payment.failed',

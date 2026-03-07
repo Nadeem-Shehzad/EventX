@@ -26,7 +26,7 @@ export class TicketsBookingHandler {
 
    async handleTicketsReserved(data: TicketsReservedPayload) {
 
-      const { bookingId, isPaid, quantity, ticketTypeId, price } = data;
+      const { bookingId, quantity, price } = data;
 
       this.logger.info({
          module: 'Booking',
@@ -46,40 +46,38 @@ export class TicketsBookingHandler {
          await this.emit(DOMAIN_EVENTS.PAYMENT_REQUEST, bookingId, payload);
 
       } catch (error) {
-         // 3️⃣ Failure path → emit failure event
-         // const payload: BookingCreatedPayload = {
-         //    bookingId,
-         //    userId,
-         //    eventId,
-         //    ticketTypeId,
-         //    quantity
-         // }
-
-         // await this.outboxService.addEvent<BookingCreatedPayload>(
-         //    'Booking',
-         //    bookingId,
-         //    DOMAIN_EVENTS.TICKETS_FAILED,
-         //    payload,
-         //    undefined
-         // );
-
-         throw error; // allow BullMQ retry
+         throw error;
       }
    }
 
 
    async handleTicketsFailed(data: TicketsReservedFailedPayload) {
 
-      // this.logger.info({
-      //    module: 'Booking',
-      //    service: TicketsBookingHandler.name,
-      //    msg: 'Inside handleTicketsFailed',
-      // });
+      this.logger.info({
+         module: 'Booking',
+         service: TicketsBookingHandler.name,
+         msg: 'Inside handleTicketsFailed',
+      });
 
-      // console.log('---------------- INSIDE HANDLE-TICKETS-FAILED --------------');
+      console.log('---------------- INSIDE HANDLE-TICKETS-FAILED --------------');
 
       const { bookingId, reason } = data;
       await this.bookingService.bookingFailed(bookingId);
+   }
+
+
+   async handleTicketsReservationFailed(data: TicketsReservedFailedPayload) {
+
+      this.logger.info({
+         module: 'Booking',
+         service: TicketsBookingHandler.name,
+         msg: 'Inside handleTicketsFailed',
+      });
+
+      console.log('---------------- INSIDE HANDLE-TICKETS-RESERVATION-FAILED --------------');
+
+      //const { bookingId, reason } = data;
+      //await this.bookingService.bookingFailed(bookingId);
    }
 
 
