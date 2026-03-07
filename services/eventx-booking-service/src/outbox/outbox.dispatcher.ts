@@ -60,7 +60,7 @@ export class OutboxDispatcher {
 
       if (
          eventType === DOMAIN_EVENTS.BOOKING_CREATED ||
-         eventType === DOMAIN_EVENTS.TICKETS_SOLD
+         eventType === DOMAIN_EVENTS.TICKET_SOLD
       ) {
          await this.ticketQueue.add(eventType, payload, this.jobOptions(_id.toString()));
       }

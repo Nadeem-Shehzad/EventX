@@ -59,7 +59,7 @@ export class TicketHandler {
          console.log('===============');
 
          const { bookingId } = data;
-         await this.emit(DOMAIN_EVENTS.TICKET_FAILED, bookingId, null);
+         await this.emit(DOMAIN_EVENTS.TICKET_SOLD_FAILED, bookingId, null);
       }
    }
 
