@@ -160,6 +160,7 @@ export class UserController {
 
 
    @UseGuards(JwtAuthGuard, RoleCheckGuard)
+   @UseInterceptors(IdempotencyInterceptor)
    @Put(':id/admin')
    @Roles('admin')
    @HttpCode(HttpStatus.CREATED)
@@ -190,6 +191,7 @@ export class UserController {
 
 
    @UseGuards(JwtAuthGuard, RoleCheckGuard)
+   @UseInterceptors(IdempotencyInterceptor)
    @Delete(':id/admin')
    @Roles('admin')
    @HttpCode(HttpStatus.OK)
