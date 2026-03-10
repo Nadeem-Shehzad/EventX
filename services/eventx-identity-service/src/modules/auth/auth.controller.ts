@@ -23,6 +23,7 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagg
 import { UserResponseDTO } from "../user/dto/user-response.dto";
 import { LoginResponseDTO } from "./swagger/response/login-response.dto";
 import { ForgotPasswordResponseDTO } from "./swagger/response/forgot-password-response.dto";
+import { IdempotencyInterceptor } from "src/common/interceptors/idempotency.interceptor";
 
 
 @ApiTags('auth')
@@ -47,9 +48,10 @@ export class AuthController {
       FileInterceptor('image', {
          storage: getCloudinaryStorage(),
          limits: { fileSize: 5 * 1024 * 1024 },
-      })
+      }),
+      IdempotencyInterceptor
    )
-   register(
+   async register(
       @Body() data: RegisterDTO,
       @UploadedFile() file?: Express.Multer.File
    ) {
@@ -122,6 +124,7 @@ export class AuthController {
    }
 
 
+   @UseInterceptors(IdempotencyInterceptor)
    @UseGuards(JwtAuthGuard)
    @Post('send-verification-email')
    sendVerificationEmail(@GetUserID() id: string, @GetUserEmail() email: string) {
@@ -129,12 +132,14 @@ export class AuthController {
    }
 
 
+   @UseInterceptors(IdempotencyInterceptor)
    @Post('verify-email')
    verifyEmail(@Query('token') token: string) {
       return this.authService.verifyEmail(token);
    }
 
 
+   @UseInterceptors(IdempotencyInterceptor)
    @Post('forgot-password')
    @ApiOperation({ summary: 'forgot password' })
    @ApiResponse({
@@ -147,6 +152,7 @@ export class AuthController {
    }
 
 
+   @UseInterceptors(IdempotencyInterceptor)
    @Post('reset-password')
    @ApiOperation({ summary: 'reset password' })
    @ApiResponse({
