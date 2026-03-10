@@ -18,6 +18,7 @@ import { Roles } from "../../common/decorators/user-roles";
 import { RoleCheckGuard } from "../../common/guards/role.guard";
 import { GetUserID } from "../../common/decorators/used-id";
 import { AccountOwnerShipGuard } from "../../common/guards/ownership.guard";
+import { IdempotencyInterceptor } from "src/common/interceptors/idempotency.interceptor";
 
 
 @ApiTags('user')
@@ -44,6 +45,7 @@ export class UserController {
 
 
    @UseGuards(JwtAuthGuard, RoleCheckGuard, AccountOwnerShipGuard)
+   @UseInterceptors(IdempotencyInterceptor)
    @Put(':id')
    @HttpCode(HttpStatus.CREATED)
    @ApiOperation({ summary: 'Update profile' })
@@ -89,6 +91,7 @@ export class UserController {
 
 
    @UseGuards(JwtAuthGuard, RoleCheckGuard, AccountOwnerShipGuard)
+   @UseInterceptors(IdempotencyInterceptor)
    @Delete(':id')
    @HttpCode(HttpStatus.OK)
    @ApiOperation({ summary: 'Delete profile' })
