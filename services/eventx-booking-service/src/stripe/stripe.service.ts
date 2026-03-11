@@ -12,18 +12,25 @@ export class StripeService {
    ) { }
 
 
-   async createPaymentIntent(params: {
-      amount: number;
-      currency: string;
-      metadata?: Record<string, string>;
-   }) {
-
-      return await this.stripe.paymentIntents.create({
-         amount: params.amount,
-         currency: params.currency,
-         payment_method_types: ['card'],
-         metadata: params.metadata
-      });
+   async createPaymentIntent(
+      params: {
+         amount: number;
+         currency: string;
+         metadata?: Record<string, string>;
+      },
+      idempotencyKey?: string  // ← add this
+   ) {
+      return await this.stripe.paymentIntents.create(
+         {
+            amount: params.amount,
+            currency: params.currency,
+            payment_method_types: ['card'],
+            metadata: params.metadata
+         },
+         idempotencyKey
+            ? { idempotencyKey }
+            : undefined
+      );
    }
 
 

@@ -38,6 +38,7 @@ export class TicketsBookingHandler {
       try {
 
          const payload: PaymentRequestPayload = {
+            userId: data.userId.toString(),
             bookingId,
             amount: quantity * price,
             currency: 'PKR'

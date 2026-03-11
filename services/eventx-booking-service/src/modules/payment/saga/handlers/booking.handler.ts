@@ -34,7 +34,8 @@ export class BookingPaymentHandler {
 
       let paymentData: { paymentIntentId: string; clientSecret: string | null } | null = null;
 
-      paymentData = await this.paymentService.initiatePayment({
+      paymentData = await this.paymentService.createPayment({
+         userId: data.userId,
          bookingId: data.bookingId,
          amount: data.amount,
          currency: data.currency

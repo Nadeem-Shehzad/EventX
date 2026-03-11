@@ -32,7 +32,7 @@ export class BookingTicketHandler {
       });
 
       try {
-         const { bookingId, ticketTypeId, quantity } = data;
+         const { userId, bookingId, ticketTypeId, quantity } = data;
 
          const ticket = await this.ticketService.reserveTickets(
             ticketTypeId,
@@ -41,6 +41,7 @@ export class BookingTicketHandler {
          );
 
          const payload: TicketsReservedPayload = {
+            userId,
             bookingId,
             ticketTypeId,
             isPaid: ticket.isPaidEvent,

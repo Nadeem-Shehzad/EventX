@@ -3,7 +3,7 @@ import {
    Inject, Injectable
 } from "@nestjs/common";
 import { InjectConnection } from "@nestjs/mongoose";
-import { Connection } from "mongoose";
+import { Connection, Types } from "mongoose";
 import { BookingService } from "src/modules/booking/booking.service";
 import { PaymentStatus } from "src/constants/payment-status.enum";
 import { StripeService } from "src/stripe/stripe.service";
@@ -11,6 +11,7 @@ import { EventEmitter2 } from "@nestjs/event-emitter";
 import { EmailJob } from "src/constants/email-queue.constants";
 import { OutboxService } from "src/outbox/outbox.service";
 import { AppLogger } from "src/logging/logging.service";
+import { PaymentRepository } from "./payment.repo";
 
 
 @Injectable()
@@ -19,6 +20,7 @@ export class PaymentService {
    constructor(
       @InjectConnection() private readonly connection: Connection,
       private readonly stripe: StripeService,
+      private readonly paymentRepo: PaymentRepository,
       @Inject(forwardRef(() => BookingService))
       private readonly bookingService: BookingService,
       private readonly eventEmitter: EventEmitter2,
@@ -27,26 +29,54 @@ export class PaymentService {
    ) { }
 
 
-   async initiatePayment(params: {
+   async createPayment(params: {
+      userId: string;      
       bookingId: string;
       amount: number;
       currency: string;
    }) {
 
+      const existingPayment = await this.paymentRepo.findOne({
+         bookingId: new Types.ObjectId(params.bookingId),
+         status: {
+            $in: [PaymentStatus.PENDING, PaymentStatus.COMPLETED]
+         }
+      });
+
+      if (existingPayment) {
+         return {
+            paymentIntentId: existingPayment.stripePaymentIntentId,
+            clientSecret: null
+         };
+      }
+
       const amountInCents = Math.round(params.amount * 100);
 
-      const paymentIntent = await this.stripe.createPaymentIntent({
-         amount: amountInCents,
-         currency: params.currency.toLowerCase(),
-         metadata: {
-            bookingId: params.bookingId
-         }
+      const paymentIntent = await this.stripe.createPaymentIntent(
+         {
+            amount: amountInCents,
+            currency: params.currency.toLowerCase(),
+            metadata: {
+               bookingId: params.bookingId,
+               userId: params.userId
+            }
+         },
+         params.bookingId  
+      );
+
+      await this.paymentRepo.create({
+         userId: new Types.ObjectId(params.userId),
+         bookingId: new Types.ObjectId(params.bookingId),
+         stripePaymentIntentId: paymentIntent.id,
+         amount: params.amount,
+         currency: params.currency,
+         status: PaymentStatus.PENDING
       });
 
       return {
          paymentIntentId: paymentIntent.id,
          clientSecret: paymentIntent.client_secret
-      }
+      };
    }
 
 

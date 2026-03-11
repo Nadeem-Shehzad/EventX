@@ -9,9 +9,15 @@ import { PaymentSagaProcessor } from './saga/payment-saga.processor';
 import { PaymentSagaService } from './saga/payment-saga.service';
 import { BookingPaymentHandler } from './saga/handlers/booking.handler';
 import { LoggingModule } from 'src/logging/logging.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { PaymentSchema } from './payment.schema';
+import { PaymentRepository } from './payment.repo';
 
 @Module({
    imports: [
+
+      MongooseModule.forFeature([{ name: 'Payment', schema: PaymentSchema }]),
+
       StripeModule,
       forwardRef(() => BookingModule),
       LoggingModule,
@@ -20,6 +26,7 @@ import { LoggingModule } from 'src/logging/logging.module';
    ],
    controllers: [PaymentController],
    providers: [
+      PaymentRepository,
       PaymentService,
       PaymentSagaProcessor,
       PaymentSagaService,
@@ -27,4 +34,5 @@ import { LoggingModule } from 'src/logging/logging.module';
    ],
    exports: [PaymentService],
 })
+
 export class PaymentModule { }

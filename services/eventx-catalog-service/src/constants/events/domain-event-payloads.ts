@@ -31,6 +31,7 @@ export interface BookingConfirmedPayload {
 
 // tickets
 export interface TicketsReservedPayload {
+   userId: string;
    bookingId: string;
    ticketTypeId: string;
    isPaid: boolean;
