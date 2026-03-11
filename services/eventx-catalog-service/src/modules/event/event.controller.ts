@@ -31,6 +31,7 @@ import { EventsStatusSummaryResponseDTO } from "./swagger/response/status-summar
 import { EventsVisibilitySummaryResponseDTO } from "./swagger/response/visibility-summary-response.dto";
 import { EventsTypesSummaryResponseDTO } from "./swagger/response/event-type-summary-response.dto";
 import { EventsTagsSummaryResponseDTO } from "./swagger/response/tags-summary-response.dto";
+import { IdempotencyInterceptor } from "src/common/interceptors/idempotency.interceptor";
 
 
 @ApiTags('Events')
@@ -44,6 +45,7 @@ export class EventController {
 
 
    @UseGuards(JwtAuthGuard, RoleCheckGuard)
+   @UseInterceptors(IdempotencyInterceptor)
    @Throttle({ default: { limit: 5, ttl: 60000 } })
    @Roles('organizer')
    @Post('')
@@ -58,9 +60,9 @@ export class EventController {
    @ApiResponse({ status: 401, description: 'Unauthorized' })
    @ApiResponse({ status: 500, description: 'Server Error' })
    addEvent(
-      @GetUserID() id: string,
+      @GetUserID() organizerId: string,
       @Body() data: CreateEventDTO) {
-      return this.eventService.createEvent(id, data);
+      return this.eventService.createEvent(organizerId, data);
    }
 
 
@@ -87,6 +89,7 @@ export class EventController {
 
 
    @UseGuards(JwtAuthGuard, RoleCheckGuard, EventOwnerShipGuard)
+   @UseInterceptors(IdempotencyInterceptor)
    @Throttle({ default: { limit: 5, ttl: 60000 } })
    @Roles('organizer')
    @Put('/:id')
@@ -364,6 +367,7 @@ export class EventController {
    // get archived events ... organizer and admin only
 
    @UseGuards(JwtAuthGuard, RoleCheckGuard, EventOwnerShipGuard)
+   @UseInterceptors(IdempotencyInterceptor)
    @Roles('organizer')
    @Post('/publish/:id')
    @HttpCode(HttpStatus.OK)
@@ -388,6 +392,7 @@ export class EventController {
 
 
    @UseGuards(JwtAuthGuard, RoleCheckGuard, EventOwnerShipGuard)
+   @UseInterceptors(IdempotencyInterceptor)
    @Roles('organizer')
    @Post('/cancel/:id')
    @HttpCode(HttpStatus.OK)
@@ -412,6 +417,7 @@ export class EventController {
 
 
    @UseGuards(JwtAuthGuard, RoleCheckGuard, EventOwnerShipGuard)
+   @UseInterceptors(IdempotencyInterceptor)
    @Roles('organizer')
    @Delete('/delete/:id')
    @HttpCode(HttpStatus.OK)
@@ -435,6 +441,7 @@ export class EventController {
 
 
    @UseGuards(JwtAuthGuard, RoleCheckGuard, EventOwnerShipGuard)
+   @UseInterceptors(IdempotencyInterceptor)
    @Roles('organizer')
    @Post('/recover/:id')
    @HttpCode(HttpStatus.OK)
@@ -459,6 +466,7 @@ export class EventController {
 
 
    @UseGuards(JwtAuthGuard, RoleCheckGuard, EventOwnerShipGuard)
+   @UseInterceptors(IdempotencyInterceptor)
    @Roles('organizer')
    @Delete('/delete-permanent/:id')
    @HttpCode(HttpStatus.OK)

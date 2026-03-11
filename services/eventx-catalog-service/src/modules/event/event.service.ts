@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
 import { EventRespository } from "./event.repository";
 import slugify from "slugify";
 import { plainToInstance } from "class-transformer";
@@ -32,15 +32,22 @@ export class EventService {
    private readonly logger = new Logger(EventService.name);
 
 
-   async createEvent(id: string, dto: CreateEventDTO) {
+   async createEvent(organizerId: string, dto: CreateEventDTO) {
 
       const session = await this.connection.startSession();
       session.startTransaction();
 
       try {
+
+         // db level idempotency
+         const existingEvent = await this.eventRepo.checkEventExist(organizerId, dto);
+         if (existingEvent) {
+            throw new ConflictException('Event with same title, date and venue already exists!');
+         }
+
          const slug = slugify(dto.title, { lower: true }) + '-' + Date.now();
 
-         const organizer = { organizerId: id }
+         const organizer = { organizerId }
          const slugObj = { slug };
          const dataObject = { ...dto, ...organizer, ...slugObj };
 
@@ -74,7 +81,7 @@ export class EventService {
 
       } catch (error) {
          await session.abortTransaction();
-         console.error('Transaction failed for createEvent', { error });
+         //console.error('Transaction failed for createEvent', { error });
          throw error;
 
       } finally {

@@ -24,6 +24,18 @@ export class EventRespository {
    }
 
 
+   async checkEventExist(organizerId: string, data: CreateEventDTO) {
+      return await this.eventModel.findOne({
+         organizerId,
+         title: data.title,
+         startDateTime: data.startDateTime,
+         'location.venueName': data.location?.venueName,
+         'location.city': data.location?.city,
+         'location.country': data.location?.country,
+      });
+   }
+
+
    async updateEvent(id: string, dataToUpdate: UpdateEventDTO, session: ClientSession) {
 
       const event = await this.eventModel.findOneAndUpdate(
