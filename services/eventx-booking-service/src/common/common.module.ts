@@ -6,6 +6,7 @@ import { AccountOwnerShipGuard } from "./guards/ownership.guard";
 import { RoleCheckGuard } from "./guards/role.guard";
 //import { EventModule } from "src/modules/event/event.module";
 import { MyRedisModule } from "src/redis/redis.module";
+import { IdempotencyInterceptor } from "./interceptors/idempotency.interceptor";
 
 
 @Module({
@@ -19,6 +20,7 @@ import { MyRedisModule } from "src/redis/redis.module";
       JwtRefreshTokenGuard,
       AccountOwnerShipGuard,
       RoleCheckGuard,
+      IdempotencyInterceptor
    ],
    exports: [
       JwtAuthGuard,
@@ -26,6 +28,7 @@ import { MyRedisModule } from "src/redis/redis.module";
       JwtModule,
       AccountOwnerShipGuard,
       RoleCheckGuard,
+      IdempotencyInterceptor
    ]
 })
 

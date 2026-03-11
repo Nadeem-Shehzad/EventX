@@ -45,7 +45,7 @@ export class BookingPaymentHandler {
          paymentIntent: paymentData.paymentIntentId
       }
 
-      await this.emit(DOMAIN_EVENTS.TICKETS_SOLD, data.bookingId, payload);
+      await this.emit(DOMAIN_EVENTS.TICKET_SOLD, data.bookingId, payload);
       //await this.emit(DOMAIN_EVENTS.BOOKING_CONFIRM_REQUESTED, data.bookingId, payload);
       //await this.emit(DOMAIN_EVENTS.PAYMENT_FAILED, data.bookingId, payload);
    }

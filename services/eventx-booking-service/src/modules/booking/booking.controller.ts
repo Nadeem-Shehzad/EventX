@@ -2,7 +2,8 @@ import {
    Body, Controller, DefaultValuePipe, Get,
    HttpCode, HttpStatus, Param, ParseIntPipe,
    Post, Query, UseGuards, Headers,
-   UnauthorizedException
+   UnauthorizedException,
+   UseInterceptors
 } from "@nestjs/common";
 import { BookingService } from "./booking.service";
 import { CreateBookingDTO } from "./dto/create-booking.dto";
@@ -21,6 +22,7 @@ import { CreateBookingResponseDTO } from "./swagger/response/create-booking-resp
 import { BookingResponseDTO } from "./dto/booking.response.dto";
 import { PaginatedBookingsResponseDTO } from "./swagger/response/all-bookings-response.dto";
 import { BookingStatusResponseDTO } from "./swagger/response/booking-status-response.dto";
+import { IdempotencyInterceptor } from "src/common/interceptors/idempotency.interceptor";
 
 
 @ApiTags('bookings')
@@ -31,6 +33,7 @@ export class BookingController {
    constructor(private readonly service: BookingService) { }
 
    @UseGuards(JwtAuthGuard, RoleCheckGuard)
+   @UseInterceptors(IdempotencyInterceptor)
    @Throttle({ default: { limit: 5, ttl: 60000 } })
    @Roles('user')
    @Post('create')

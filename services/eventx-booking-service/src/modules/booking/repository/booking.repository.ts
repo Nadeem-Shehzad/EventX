@@ -16,6 +16,22 @@ export class BookingRepository {
    }
 
 
+   async checkBookingExists(userId: string, eventId: string, ticketTypeId: string) {
+      const existingBooking = await this.bookingModel.findOne({
+         userId: new Types.ObjectId(userId),
+         eventId: new Types.ObjectId(eventId),
+         ticketTypeId: new Types.ObjectId(ticketTypeId),
+         status: {
+            $in: [
+               BookingStatus.PENDING,
+               BookingStatus.CONFIRMED
+            ]
+         }
+      });
+      return existingBooking;
+   }
+
+
    async allBookings(page: number, limit: number) {
 
       const skip = (page - 1) * limit;

@@ -1,5 +1,5 @@
 import {
-   BadRequestException, forwardRef, Inject,
+   BadRequestException, ConflictException, forwardRef, Inject,
    Injectable, NotFoundException
 } from "@nestjs/common";
 import { BookingRepository } from "./repository/booking.repository";
@@ -55,6 +55,19 @@ export class BookingService {
       session.startTransaction();
 
       try {
+
+         // check db level idempotency
+         const existingBooking = await this.bookingRepo.checkBookingExists(
+            userId,
+            dto.eventId,
+            dto.ticketTypeId
+         );
+
+         if (existingBooking) {
+            throw new ConflictException(
+               'You already have an active booking for this event!'
+            );
+         }
 
          let status = BookingStatus.PENDING;
 
@@ -265,7 +278,7 @@ export class BookingService {
          return updatedBooking;
 
       } catch (error) {
-         
+
          this.matricsService.incBookingFailed();
          await session.abortTransaction();
 
