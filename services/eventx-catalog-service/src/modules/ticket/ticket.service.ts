@@ -2,12 +2,13 @@ import { Injectable } from "@nestjs/common";
 import { TicketRepository } from "./ticket.repository";
 import { CreateTicketDTO } from "./dto/request/create-ticket.dto";
 import { ClientSession } from "mongoose";
-import { CommandBus } from "@nestjs/cqrs";
-import { 
-   ConfirmTicketCommand, 
-   ReleasedReservedTicketCommand, 
-   ReserveTicketCommand 
+import { CommandBus, QueryBus } from "@nestjs/cqrs";
+import {
+   ConfirmTicketCommand,
+   ReleasedReservedTicketCommand,
+   ReserveTicketCommand
 } from "./cqrs/commands/ticket.commands";
+import { CheckAvailabilityQuery, GetTicketByIdQuery, GetTicketsByEventQuery } from "./cqrs/queries/ticket.queries";
 
 
 @Injectable()
@@ -15,7 +16,8 @@ export class TicketService {
 
    constructor(
       private readonly ticketRepo: TicketRepository,
-      private readonly commandBus: CommandBus
+      private readonly commandBus: CommandBus,
+      private readonly queryBus: QueryBus
    ) { }
 
 
@@ -24,12 +26,12 @@ export class TicketService {
    }
 
 
+   // commands
    async reserveTickets(ticketTypeId: string, quantity: number, session?: ClientSession) {
       return this.commandBus.execute(
          new ReserveTicketCommand(ticketTypeId, quantity, session)
       );
    }
-
 
    async confirmReservedTickets(ticketTypeId: string, quantity: number, session?: ClientSession) {
       return this.commandBus.execute(
@@ -37,10 +39,29 @@ export class TicketService {
       );
    }
 
-   
    async releaseReservedTickets(ticketTypeId: string, quantity: number, session?: ClientSession) {
       return this.commandBus.execute(
          new ReleasedReservedTicketCommand(ticketTypeId, quantity, session)
+      );
+   }
+
+
+   // Queries
+   async getTicketsByEvent(eventId: string) {
+      return this.queryBus.execute(
+         new GetTicketsByEventQuery(eventId)
+      );
+   }
+
+   async getTicketByID(ticketTypeId: string) {
+      return this.queryBus.execute(
+         new GetTicketByIdQuery(ticketTypeId)
+      );
+   }
+
+   async checkAvailability(ticketTypeId: string, quantity: number) {
+      return this.queryBus.execute(
+         new CheckAvailabilityQuery(ticketTypeId, quantity)
       );
    }
 

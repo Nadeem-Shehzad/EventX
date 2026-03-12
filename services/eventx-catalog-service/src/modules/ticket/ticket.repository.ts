@@ -56,6 +56,7 @@ export class TicketRepository {
       );
    }
 
+
    async releaseReservedTickets(
       ticketTypeId: string,
       quantity: number,
@@ -77,6 +78,15 @@ export class TicketRepository {
             session,
          },
       );
+   }
+
+
+   async findTicketsByEventID(eventId: string) {
+      return await this.ticketModel.find({ eventId });
+   }
+
+   async findByIdNoSession(id: string) {
+      return await this.ticketModel.findById(id);
    }
 
 

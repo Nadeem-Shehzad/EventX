@@ -1,12 +1,27 @@
-import { Controller } from "@nestjs/common";
+import { Controller, Get, Param, Query } from "@nestjs/common";
+import { TicketService } from "./ticket.service";
 
 
-@Controller({ path: 'ticket', version: '1' })
+@Controller({ path: 'tickets', version: '1' })
 export class TicketController {
 
-   // 3 - POST /v1/tickets/validate
+   constructor(private readonly ticketService: TicketService) {}
 
-   // - reserve ticket
-   // - confirm tickets ... called after payment success ... reserve to sold
-   // - release tickets ... called after payment  failed ... release reserved tickets
+   @Get('event/:eventId')
+   async getTicketsByEvent(@Param('eventId') eventId: string) {
+      return this.ticketService.getTicketsByEvent(eventId);
+   }
+
+   @Get(':ticketTypeId')
+   async getTicketById(@Param('ticketTypeId') ticketTypeId: string) {
+      return this.ticketService.getTicketByID(ticketTypeId);
+   }
+
+   @Get(':ticketTypeId/availability')
+   async checkAvailability(
+      @Param('ticketTypeId') ticketTypeId: string,
+      @Query('quantity') quantity: number
+   ) {
+      return this.ticketService.checkAvailability(ticketTypeId, quantity);
+   }
 }

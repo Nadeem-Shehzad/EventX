@@ -16,6 +16,9 @@ import { CqrsModule } from "@nestjs/cqrs";
 import { ConfirmTicketHandler } from "./cqrs/handlers/commands/confirm-ticket.handler";
 import { ReleaseReservedTicketHandler } from "./cqrs/handlers/commands/release-ticket.handler";
 import { MyRedisModule } from "src/redis/redis.module";
+import { GetTicketsByEventHandler } from "./cqrs/handlers/queries/event-tickets.handler";
+import { TicketByIDHandler } from "./cqrs/handlers/queries/ticket-by-id.handler";
+import { CheckAvailabilityHandler } from "./cqrs/handlers/queries/check-availability.handler";
 
 
 const CommandHandlers = [
@@ -25,7 +28,9 @@ const CommandHandlers = [
 ];
 
 const QueryHandlers = [
-   // add later
+   GetTicketsByEventHandler,
+   TicketByIDHandler,
+   CheckAvailabilityHandler
 ];
 
 
