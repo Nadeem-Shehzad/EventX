@@ -20,6 +20,14 @@ export class RedisService {
       return this.redis.del(key);
    }
 
+   async decrby(key: string, value: number) {
+      return this.redis.decrby(key, value);
+   }
+
+   async incrby(key: string, value: number) {
+      return this.redis.incrby(key, value);
+   }
+
    pipeline() {
       return this.redis.pipeline();
    }

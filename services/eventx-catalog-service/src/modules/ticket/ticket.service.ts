@@ -1,13 +1,22 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { TicketRepository } from "./ticket.repository";
 import { CreateTicketDTO } from "./dto/request/create-ticket.dto";
 import { ClientSession } from "mongoose";
+import { CommandBus } from "@nestjs/cqrs";
+import { 
+   ConfirmTicketCommand, 
+   ReleasedReservedTicketCommand, 
+   ReserveTicketCommand 
+} from "./cqrs/commands/ticket.commands";
 
 
 @Injectable()
 export class TicketService {
 
-   constructor(private readonly ticketRepo: TicketRepository) { }
+   constructor(
+      private readonly ticketRepo: TicketRepository,
+      private readonly commandBus: CommandBus
+   ) { }
 
 
    async createTickets(tickets: CreateTicketDTO[], session: ClientSession) {
@@ -16,50 +25,23 @@ export class TicketService {
 
 
    async reserveTickets(ticketTypeId: string, quantity: number, session?: ClientSession) {
-      const ticketType = await this.ticketRepo.ticketReserve(ticketTypeId, quantity, session);
+      return this.commandBus.execute(
+         new ReserveTicketCommand(ticketTypeId, quantity, session)
+      );
+   }
 
-      if (!ticketType) {
-         throw new BadRequestException('Tickets not available');
-      }
 
-      return ticketType;
+   async confirmReservedTickets(ticketTypeId: string, quantity: number, session?: ClientSession) {
+      return this.commandBus.execute(
+         new ConfirmTicketCommand(ticketTypeId, quantity, session)
+      );
    }
 
    
-   async confirmReservedTickets(
-      ticketTypeId: string,
-      quantity: number,
-      session?: ClientSession,
-   ) {
-      const ticketType = await this.ticketRepo.confirmReservedTickets(
-         ticketTypeId,
-         quantity,
-         session,
+   async releaseReservedTickets(ticketTypeId: string, quantity: number, session?: ClientSession) {
+      return this.commandBus.execute(
+         new ReleasedReservedTicketCommand(ticketTypeId, quantity, session)
       );
-
-      if (!ticketType) {
-         throw new BadRequestException('Reserved tickets not found');
-      }
-
-      return ticketType;
-   }
-
-   async releaseReservedTickets(
-      ticketTypeId: string,
-      quantity: number,
-      session?: ClientSession,
-   ) {
-      const ticketType = await this.ticketRepo.releaseReservedTickets(
-         ticketTypeId,
-         quantity,
-         session,
-      );
-
-      if (!ticketType) {
-         throw new BadRequestException('Reserved tickets not found');
-      }
-
-      return ticketType;
    }
 
 

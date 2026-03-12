@@ -11,14 +11,32 @@ import { BookingTicketHandler } from "./saga/handlers/booking.handler";
 import { LoggingModule } from "../../logging/logging.module";
 import { TicketHandler } from "./saga/handlers/ticket.handler";
 import { BookingClientModule } from "src/clients/booking/booking.client.module";
+import { ReserveTicketHandler } from "./cqrs/handlers/commands/reserve-ticket.handler";
+import { CqrsModule } from "@nestjs/cqrs";
+import { ConfirmTicketHandler } from "./cqrs/handlers/commands/confirm-ticket.handler";
+import { ReleaseReservedTicketHandler } from "./cqrs/handlers/commands/release-ticket.handler";
+import { MyRedisModule } from "src/redis/redis.module";
+
+
+const CommandHandlers = [
+   ReserveTicketHandler,
+   ConfirmTicketHandler,
+   ReleaseReservedTicketHandler
+];
+
+const QueryHandlers = [
+   // add later
+];
 
 
 @Module({
    imports: [
+      CqrsModule,
       MongooseModule.forFeature([{ name: 'TicketType', schema: TicketTypeSchema }]),
       LoggingModule,
-      OutboxModule, 
-      BookingClientModule
+      OutboxModule,
+      BookingClientModule,
+      MyRedisModule
    ],
    controllers: [TicketController],
    providers: [
@@ -27,7 +45,9 @@ import { BookingClientModule } from "src/clients/booking/booking.client.module";
       TicketSagaProcessor,
       TicketSagaService,
       BookingTicketHandler,
-      TicketHandler
+      TicketHandler,
+      ...CommandHandlers,
+      ...QueryHandlers
    ],
    exports: [TicketService]
 })
