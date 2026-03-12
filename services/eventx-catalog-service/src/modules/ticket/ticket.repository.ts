@@ -82,7 +82,10 @@ export class TicketRepository {
 
 
    async findTicketsByEventID(eventId: string) {
-      return await this.ticketModel.find({ eventId });
+      return await this.ticketModel.find({
+         eventId: new Types.ObjectId(eventId),
+         isActive: true
+      });
    }
 
    async findByIdNoSession(id: string) {

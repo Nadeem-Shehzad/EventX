@@ -18,6 +18,7 @@ export class GetTicketsByEventHandler implements IQueryHandler<GetTicketsByEvent
 
       console.log(`====================================`);
       console.log(`== INSIDE TICKET BY EVENT HANDLER ==`);
+      console.log(`eventID --> ${eventId}`);
       console.log(`====================================`);
 
       const chacheKey = `tickets:event:${eventId}`;
