@@ -51,7 +51,7 @@ export class BookingPaymentHandler {
             bookingId: data.bookingId,
             amount: data.amount,
             currency: data.currency
-         }) as { paymentIntentId: string; clientSecret: string | null };;
+         }) as { paymentIntentId: string; clientSecret: string | null };
 
          const payload: TicketsSoldPayload = {
             bookingId: data.bookingId,

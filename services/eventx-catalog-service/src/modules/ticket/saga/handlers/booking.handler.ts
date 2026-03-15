@@ -17,8 +17,8 @@ export class BookingTicketHandler {
    constructor(
       private readonly ticketService: TicketService,
       private readonly outboxService: OutboxService,
-      private readonly logger: AppLogger
-   ) { }
+      private readonly logger: AppLogger,
+   ) {}
 
    async handleBookingCreated(data: BookingCreatedPayload) {
 
@@ -34,11 +34,17 @@ export class BookingTicketHandler {
       try {
          const { userId, bookingId, ticketTypeId, quantity } = data;
 
+         
          const ticket = await this.ticketService.reserveTickets(
             ticketTypeId,
             quantity,
             undefined
          );
+         
+         // const ticket = await this.ticketBreaker.fire(
+         //    ticketTypeId,
+         //    quantity,
+         //    undefined) as any;
 
          const payload: TicketsReservedPayload = {
             userId,
@@ -58,12 +64,20 @@ export class BookingTicketHandler {
          }
 
       } catch (error) {
-         console.log('===============');
-         console.log(error.message);
-         console.log('===============');
+
+         this.logger.error({
+            module: 'Ticket',
+            service: BookingTicketHandler.name,
+            msg: `Ticket reservation failed: ${error.message}`,
+            bookingId: data.bookingId,
+         });
 
          const { bookingId } = data;
-         await this.emit(DOMAIN_EVENTS.TICKET_RESERVATION_FAILED, bookingId, null);
+         await this.emit(DOMAIN_EVENTS.TICKET_RESERVATION_FAILED, bookingId, { bookingId });
+         //await this.emit(DOMAIN_EVENTS.TICKET_RESERVATION_FAILED, bookingId, null);
+
+         // why not throw here ... means do i have retry logic here or just go to compensation
+         // on first failure? so implement here retry logic also
       }
    }
 

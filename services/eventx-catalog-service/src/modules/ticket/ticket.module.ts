@@ -19,6 +19,7 @@ import { MyRedisModule } from "src/redis/redis.module";
 import { GetTicketsByEventHandler } from "./cqrs/handlers/queries/event-tickets.handler";
 import { TicketByIDHandler } from "./cqrs/handlers/queries/ticket-by-id.handler";
 import { CheckAvailabilityHandler } from "./cqrs/handlers/queries/check-availability.handler";
+import { CircuitBreakerService } from "src/circuit-breaker/circuit-breaker.service";
 
 
 const CommandHandlers = [
@@ -52,7 +53,7 @@ const QueryHandlers = [
       BookingTicketHandler,
       TicketHandler,
       ...CommandHandlers,
-      ...QueryHandlers
+      ...QueryHandlers,
    ],
    exports: [TicketService]
 })
