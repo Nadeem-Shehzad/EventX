@@ -8,7 +8,13 @@ import { OutboxService } from "src/outbox/outbox.service";
 import { AppLogger } from "src/logging/logging.service";
 
 
-@Processor(QUEUES.PAYMENT_QUEUE)
+@Processor(QUEUES.PAYMENT_QUEUE, {
+   concurrency: 5, // jobs at once
+   limiter: {  // rate limiter
+      max: 50,
+      duration: 1000 // 1s
+   }
+})
 export class PaymentSagaProcessor extends WorkerHost {
 
    constructor(

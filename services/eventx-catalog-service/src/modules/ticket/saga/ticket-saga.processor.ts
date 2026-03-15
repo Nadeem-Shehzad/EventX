@@ -9,7 +9,13 @@ import { OutboxService } from "src/outbox/outbox.service";
 import { AppLogger } from "src/logging/logging.service";
 
 
-@Processor(QUEUES.TICKET_QUEUE)
+@Processor(QUEUES.TICKET_QUEUE, { 
+   concurrency: 10, // jobs at once
+   limiter: {  // rate limiter
+      max: 100,
+      duration: 1000 // 1s
+   }
+})  
 @Injectable()
 export class TicketSagaProcessor extends WorkerHost {
 
@@ -44,7 +50,7 @@ export class TicketSagaProcessor extends WorkerHost {
             service: TicketSagaProcessor.name,
             msg: `Job ${job.id} failed (Attempt ${job.attemptsMade} of ${maxAttempts}). Retrying...`,
          });
-         
+
          return;
       }
 

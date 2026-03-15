@@ -9,7 +9,13 @@ import { OutboxService } from "src/outbox/outbox.service";
 import { AppLogger } from "src/logging/logging.service";
 
 
-@Processor(QUEUES.BOOKING_QUEUE)
+@Processor(QUEUES.BOOKING_QUEUE, {
+   concurrency: 20, // jobs at once
+   limiter: {  // rate limiter
+      max: 200,
+      duration: 1000 // 1s
+   }
+})
 @Injectable()
 export class BookingSagaProcessor extends WorkerHost {
 
