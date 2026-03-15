@@ -6,6 +6,7 @@ import mailConfig from "./config/mail.config";
 import { MailModule } from "./mail/mail.module";
 import { EmailQueueModule } from "./queue/email.queue.module";
 import { MongooseModule } from "@nestjs/mongoose";
+import { CircuitBreakerService } from "./circuit-breaker/circuit-breaker.service";
 
 @Module({
    imports: [
@@ -23,6 +24,10 @@ import { MongooseModule } from "@nestjs/mongoose";
       EmailQueueModule,
       MailModule,
    ],
+
+   providers: [
+      //CircuitBreakerService
+   ]
 })
 
 export class AppModule { }

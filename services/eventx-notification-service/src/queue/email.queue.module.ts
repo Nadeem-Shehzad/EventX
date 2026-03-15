@@ -4,6 +4,7 @@ import { ConfigService } from "@nestjs/config";
 import { EmailConsumer } from './email.subscriber';
 import { MailModule } from "../mail/mail.module";
 import { IdempotencyModule } from "../idempotency/idempotency.module";
+import { CircuitBreakerService } from "src/circuit-breaker/circuit-breaker.service";
 
 
 @Module({
@@ -31,7 +32,10 @@ import { IdempotencyModule } from "../idempotency/idempotency.module";
       IdempotencyModule,
       MailModule,
    ],
-   providers: [EmailConsumer],
+   providers: [
+      EmailConsumer,
+      CircuitBreakerService
+   ],
 })
 
 export class EmailQueueModule { }
