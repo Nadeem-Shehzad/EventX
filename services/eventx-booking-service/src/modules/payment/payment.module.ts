@@ -12,6 +12,7 @@ import { LoggingModule } from 'src/logging/logging.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PaymentSchema } from './payment.schema';
 import { PaymentRepository } from './payment.repo';
+import { CircuitBreakerService } from 'src/circuit-breaker/circuit-breaker.service';
 
 @Module({
    imports: [
@@ -30,7 +31,8 @@ import { PaymentRepository } from './payment.repo';
       PaymentService,
       PaymentSagaProcessor,
       PaymentSagaService,
-      BookingPaymentHandler
+      BookingPaymentHandler,
+      CircuitBreakerService
    ],
    exports: [PaymentService],
 })

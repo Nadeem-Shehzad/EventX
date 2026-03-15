@@ -12,10 +12,14 @@ import { EmailJob } from "src/constants/email-queue.constants";
 import { OutboxService } from "src/outbox/outbox.service";
 import { AppLogger } from "src/logging/logging.service";
 import { PaymentRepository } from "./payment.repo";
+import * as CircuitBreaker from "opossum";
+import { CircuitBreakerService } from "src/circuit-breaker/circuit-breaker.service";
 
 
 @Injectable()
 export class PaymentService {
+
+   private readonly refundBreaker: CircuitBreaker;
 
    constructor(
       @InjectConnection() private readonly connection: Connection,
@@ -25,16 +29,26 @@ export class PaymentService {
       private readonly bookingService: BookingService,
       private readonly eventEmitter: EventEmitter2,
       private readonly outboxService: OutboxService,
-      private readonly logger: AppLogger
-   ) { }
+      private readonly logger: AppLogger,
+      private readonly circuitBreakerService: CircuitBreakerService,
+   ) {
+      // 👇 one breaker wraps stripe.refundPayment
+      // covers both refundBookingPayment and refundEventPayment
+      this.refundBreaker = this.circuitBreakerService.create(
+         'stripe-refund',
+         this.stripe.refundPayment.bind(this.stripe),
+      );
+   }
 
 
    async createPayment(params: {
-      userId: string;      
+      userId: string;
       bookingId: string;
       amount: number;
       currency: string;
    }) {
+
+      //throw new Error('Stripe is down!');
 
       const existingPayment = await this.paymentRepo.findOne({
          bookingId: new Types.ObjectId(params.bookingId),
@@ -61,7 +75,7 @@ export class PaymentService {
                userId: params.userId
             }
          },
-         params.bookingId  
+         params.bookingId
       );
 
       await this.paymentRepo.create({
@@ -93,33 +107,84 @@ export class PaymentService {
          throw new BadRequestException('Booking not eligible for refund');
       }
 
-      const refund = await this.stripe.refundPayment(booking.paymentIntentId);;
+      try {
+         const refund = await this.refundBreaker.fire(booking.paymentIntentId);
 
-      return refund;
+         this.logger.info({
+            module: 'Payment',
+            service: PaymentService.name,
+            msg: `Refund successful for booking: ${bookingId}`,
+         });
+
+         return refund;
+
+      } catch (error) {
+         if (this.refundBreaker.opened) {
+            this.logger.error({
+               module: 'Payment',
+               service: PaymentService.name,
+               msg: '🔴 Refund circuit OPEN — Stripe refund service unavailable',
+               bookingId,
+            });
+
+            throw error;
+         }
+
+         this.logger.error({
+            module: 'Payment',
+            service: PaymentService.name,
+            msg: `Refund failed for booking: ${bookingId}`,
+            error: error.message
+         });
+
+         throw error; // let BullMQ retry
+      }
    }
 
 
    async refundEventPayment(eventId: string) {
 
       const refunds: Array<{ bookingId: any; refund: any }> = [];
+      const failed: Array<{ bookingId: any; reason: string }> = [];
 
       const bookings = await this.bookingService.findBookingsByEventIdAndPaymentStatus(eventId);
 
       for (const booking of bookings) {
 
-         if (!booking.paymentIntentId) {
-            continue;
+         if (!booking.paymentIntentId) continue;
+
+         // 👇 circuit OPEN — no point trying remaining bookings
+         // Stripe is down, stop the loop immediately
+         if (this.refundBreaker.opened) {
+            this.logger.error({
+               module: 'Payment',
+               service: PaymentService.name,
+               msg: `🔴 Refund circuit OPEN — stopping bulk refund at booking: ${booking._id}`,
+            });
+            failed.push({ bookingId: booking._id, reason: 'Stripe refund service unavailable' });
+            continue; // skip this booking, don't hang
          }
 
-         const refund = await this.stripe.refundPayment(booking.paymentIntentId);
+         try {
+            const refund = await this.refundBreaker.fire(booking.paymentIntentId);
 
-         booking.paymentStatus = PaymentStatus.REFUNDED;
-         await booking.save();
+            booking.paymentStatus = PaymentStatus.REFUNDED;
+            await booking.save();
 
-         refunds.push({ bookingId: booking._id, refund });
+            refunds.push({ bookingId: booking._id, refund });
+
+         } catch (error) {
+            this.logger.error({
+               module: 'Payment',
+               service: PaymentService.name,
+               msg: `Refund failed for booking: ${booking._id}`,
+               error: error.message
+            });
+            failed.push({ bookingId: booking._id, reason: error.message });
+         }
       }
 
-      return refunds;
+      return { refunds, failed }; // 👈 return both successful and failed refunds
    }
 
 

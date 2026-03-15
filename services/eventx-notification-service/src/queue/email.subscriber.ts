@@ -21,7 +21,7 @@ export class EmailConsumer {
       private readonly circuitBreakerService: CircuitBreakerService,
    ) {
       this.breaker = this.circuitBreakerService.create(
-         'sendgrid-booking-email',
+         'send-booking-email',
          this.processWithRetry.bind(this),
       );
    }
