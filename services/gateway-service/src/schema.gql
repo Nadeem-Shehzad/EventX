@@ -12,15 +12,6 @@ type Organizer {
   name: String!
 }
 
-type Event {
-  id: ID!
-  title: String!
-  date: String!
-  ticket: [Ticket!]
-  organizer: Organizer
-  tickets: [Ticket!]!
-}
-
 type Query {
-  event(id: String!): Event!
+  ping: String!
 }

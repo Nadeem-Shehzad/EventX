@@ -23,11 +23,10 @@ import { validationSchema } from './config/validation.schema';
          driver: ApolloDriver,
          autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
          playground: true,
-         context: ({ req }) => ({
-            req,
-            loaders: {},
-         }),
+         introspection: true, // ← add this
+         context: ({ req, res }) => ({ req, res }),
       }),
+
       EventModule,
    ],
 })
