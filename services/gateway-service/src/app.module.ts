@@ -22,8 +22,10 @@ import { validationSchema } from './config/validation.schema';
       GraphQLModule.forRoot<ApolloDriverConfig>({
          driver: ApolloDriver,
          autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+         playground: true,
          context: ({ req }) => ({
-            loaders: {}, // we’ll add DataLoader later
+            req,
+            loaders: {},
          }),
       }),
       EventModule,

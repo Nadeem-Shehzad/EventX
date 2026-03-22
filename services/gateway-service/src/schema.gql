@@ -1,0 +1,26 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Ticket {
+  price: Float!
+  available: Float!
+}
+
+type Organizer {
+  id: ID!
+  name: String!
+}
+
+type Event {
+  id: ID!
+  title: String!
+  date: String!
+  ticket: [Ticket!]
+  organizer: Organizer
+  tickets: [Ticket!]!
+}
+
+type Query {
+  event(id: String!): Event!
+}
