@@ -491,7 +491,6 @@ export class EventController {
 
 
    // internal Services Communications
-   
    @Get('internal/:id')
    async getUserInternal(
       @Param('id') id: string,

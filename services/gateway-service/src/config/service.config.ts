@@ -1,0 +1,6 @@
+export default () => ({
+   INTERNAL_API_KEY: process.env.INTERNAL_API_KEY,
+   BOOKING_SERVICE_URL: process.env.BOOKING_SERVICE_URL,
+   CATALOG_SERVICE_URL: process.env.CATALOG_SERVICE_URL,
+   IDENTITY_SERVICE_URL: process.env.IDENTITY_SERVICE_URL
+})
