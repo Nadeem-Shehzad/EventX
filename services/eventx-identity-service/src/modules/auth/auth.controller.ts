@@ -101,7 +101,7 @@ export class AuthController {
    @ApiResponse({ status: 401, description: 'Unauthorized' })
    @ApiResponse({ status: 404, description: 'Invalid credentials' })
    @ApiResponse({ status: 500, description: 'Server Error' })
-   changePassword(@GetUserID() id: string, @Body() cpData: ChangePasswordDTO): Promise<string> {
+   changePassword(@GetUserID() id: string, @Body() cpData: ChangePasswordDTO): Promise<{ message: string }> {
       return this.authService.changePassword(id, cpData);
    }
 

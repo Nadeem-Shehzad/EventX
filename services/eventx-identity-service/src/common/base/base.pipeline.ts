@@ -1,5 +1,4 @@
 import { Model, Document } from 'mongoose';
-import { throwDbException } from '../utils/db-error.util';
 import { Logger, RequestTimeoutException, ServiceUnavailableException } from '@nestjs/common';
 
 
@@ -24,11 +23,7 @@ export abstract class BaseRepository<T extends Document> {
 
 
    // ── 2. Retry with exponential backoff (5xx / network only) ──
-   protected async withRetry<R>(
-      fn: () => Promise<R>,
-      retries = 3,
-      baseDelayMs = 200
-   ): Promise<R> {
+   protected async withRetry<R>(fn: () => Promise<R>, retries = 3, baseDelayMs = 200): Promise<R> {
       let lastErr: any;
       for (let attempt = 0; attempt < retries; attempt++) {
          try {
@@ -43,9 +38,7 @@ export abstract class BaseRepository<T extends Document> {
 
             lastErr = err;
             const delay = baseDelayMs * 2 ** attempt; // 200ms, 400ms, 800ms
-            this.logger.warn(
-               `DB retry attempt ${attempt + 1}/${retries} after ${delay}ms — ${err.message}`
-            );
+            this.logger.warn(`DB retry attempt ${attempt + 1}/${retries} after ${delay}ms — ${err.message}`);
             await new Promise(res => setTimeout(res, delay));
          }
       }
@@ -54,11 +47,7 @@ export abstract class BaseRepository<T extends Document> {
 
 
    // ── 3. Graceful degradation (return fallback instead of throwing) ─
-   protected async withFallback<R>(
-      fn: () => Promise<R>,
-      fallback: R,
-      context?: string
-   ): Promise<R> {
+   protected async withFallback<R>(fn: () => Promise<R>, fallback: R, context?: string): Promise<R> {
       try {
          return await fn();
       } catch (err: any) {
@@ -77,7 +66,6 @@ export abstract class BaseRepository<T extends Document> {
    }
 
 
-   // ── 4. Circuit breaker state (simple in-memory) ─────────────
    private static failures = 0;
    private static openUntil = 0;
    private static readonly THRESHOLD = 5;    // open after 5 failures
@@ -106,58 +94,26 @@ export abstract class BaseRepository<T extends Document> {
    }
 
 
-   async create(data: Partial<T>): Promise<T> {
-      try {
-         const method = this.model.create(data);
-         return await this.withTimeout(method) as T;
-
-      } catch (err) {
-         throwDbException(err, `${this.model.modelName}.create`);
+   protected async safeQuery<R>(
+      fn: () => Promise<R>,
+      options?: {
+         timeoutMs?: number;
+         retry?: boolean;
+         fallback?: R;
+         context?: string;
       }
-   }
+   ): Promise<R> {
+      const { timeoutMs = 5000, retry = true, fallback, context } = options ?? {};
 
+      // Build the pipeline: fn → timeout → retry → circuit breaker → fallback
+      const withTime = () => this.withTimeout(fn(), timeoutMs);
+      const withRetried = retry ? () => this.withRetry(withTime) : withTime;
+      const withBreaker = () => this.withCircuitBreaker(withRetried);
 
-   async findOne(filter: object): Promise<T | null> {
-      try {
-         const method = this.model.findOne(filter).exec();
-         return await this.withTimeout(method);
-
-      } catch (err) {
-         throwDbException(err, `${this.model.modelName}.findOne`);
+      if (fallback !== undefined) {
+         return this.withFallback(withBreaker, fallback, context);
       }
-   }
 
-
-   async findById(id: string): Promise<T | null> {
-      try {
-         const method = this.model.findById(id).exec();
-         return await this.withTimeout(method);
-
-      } catch (err) {
-         throwDbException(err, `${this.model.modelName}.findById`);
-      }
-   }
-
-
-   async updateOne(filter: object, update: Partial<T>): Promise<T | null> {
-      try {
-         const method = this.model.findOneAndUpdate(filter, update, { new: true }).exec();
-         return await this.withTimeout(method);
-
-      } catch (err) {
-         throwDbException(err, `${this.model.modelName}.updateOne`);
-      }
-   }
-
-
-   async deleteOne(filter: object): Promise<boolean> {
-      try {
-         const method = this.model.deleteOne(filter).exec();
-         const result = await this.withTimeout(method);
-         return result.deletedCount > 0;
-
-      } catch (err) {
-         throwDbException(err, `${this.model.modelName}.deleteOne`);
-      }
+      return withBreaker();
    }
 }

@@ -18,7 +18,7 @@ import { IdempotencyInterceptor } from "./interceptors/idempotency.interceptor";
       JwtRefreshTokenGuard,
       AccountOwnerShipGuard,
       RoleCheckGuard,
-      IdempotencyInterceptor
+      IdempotencyInterceptor,
    ],
    exports: [
       JwtAuthGuard,

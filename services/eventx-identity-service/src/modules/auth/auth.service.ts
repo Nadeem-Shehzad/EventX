@@ -3,6 +3,7 @@ import {
    ConflictException,
    Injectable,
    InternalServerErrorException,
+   Logger,
    NotFoundException,
    RequestTimeoutException,
    ServiceUnavailableException,
@@ -15,13 +16,15 @@ import * as bcrypt from 'bcrypt';
 import { UserResponseDTO } from "../user/dto/user-response.dto";
 import { plainToInstance } from "class-transformer";
 import { LoginDTO } from "./dto/request/login.dto";
-import { JwtService, JwtSignOptions } from "@nestjs/jwt";
+import { JsonWebTokenError, JwtService, JwtSignOptions, TokenExpiredError } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { ChangePasswordDTO } from "./dto/request/change-password.dto";
 import { MailerService } from "@nestjs-modules/mailer";
 import { randomBytes } from "crypto";
 import { RedisService } from "src/redis/redis.service";
 import { ResetPasswordDTO } from "./dto/request/reset-password.dto";
+import { AuthHelper } from "./helpers/auth.helper";
+
 
 
 @Injectable()
@@ -33,17 +36,15 @@ export class AuthService {
       private readonly configService: ConfigService,
       private readonly mailService: MailerService,
       private readonly redis: RedisService,
+      private readonly helper: AuthHelper
    ) { }
+
+   private readonly logger = new Logger(AuthService.name);
 
 
    async register(data: RegisterDTO): Promise<UserResponseDTO> {
-      let hashedPassword: string;
 
-      try {
-         hashedPassword = await bcrypt.hash(data.password, 10);
-      } catch {
-         throw new InternalServerErrorException('Failed to process credentials');
-      }
+      const hashedPassword = await this.helper.hashValue(data.password, 'credentials');
 
       const user = await this.userService.createUser({
          ...data,
@@ -52,6 +53,11 @@ export class AuthService {
 
       if (!user) throw new InternalServerErrorException('User creation failed');
 
+      // Fire verification email — non-critical, must never block registration
+      this.sendVerificationEmail(String(user._id), user.email).catch(err =>
+         this.logger.error(`Verification email failed for ${user.email}: ${err.message}`)
+      );
+
       return plainToInstance(UserResponseDTO, user.toObject(), {
          excludeExtraneousValues: true,
       });
@@ -59,207 +65,230 @@ export class AuthService {
 
 
    async login(loginData: LoginDTO) {
-
       const user = await this.userService.getUserByEmailWithPassword(loginData.email);
-      if (!user) {
-         throw new NotFoundException('User not Registered!');
-      }
+      if (!user) throw new NotFoundException('User not registered');
 
-      const passwordMatched = await bcrypt.compare(loginData.password, user.password);
-      if (!passwordMatched) {
-         throw new UnauthorizedException('Invalid Password!');
-      }
+      const passwordMatched = await this.helper.compareValue(
+         loginData.password,
+         user.password,
+         'password',
+      );
+      if (!passwordMatched) throw new UnauthorizedException('Invalid password');
 
-      const payload = {
-         id: String(user._id),
-         name: user.name,
-         email: user.email,
-         role: user.role
-      }
+      const payload = this.helper.buildPayload(user);
+      const accessToken = this.helper.signAccessToken(payload);
+      const refreshToken = this.helper.signRefreshToken(payload);
 
-      const token = this.jwtService.sign(payload);
+      // Non-critical — token persistence should not block login response
+      // If this fails, user still gets their tokens and can log in
+      this.helper.hashValue(refreshToken, 'refresh token')
+         .then(hashed => this.userService.updateUser(user._id, { refreshToken: hashed }))
+         .catch(err =>
+            this.logger.error(`Failed to persist refresh token for ${user._id}: ${err.message}`)
+         );
 
-      const refreshToken = this.jwtService.sign(payload, {
-         secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-         expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRES') as JwtSignOptions['expiresIn'],
-      });
-
-      await this.userService.updateUser(user._id, {
-         refreshToken: await bcrypt.hash(refreshToken, 10)
-      });
-
-      return {
-         token,
-         refreshToken
-      };
+      return { accessToken, refreshToken };
    }
 
+   // ── Change password ──────────────────────────────────────────
 
    async changePassword(id: string, cpData: ChangePasswordDTO) {
-
       const user = await this.userService.findUserByIDWithPassword(id);
-      if (!user) {
-         throw new NotFoundException('User not Found.');
-      }
+      if (!user) throw new NotFoundException('User not found');
 
-      const passwordMatched = await bcrypt.compare(cpData.currentPassword, user.password);
-      if (!passwordMatched) {
-         throw new UnauthorizedException('Invalid current password.');
-      }
+      const passwordMatched = await this.helper.compareValue(
+         cpData.currentPassword,
+         user.password,
+         'current password',
+      );
+      if (!passwordMatched) throw new UnauthorizedException('Invalid current password');
 
+      // Both are input validation errors → BadRequestException
       if (cpData.currentPassword === cpData.newPassword) {
-         throw new ConflictException('New password must be different from current password.');
+         throw new BadRequestException('New password must differ from current password');
       }
-
       if (cpData.newPassword !== cpData.confirmPassword) {
-         throw new BadRequestException('New and Confirm password are not same.');
+         throw new BadRequestException('New password and confirm password do not match');
       }
 
-      const newHashedPassword = await bcrypt.hash(cpData.newPassword, 10);
+      const newHashedPassword = await this.helper.hashValue(cpData.newPassword, 'new password');
 
-      await this.userService.updateUser(user._id, {
-         password: newHashedPassword
-      });
+      await this.userService.updateUser(user._id, { password: newHashedPassword });
 
-      return 'Password Changed Successfully.';
+      return { message: 'Password changed successfully' };
    }
 
+   // ── Logout ───────────────────────────────────────────────────
 
    async logout(id: string) {
       await this.userService.removeUserToken(id);
       return { loggedOut: true };
    }
 
+   // ── Refresh token ────────────────────────────────────────────
 
    async refreshToken(userData: any, rf_Token: string) {
-
       const user = await this.userService.getUserByIdWithRefreshToken(userData.id);
-      if (!user) {
-         throw new NotFoundException('User not found!');
-      }
+      if (!user) throw new NotFoundException('User not found');
 
-      const isValid = await bcrypt.compare(rf_Token, user.refreshToken);
-      if (!isValid) {
-         throw new UnauthorizedException('Invalid refresh token!');
-      }
+      if (!user.refreshToken) throw new UnauthorizedException('No active session');
 
-      const newPayload = {
-         id: String(user._id),
-         name: user.name,
-         email: user.email,
-         role: user.role,
-      };
+      const isValid = await this.helper.compareValue(
+         rf_Token,
+         user.refreshToken,
+         'refresh token',
+      );
+      if (!isValid) throw new UnauthorizedException('Invalid refresh token');
 
-      const accessToken = this.jwtService.sign(newPayload);
+      const payload = this.helper.buildPayload(user);
+      const accessToken = this.helper.signAccessToken(payload);
+      const newRefreshToken = this.helper.signRefreshToken(payload);
 
-      const newRefreshToken = this.jwtService.sign(newPayload, {
-         secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-         expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRES'),
-      } as any);
+      // Non-critical — persist new refresh token without blocking response
+      this.helper.hashValue(newRefreshToken, 'refresh token')
+         .then(hashed => this.userService.updateUser(user._id, { refreshToken: hashed }))
+         .catch(err =>
+            this.logger.error(`Failed to rotate refresh token for ${user._id}: ${err.message}`)
+         );
 
-      const hashed = await bcrypt.hash(newRefreshToken, 10);
-
-      await this.userService.updateUser(user._id, {
-         refreshToken: hashed
-      });
-
-      return {
-         access_token: accessToken,
-         refresh_token: newRefreshToken,
-      };
+      return { accessToken, refreshToken: newRefreshToken };
    }
 
+   // ── Send verification email ──────────────────────────────────
 
-   async sendVerificationEmail(id: string, email: string) {
-
-      const token = await this.jwtService.signAsync(
-         { id: id },
-         { expiresIn: '15m' }
-      );
+   async sendVerificationEmail(id: string, email: string): Promise<void> {
+      let token: string;
+      try {
+         token = await this.jwtService.signAsync({ id }, { expiresIn: '15m' });
+      } catch {
+         throw new InternalServerErrorException('Failed to generate verification token');
+      }
 
       const APP_URL = this.configService.get<string>('app_url');
       const url = `${APP_URL}/auth/verify-email?token=${token}`;
 
-      await this.mailService.sendMail({
-         to: email,
-         subject: 'Verify Your Email',
-         html: `
-         <h2>Email Verification</h2>
-         <p>Click below to verify your email:</p>
-         <a href="${url}">${url}</a>
-      `
-      });
+      // Mail failure is logged but never throws to caller
+      // Caller (register) fires this without await intentionally
+      try {
+         await this.mailService.sendMail({
+            to: email,
+            subject: 'Verify your email',
+            html: `
+          <h2>Email verification</h2>
+          <p>Click below to verify your email:</p>
+          <a href="${url}">${url}</a>
+        `,
+         });
+      } catch (err) {
+         this.logger.error(`Failed to send verification email to ${email}: ${err.message}`);
+         // intentionally not rethrowing — mail is non-critical
+      }
    }
 
+   // ── Verify email ─────────────────────────────────────────────
 
    async verifyEmail(token: string) {
 
-      const payload = await this.jwtService.verifyAsync(token);
-      const user = await this.userService.getUserById(payload.id);
-      if (!user) {
-         throw new NotFoundException('User not found.')
+      let payload: any;
+
+      try {
+         payload = await this.jwtService.verifyAsync(token);
+      } catch (err) {
+         if (err instanceof TokenExpiredError) {
+            throw new BadRequestException('Verification link has expired');
+         }
+         if (err instanceof JsonWebTokenError) {
+            throw new BadRequestException('Invalid verification token');
+         }
+         throw new InternalServerErrorException('Token verification failed');
       }
 
-      if (user.isVerified) {
-         return { message: 'Email Already Verified.' }
-      }
+      const user = await this.userService.getUserById(payload.id);
+      if (!user) throw new NotFoundException('User not found');
+
+      if (user.isVerified) return { message: 'Email already verified' };
 
       await this.userService.updateUser(user._id, { isVerified: true });
 
-      return { message: 'Email verified successfully.' }
+      return { message: 'Email verified successfully' };
    }
 
+   // ── Forgot password ──────────────────────────────────────────
 
    async forgotPassword(email: string) {
 
       const user = await this.userService.getUserByEmail(email);
-      if (!user) throw new NotFoundException('User not Found.');
 
+      if (!user) {
+         return { message: 'If this email is registered, a reset link has been sent' };
+      }
 
       const token = randomBytes(32).toString('hex');
       const userId = String(user._id);
 
-      await this.redis.set(`fp:${token}`, userId, 60 * 15);
+      try {
+         await this.redis.set(`fp:${token}`, userId, 60 * 15);
+      } catch (err) {
+         this.logger.error(`Redis unavailable for forgot password: ${err.message}`);
+         throw new ServiceUnavailableException('Unable to process request, please try again');
+      }
 
       const APP_URL = this.configService.get<string>('app_url');
       const url = `${APP_URL}/auth/reset-password?token=${token}`;
 
-      await this.mailService.sendMail({
-         to: email,
-         subject: 'Reset Your Password',
-         html: `
-         <h2>Reset Password</h2>
-         <p>Click below to reset your passwird:</p>
-         <a href="${url}">${url}</a>`
-      });
+      // Mail is non-critical — token is already in Redis
+      // If mail fails, user can request again
+      this.mailService
+         .sendMail({
+            to: email,
+            subject: 'Reset your password',
+            html: `
+          <h2>Reset password</h2>
+          <p>Click below to reset your password:</p>
+          <a href="${url}">${url}</a>
+        `,
+         })
+         .catch(err =>
+            this.logger.error(`Failed to send reset email to ${email}: ${err.message}`)
+         );
 
-      return { token, message: 'Token sent to Your Given Email.' };
+      return { message: 'If this email is registered, a reset link has been sent' };
    }
 
+   // ── Reset password ───────────────────────────────────────────
 
    async resetPassword(dto: ResetPasswordDTO) {
-
       const { token, newPassword, confirmPassword } = dto;
+
       if (newPassword !== confirmPassword) {
-         throw new BadRequestException("Passwords do not match.");
+         throw new BadRequestException('Passwords do not match');
       }
 
-      const userId = await this.redis.get(`fp:${token}`);
-      if (!userId) {
-         throw new BadRequestException("Invalid or expired token.");
+      let userId: string | null;
+      try {
+         userId = await this.redis.get(`fp:${token}`);
+      } catch (err) {
+         this.logger.error(`Redis unavailable for reset password: ${err.message}`);
+         throw new ServiceUnavailableException('Unable to process request, please try again');
       }
+
+      if (!userId) throw new BadRequestException('Invalid or expired token');
 
       const user = await this.userService.getUserById(userId);
-      if (!user) {
-         throw new NotFoundException("User not found.");
-      }
+      if (!user) throw new NotFoundException('User not found');
 
-      const hashed = await bcrypt.hash(newPassword, 10);
+      // Hash first — if this fails, token stays valid so user can retry
+      const hashed = await this.helper.hashValue(newPassword, 'new password');
 
+      // Write new password
       await this.userService.updateUser(userId, { password: hashed });
 
-      await this.redis.del(`fp:${token}`);
+      // Delete token only after successful password update
+      // If del fails it's non-critical — token TTL (15m) will clean it up
+      this.redis.del(`fp:${token}`).catch(err =>
+         this.logger.warn(`Failed to delete reset token from Redis: ${err.message}`)
+      );
 
-      return { message: "Password reset successfully." };
+      return { message: 'Password reset successfully' };
    }
 }

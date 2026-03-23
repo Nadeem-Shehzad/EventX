@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { User, UserDocument } from "./user.schema";
-import { BaseRepository } from "src/common/base/base.repository";
+import { BaseRepository } from "src/common/base/base.pipeline";
 import { throwDbException } from "src/common/utils/db-error.util";
 
 
@@ -14,76 +14,127 @@ export class UserRepository extends BaseRepository<UserDocument> {
    ) { super(userModel) }
 
 
-   async findAllUsers() {
+   async create(data: Partial<User>): Promise<UserDocument> {
       try {
-         return await this.withTimeout(
-            this.userModel.find({ role: 'user' })
+         return await this.safeQuery(
+            () => this.userModel.create(data) as unknown as Promise<UserDocument>,
+            { retry: false, context: 'UserRepository.create' }
          );
+      } catch (err) {
+         throwDbException(err, 'UserRepository.create');
+      }
+   }
 
-      } catch (error) {
-         throwDbException(error, 'UserRepository.findByEmailWithPassword');
+   async update(id: string, data: Partial<User>): Promise<UserDocument | null> {
+      try {
+         return await this.safeQuery(
+            () => this.userModel
+               .findOneAndUpdate({ _id: id }, data, { new: true })
+               .exec(),
+            { retry: false, context: 'UserRepository.update' }
+         );
+      } catch (err) {
+         throwDbException(err, 'UserRepository.update');
+      }
+   }
+
+   async removeAccount(id: string): Promise<boolean> {
+      try {
+         const result = await this.safeQuery(
+            () => this.userModel.deleteOne({ _id: id }).exec(),
+            { retry: false, context: 'UserRepository.removeAccount' }
+         );
+         return result.deletedCount > 0;
+      } catch (err) {
+         throwDbException(err, 'UserRepository.removeAccount');
+      }
+   }
+
+   async removeToken(id: string): Promise<UserDocument | null> {
+      try {
+         return await this.safeQuery(
+            () => this.userModel
+               .findOneAndUpdate({ _id: id }, { refreshToken: null }, { new: true })
+               .exec(),
+            { retry: false, context: 'UserRepository.removeToken' }
+         );
+      } catch (err) {
+         throwDbException(err, 'UserRepository.removeToken');
       }
    }
 
 
-   async findUserById(id: string) {
-      return await this.findById(id);
-   }
-
-
-   async findByIDWithPassword(id: string): Promise<UserDocument | null> {
+   async findUserById(id: string): Promise<UserDocument | null> {
       try {
-         return await this.withTimeout(
-            this.userModel.findById(id).select('+password').exec()
+         return await this.safeQuery(
+            () => this.userModel.findById(id).exec(),
+            { context: 'UserRepository.findUserById' }
          );
-
-      } catch (error) {
-         throwDbException(error, 'UserRepository.findByEmailWithPassword');
+      } catch (err) {
+         throwDbException(err, 'UserRepository.findUserById');
       }
    }
 
 
    async findByEmail(email: string): Promise<UserDocument | null> {
-      return await this.findOne({ email });
+      try {
+         return await this.safeQuery(
+            () => this.userModel.findOne({ email }).exec(),
+            { context: 'UserRepository.findByEmail' }
+         );
+      } catch (err) {
+         throwDbException(err, 'UserRepository.findByEmail');
+      }
+   }
+
+
+   async findAllUsers(): Promise<UserDocument[]> {
+      try {
+         return await this.safeQuery(
+            () => this.userModel.find().exec(),
+            {
+               fallback: [],   // graceful degradation — [] instead of 503
+               context: 'UserRepository.findAllUsers'
+            }
+         );
+      } catch (err) {
+         throwDbException(err, 'UserRepository.findAllUsers');
+      }
    }
 
 
    async findByEmailWithPassword(email: string): Promise<UserDocument | null> {
       try {
-         return await this.withTimeout(
-            this.userModel.findOne({ email }).select('+password').exec()
+         return await this.safeQuery(
+            () => this.userModel.findOne({ email }).select('+password').exec(),
+            { context: 'UserRepository.findByEmailWithPassword' }
          );
-
-      } catch (error) {
-         throwDbException(error, 'UserRepository.findByEmailWithPassword');
+      } catch (err) {
+         throwDbException(err, 'UserRepository.findByEmailWithPassword');
       }
    }
 
 
-   async findByIdWithRefreshToken(id: string) {
+   async findByIDWithPassword(id: string): Promise<UserDocument | null> {
       try {
-         return await this.withTimeout(
-            this.userModel.findById(id).select('+refreshToken').exec()
+         return await this.safeQuery(
+            () => this.userModel.findById(id).select('+password').exec(),
+            { context: 'UserRepository.findByIDWithPassword' }
          );
-
-      } catch (error) {
-         throwDbException(error, 'UserRepository.findByIdWithRefreshToken');
+      } catch (err) {
+         throwDbException(err, 'UserRepository.findByIDWithPassword');
       }
    }
 
 
-   async update(id: any, dataToUpdate: any): Promise<UserDocument | null> {
-      return this.updateOne({ _id: id }, dataToUpdate);
-   }
-
-
-   async removeToken(id: any) {
-      this.updateOne({ _id: id }, { refreshToken: null } as any);
-      return true;
-   }
-
-
-   async removeAccount(id: string): Promise<boolean> {
-      return await this.deleteOne({ _id: id });
+   async findByIdWithRefreshToken(id: string): Promise<UserDocument | null> {
+      try {
+         return await this.safeQuery(
+            () => this.userModel.findById(id).select('+refreshToken').exec(),
+            { context: 'UserRepository.findByIdWithRefreshToken' }
+         );
+      } catch (err) {
+         throwDbException(err, 'UserRepository.findByIdWithRefreshToken');
+      }
    }
 }

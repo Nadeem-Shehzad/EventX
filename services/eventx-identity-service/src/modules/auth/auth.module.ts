@@ -8,6 +8,7 @@ import { CommonModule } from "src/common/common.module";
 import { MailerModule } from "@nestjs-modules/mailer";
 import { MyRedisModule } from "src/redis/redis.module";
 import { LoggingModule } from "src/logging/logging.module";
+import { AuthHelper } from "./helpers/auth.helper";
 
 
 @Module({
@@ -47,7 +48,7 @@ import { LoggingModule } from "src/logging/logging.module";
       CommonModule
    ],
    controllers: [AuthController],
-   providers: [AuthService]
+   providers: [AuthService, AuthHelper]
 })
 
 export class AuthModule { }
