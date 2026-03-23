@@ -2,7 +2,10 @@ import {
    BadRequestException,
    ConflictException,
    Injectable,
+   InternalServerErrorException,
    NotFoundException,
+   RequestTimeoutException,
+   ServiceUnavailableException,
    UnauthorizedException
 } from "@nestjs/common";
 
@@ -33,36 +36,30 @@ export class AuthService {
    ) { }
 
 
-   async register(data: RegisterDTO) {
+   async register(data: RegisterDTO): Promise<UserResponseDTO> {
+      let hashedPassword: string;
 
-      const userExists = await this.userService.getUserByEmail(data.email);
-      if (userExists) {
-         throw new ConflictException('Email already Exists!');
+      try {
+         hashedPassword = await bcrypt.hash(data.password, 10);
+      } catch {
+         throw new InternalServerErrorException('Failed to process credentials');
       }
 
-      const hashedPassword = await bcrypt.hash(data.password, 10);
-      const registerData = {
+      const user = await this.userService.createUser({
          ...data,
-         password: hashedPassword
-      }
+         password: hashedPassword,
+      });
 
-      await this.userService.createUser(registerData);
+      if (!user) throw new InternalServerErrorException('User creation failed');
 
-      const user = await this.userService.getUserByEmail(data.email);
-      if (!user) {
-         throw new NotFoundException('User not found.');
-      }
-
-      const userObject = user.toObject();
-
-      return plainToInstance(UserResponseDTO, userObject, {
+      return plainToInstance(UserResponseDTO, user.toObject(), {
          excludeExtraneousValues: true,
       });
    }
 
 
    async login(loginData: LoginDTO) {
-      
+
       const user = await this.userService.getUserByEmailWithPassword(loginData.email);
       if (!user) {
          throw new NotFoundException('User not Registered!');

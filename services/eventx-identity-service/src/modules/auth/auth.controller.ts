@@ -45,11 +45,18 @@ export class AuthController {
    @ApiResponse({ status: 400, description: 'Invalid payload' })
    @ApiResponse({ status: 500, description: 'Server Error' })
    @UseInterceptors(
+      IdempotencyInterceptor,
       FileInterceptor('image', {
          storage: getCloudinaryStorage(),
          limits: { fileSize: 5 * 1024 * 1024 },
-      }),
-      IdempotencyInterceptor
+         fileFilter: (req, file, cb) => {
+            const allowed = ['image/jpeg', 'image/png', 'image/webp'];
+            if (!allowed.includes(file.mimetype)) {
+               return cb(new BadRequestException('Only JPEG, PNG, webp images are allowed'), false);
+            }
+            cb(null, true);
+         },
+      })
    )
    async register(
       @Body() data: RegisterDTO,

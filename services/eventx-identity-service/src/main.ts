@@ -9,7 +9,6 @@ import helmet from 'helmet';
 import compression from 'compression';
 import { Logger } from 'nestjs-pino';
 import { VersioningType } from '@nestjs/common';
-import * as bodyParser from 'body-parser';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { corsConfig } from './config/cors.config';
 
@@ -50,6 +49,7 @@ async function bootstrap() {
    SwaggerModule.setup('docs', app, document);
 
    app.useGlobalFilters(new GlobalExceptionFilter());
+
    app.useGlobalInterceptors(
       new ClassSerializerInterceptor(app.get(Reflector)),
    );
@@ -64,6 +64,7 @@ async function bootstrap() {
 
    await app.init();
    await app.listen(process.env.PORT ?? 3000);
+
    app.useLogger(app.get(Logger));
 }
 

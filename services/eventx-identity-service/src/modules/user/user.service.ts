@@ -49,15 +49,17 @@ export class UserService {
 
       const imageId = user.image?.publicId;
 
-      const result = await this.userRepo.removeAccount(id);
-      if (!result) {
+      const deleted = await this.userRepo.removeAccount(id);
+      if (!deleted) {
          throw new NotFoundException('User Not Found!');
       }
 
       if (imageId) {
          try {
-            await cloudinary.uploader.destroy(imageId);
-            this.logger.log(`Cloudinary image deleted: ${imageId}`);
+            cloudinary.uploader.destroy(imageId)
+               .then(() => this.logger.log(`Cloudinary image deleted: ${imageId}`))
+               .catch((err) => this.logger.error(`Cloudinary delete failed: ${imageId}`, err?.message))
+
          } catch (error) {
             this.logger.error(`Failed to delete image from Cloudinary: ${imageId}`, error.stack);
          }
@@ -74,7 +76,8 @@ export class UserService {
       }
 
       if (dataToUpdate.image && user.image?.publicId) {
-         await cloudinary.uploader.destroy(user.image.publicId);
+         cloudinary.uploader.destroy(user.image.publicId)
+            .catch((err) => this.logger.error(`Cloudinary cleanup failed`, err?.message));
       }
 
       const result = await this.userRepo.update(id, dataToUpdate);
@@ -86,8 +89,10 @@ export class UserService {
    }
 
 
-   async getAllUsers() {
+   async getAllUsers(): Promise<UserResponseDTO[]> {
+
       const users = await this.userRepo.findAllUsers();
+
       return plainToInstance(UserResponseDTO, users, {
          excludeExtraneousValues: true,
       });
@@ -95,7 +100,8 @@ export class UserService {
 
 
 
-   // user-db - services
+   // --- internal methods used by AuthService ---
+
    async createUser(data: Partial<User>): Promise<UserDocument | null> {
       return await this.userRepo.create(data);
    }
