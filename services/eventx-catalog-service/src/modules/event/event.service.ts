@@ -162,17 +162,17 @@ export class EventService {
                   }
 
                   if (tt.name && tt.name !== existingTicket.name) {
-                     const conflict = await this.ticketService.findOne(eventId, tt.name, tt._id, session);
+                     const conflict = await this.ticketService.findConflictingTicketName(eventId, tt.name, tt._id, session);
                      if (conflict) {
                         throw new ConflictException(`Ticket type name "${tt.name}" already exists for this event`);
                      }
                   }
 
-                  await this.ticketService.updateOne(tt._id, tt, sold, reserved, existingTicket, session);
+                  //await this.ticketService.updateOne(tt._id, tt, sold, reserved, existingTicket, session);
 
                } else {
                   if (tt.name) {
-                     const conflict = await this.ticketService.findOne2(eventId, tt.name, session);
+                     const conflict = await this.ticketService.findTicketByName(eventId, tt.name, session);
                      if (conflict) {
                         throw new ConflictException(`Ticket type name "${tt.name}" already exists for this event`);
                      }
