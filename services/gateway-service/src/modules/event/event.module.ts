@@ -5,6 +5,10 @@ import { HttpService } from '../../common/http/http.service';
 
 
 @Module({
-   providers: [EventResolver, EventService, HttpService],
+   providers: [
+      EventResolver,
+      EventService,
+      HttpService
+   ],
 })
 export class EventModule { }

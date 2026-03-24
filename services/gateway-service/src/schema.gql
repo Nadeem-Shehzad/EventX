@@ -22,6 +22,22 @@ type Event {
   title: String!
 }
 
+input EventFilterInput {
+  category: String
+  city: String
+  limit: Float
+  page: Float
+  search: String
+  tags: String
+}
+
+type EventsList {
+  data: [Event!]!
+  limit: Int!
+  page: Int!
+  total: Int!
+}
+
 type Organizer {
   id: ID!
   name: String!
@@ -29,6 +45,7 @@ type Organizer {
 
 type Query {
   event(id: String!): Event
+  events(filter: EventFilterInput, limit: Int = 10, page: Int = 1): EventsList!
 }
 
 type Ticket {

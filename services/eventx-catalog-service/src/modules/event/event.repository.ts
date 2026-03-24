@@ -28,7 +28,7 @@ export class EventRepository extends BasePipeline<EventDocument> {
    }
 
 
-   async updateEvent(id: string,dataToUpdate: UpdateEventDTO,session: ClientSession): Promise<EventDocument | null> {
+   async updateEvent(id: string, dataToUpdate: UpdateEventDTO, session: ClientSession): Promise<EventDocument | null> {
       try {
          return await this.eventModel.findOneAndUpdate(
             { _id: id },
@@ -41,7 +41,7 @@ export class EventRepository extends BasePipeline<EventDocument> {
    }
 
 
-   async deleteEventPermanently( eventId: string, organizerId: string,session: ClientSession): Promise<EventDocument | null> {
+   async deleteEventPermanently(eventId: string, organizerId: string, session: ClientSession): Promise<EventDocument | null> {
       try {
          return await this.eventModel.findOneAndDelete(
             { _id: eventId, organizerId, isDeleted: true },
@@ -53,7 +53,7 @@ export class EventRepository extends BasePipeline<EventDocument> {
    }
 
 
-   async checkEventExist(organizerId: string,data: CreateEventDTO): Promise<EventDocument | null> {
+   async checkEventExist(organizerId: string, data: CreateEventDTO): Promise<EventDocument | null> {
       try {
          return await this.safeQuery(
             () => this.eventModel.findOne({
@@ -84,7 +84,7 @@ export class EventRepository extends BasePipeline<EventDocument> {
    }
 
 
-   async publishEvent(eventId: string,organizerId: string): Promise<EventDocument | null> {
+   async publishEvent(eventId: string, organizerId: string): Promise<EventDocument | null> {
       try {
          return await this.safeQuery(
             () => this.eventModel.findOneAndUpdate(
@@ -100,7 +100,7 @@ export class EventRepository extends BasePipeline<EventDocument> {
    }
 
 
-   async cancelEvent( eventId: string, organizerId: string ): Promise<EventDocument | null> {
+   async cancelEvent(eventId: string, organizerId: string): Promise<EventDocument | null> {
       try {
          return await this.safeQuery(
             () => this.eventModel.findOneAndUpdate(
@@ -132,7 +132,7 @@ export class EventRepository extends BasePipeline<EventDocument> {
    }
 
 
-   async recoverDeletedEvent( eventId: string, organizerId: string): Promise<EventDocument | null> {
+   async recoverDeletedEvent(eventId: string, organizerId: string): Promise<EventDocument | null> {
       try {
          return await this.safeQuery(
             () => this.eventModel.findOneAndUpdate(
@@ -147,7 +147,7 @@ export class EventRepository extends BasePipeline<EventDocument> {
       }
    }
 
-   
+
    async deleteEventHard(eventId: string): Promise<EventDocument | null> {
       try {
          return await this.safeQuery(
@@ -196,10 +196,8 @@ export class EventRepository extends BasePipeline<EventDocument> {
       );
    }
 
-   async getEventsByFilter(
-      filters: any,
-      options: { limit: number; skip: number }
-   ): Promise<{ events: any[]; meta: any }> {
+   async getEventsByFilter(filters: any, options: { limit: number; skip: number }): Promise<{ events: any[]; meta: any }> {
+
       const pipeline: PipelineStage[] = [
          { $match: filters },
          { $sort: { startDateTime: 1 as const } },

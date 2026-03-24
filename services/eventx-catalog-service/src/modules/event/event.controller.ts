@@ -489,18 +489,33 @@ export class EventController {
    }
 
 
-
    // internal Services Communications
+
+   @Get('internal/filter')
+   async getEventsByFilter_Internal(
+      @Query() query: EventQueryDTO,
+      @Headers('x-internal-api-key') apiKey: string,
+   ) {
+
+      if (apiKey !== process.env.INTERNAL_API_KEY) {
+         throw new UnauthorizedException('Invalid internal API key');
+      }
+
+      return this.eventService.getEventsByFilter(query);
+   }
+
+   
    @Get('internal/:id')
-   async getUserInternal(
+   async getEvent_Internal(
       @Param('id') id: string,
       @Headers('x-internal-api-key') apiKey: string,
    ) {
-      
+
       if (apiKey !== process.env.INTERNAL_API_KEY) {
          throw new UnauthorizedException('Invalid internal API key');
       }
 
       return this.eventService.findById(id);
    }
+
 }
