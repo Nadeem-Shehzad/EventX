@@ -1,15 +1,15 @@
-import { Model, Document } from 'mongoose';
+import { Document, Model } from "mongoose";
 import { Logger, RequestTimeoutException, ServiceUnavailableException } from '@nestjs/common';
 
 
-export abstract class BaseRepository<T extends Document> {
+export abstract class BasePipeline<T extends Document> {
 
    constructor(protected readonly model: Model<T>) { }
 
-   private readonly logger = new Logger(BaseRepository.name);
+   private readonly logger = new Logger(BasePipeline.name);
 
-   // ── 1. Timeout ─────────────────────────────────────────────
-   protected withTimeout<R>(promise: Promise<R>, ms = 5000): Promise<R> {
+
+   protected withTimeOut<R>(promise: Promise<R>, ms = 5000): Promise<R> {
       const timeout = new Promise<never>((_, reject) =>
          setTimeout(() => {
             const err = new Error('Database operation timed out');
@@ -17,10 +17,8 @@ export abstract class BaseRepository<T extends Document> {
             reject(err);
          }, ms)
       );
-
       return Promise.race([promise, timeout]);
    }
-
 
    // ── 2. Retry with exponential backoff (5xx / network only) ──
    protected async withRetry<R>(fn: () => Promise<R>, retries = 3, baseDelayMs = 200): Promise<R> {
@@ -72,21 +70,21 @@ export abstract class BaseRepository<T extends Document> {
    private static readonly OPEN_MS = 30000; // stay open 30s
 
    protected withCircuitBreaker<R>(fn: () => Promise<R>): Promise<R> {
-      if (Date.now() < BaseRepository.openUntil) {
+      if (Date.now() < BasePipeline.openUntil) {
          // circuit is OPEN — fail fast, don't hit DB at all
          throw new ServiceUnavailableException('Database circuit open — too many recent failures');
       }
       return fn()
          .then(result => {
-            BaseRepository.failures = 0; // reset on success
+            BasePipeline.failures = 0; // reset on success
             return result;
          })
          .catch(err => {
-            BaseRepository.failures++;
-            if (BaseRepository.failures >= BaseRepository.THRESHOLD) {
-               BaseRepository.openUntil = Date.now() + BaseRepository.OPEN_MS;
+            BasePipeline.failures++;
+            if (BasePipeline.failures >= BasePipeline.THRESHOLD) {
+               BasePipeline.openUntil = Date.now() + BasePipeline.OPEN_MS;
                this.logger.error(
-                  `Circuit breaker OPENED — ${BaseRepository.failures} failures. Cooling for 30s.`
+                  `Circuit breaker OPENED — ${BasePipeline.failures} failures. Cooling for 30s.`
                );
             }
             throw err;
@@ -116,7 +114,7 @@ export abstract class BaseRepository<T extends Document> {
 
       // layer 1 — innermost — timeout
       const withTime = timeout
-         ? () => this.withTimeout(fn(), timeoutMs)
+         ? () => this.withTimeOut(fn(), timeoutMs)
          : fn;
 
       // layer 2 — retry

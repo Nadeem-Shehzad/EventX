@@ -1,128 +1,205 @@
-import { Injectable, Logger, NotFoundException } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { ClientSession, Model, PipelineStage, Types } from "mongoose";
-import { EventDocument } from "./schema/event.schema";
-import { MongoPerformanceHelper } from "src/common/helpers/db-performance-checker";
-import { EventType } from "./enums/event.enums";
-import { UpdateEventDTO } from "./dto/request/update-event.dto";
-import { CreateEventDTO } from "./dto/request/create-event.dto";
-
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { ClientSession, Model, PipelineStage, Types } from 'mongoose';
+import { EventDocument } from './schema/event.schema';
+import { EventType } from './enums/event.enums';
+import { UpdateEventDTO } from './dto/request/update-event.dto';
+import { CreateEventDTO } from './dto/request/create-event.dto';
+import { BasePipeline } from 'src/common/base/base.pipeline';
+import { throwDbException } from 'src/common/utils/db-error.util';
 
 @Injectable()
-export class EventRespository {
+export class EventRepository extends BasePipeline<EventDocument> {
 
    constructor(
-      @InjectModel('Event') private eventModel: Model<EventDocument>,
-   ) { }
-
-   private readonly logger = new Logger(EventRespository.name);
-
-
-   async create(data: any, dto: CreateEventDTO, session: ClientSession) {
-      const event = await this.eventModel.create([data], { session, ordered: true });
-      return event[0];
+      @InjectModel('Event') private readonly eventModel: Model<EventDocument>
+   ) {
+      super(eventModel);
    }
 
 
-   async checkEventExist(organizerId: string, data: CreateEventDTO) {
-      return await this.eventModel.findOne({
-         organizerId,
-         title: data.title,
-         startDateTime: data.startDateTime,
-         'location.venueName': data.location?.venueName,
-         'location.city': data.location?.city,
-         'location.country': data.location?.country,
-      });
-   }
-
-
-   async updateEvent(id: string, dataToUpdate: UpdateEventDTO, session: ClientSession) {
-
-      const event = await this.eventModel.findOneAndUpdate(
-         { _id: id },
-         { $set: dataToUpdate },
-         { new: true, session }
-      );
-
-      if (!event) {
-         throw new Error('Event not found');
+   async create(data: any, session: ClientSession): Promise<EventDocument> {
+      try {
+         const result = await this.eventModel.create([data], { session, ordered: true });
+         return result[0];
+      } catch (err) {
+         throwDbException(err, 'EventRepository.create');
       }
-
-      return event;
    }
 
 
-   async getEvents() {
-      const events = await this.eventModel.find({}).lean();
-
-      return events.map(event => ({
-         ...event,
-         _id: event._id.toString(),
-      }));
+   async updateEvent(id: string,dataToUpdate: UpdateEventDTO,session: ClientSession): Promise<EventDocument | null> {
+      try {
+         return await this.eventModel.findOneAndUpdate(
+            { _id: id },
+            { $set: dataToUpdate },
+            { new: true, session }
+         );
+      } catch (err) {
+         throwDbException(err, 'EventRepository.updateEvent');
+      }
    }
 
 
-   async getEventsByAggregation(page = 1, limit = 10) {
+   async deleteEventPermanently( eventId: string, organizerId: string,session: ClientSession): Promise<EventDocument | null> {
+      try {
+         return await this.eventModel.findOneAndDelete(
+            { _id: eventId, organizerId, isDeleted: true },
+            { session }
+         );
+      } catch (err) {
+         throwDbException(err, 'EventRepository.deleteEventPermanently');
+      }
+   }
 
+
+   async checkEventExist(organizerId: string,data: CreateEventDTO): Promise<EventDocument | null> {
+      try {
+         return await this.safeQuery(
+            () => this.eventModel.findOne({
+               organizerId,
+               title: data.title,
+               startDateTime: data.startDateTime,
+               'location.venueName': data.location?.venueName,
+               'location.city': data.location?.city,
+               'location.country': data.location?.country,
+            }).exec(),
+            { context: 'EventRepository.checkEventExist' }
+         );
+      } catch (err) {
+         throwDbException(err, 'EventRepository.checkEventExist');
+      }
+   }
+
+
+   async findEventById(id: string): Promise<EventDocument | null> {
+      try {
+         return await this.safeQuery(
+            () => this.eventModel.findById(id).exec(),
+            { context: 'EventRepository.findEventById' }
+         );
+      } catch (err) {
+         throwDbException(err, 'EventRepository.findEventById');
+      }
+   }
+
+
+   async publishEvent(eventId: string,organizerId: string): Promise<EventDocument | null> {
+      try {
+         return await this.safeQuery(
+            () => this.eventModel.findOneAndUpdate(
+               { _id: eventId, organizerId, status: 'draft' },
+               { $set: { status: 'published' } },
+               { new: true }
+            ).exec(),
+            { retry: false, context: 'EventRepository.publishEvent' }
+         );
+      } catch (err) {
+         throwDbException(err, 'EventRepository.publishEvent');
+      }
+   }
+
+
+   async cancelEvent( eventId: string, organizerId: string ): Promise<EventDocument | null> {
+      try {
+         return await this.safeQuery(
+            () => this.eventModel.findOneAndUpdate(
+               { _id: eventId, organizerId, status: { $in: ['draft', 'published'] } },
+               { $set: { status: 'cancelled' } },
+               { new: true }
+            ).exec(),
+            { retry: false, context: 'EventRepository.cancelEvent' }
+         );
+      } catch (err) {
+         throwDbException(err, 'EventRepository.cancelEvent');
+      }
+   }
+
+
+   async softDeleteEvent(eventId: string, organizerId: string): Promise<EventDocument | null> {
+      try {
+         return await this.safeQuery(
+            () => this.eventModel.findOneAndUpdate(
+               { _id: eventId, organizerId, isDeleted: false },
+               { $set: { isDeleted: true, deletedAt: new Date() } },
+               { new: true }
+            ).exec(),
+            { retry: false, context: 'EventRepository.softDeleteEvent' }
+         );
+      } catch (err) {
+         throwDbException(err, 'EventRepository.softDeleteEvent');
+      }
+   }
+
+
+   async recoverDeletedEvent( eventId: string, organizerId: string): Promise<EventDocument | null> {
+      try {
+         return await this.safeQuery(
+            () => this.eventModel.findOneAndUpdate(
+               { _id: eventId, organizerId, isDeleted: true },
+               { $set: { isDeleted: false, deletedAt: null } },
+               { new: true }
+            ).exec(),
+            { retry: false, context: 'EventRepository.recoverDeletedEvent' }
+         );
+      } catch (err) {
+         throwDbException(err, 'EventRepository.recoverDeletedEvent');
+      }
+   }
+
+   
+   async deleteEventHard(eventId: string): Promise<EventDocument | null> {
+      try {
+         return await this.safeQuery(
+            () => this.eventModel.findByIdAndDelete(eventId).exec(),
+            { retry: false, context: 'EventRepository.deleteEventHard' }
+         );
+      } catch (err) {
+         throwDbException(err, 'EventRepository.deleteEventHard');
+      }
+   }
+
+   // ── Aggregations — longer timeout, no retry (aggregations are not safely retryable) ──
+
+   async getEventsByAggregation(
+      page = 1,
+      limit = 10
+   ): Promise<{ events: any[]; total: number }> {
       const skip = (page - 1) * limit;
-
       const pipeline: PipelineStage[] = [
-
-         {
-            $match: {
-               status: 'published',
-               isDeleted: false,
-            },
-         },
-
+         { $match: { status: 'published', isDeleted: false } },
          { $sort: { startDateTime: 1 } },
-
          {
             $facet: {
                events: [
                   { $skip: skip },
                   { $limit: limit },
-
-                  {
-                     $lookup: {
-                        from: 'tickettypes',          // MongoDB collection name
-                        localField: '_id',            // Event _id
-                        foreignField: 'eventId',      // TicketType.eventId
-                        as: 'ticketTypes',            // result array field
-                     },
-                  },
-
-                  {
-                     $project: {
-                        ...publicResponseData,
-                        ticketTypes: {
-                           name: 1,
-                           totalQuantity: 1,
-                           soldQuantity: 1,
-                           reservedQuantity: 1,
-                           price: 1,
-                           currency: 1,
-                           isPaidEvent: 1,
-                        },
-                     },
-                  },
+                  { $lookup: { from: 'tickettypes', localField: '_id', foreignField: 'eventId', as: 'ticketTypes' } },
+                  { $project: { ...publicResponseData, ticketTypes: ticketTypeProjection } },
                ],
-
                totalCount: [{ $count: 'count' }],
             },
          },
       ];
 
-      const result = await this.eventModel.aggregate(pipeline);
-
-      const events = result[0]?.events ?? [];
-      const total = result[0]?.totalCount?.[0]?.count ?? 0;
-
-      return { events, total };
+      return this.safeQuery(
+         () => this.eventModel.aggregate(pipeline).exec().then(result => ({
+            events: result[0]?.events ?? [],
+            total: result[0]?.totalCount?.[0]?.count ?? 0,
+         })),
+         {
+            timeoutMs: 15000, // aggregations need more time
+            retry: false,     // aggregations not safely retryable
+            fallback: { events: [], total: 0 },
+            context: 'EventRepository.getEventsByAggregation'
+         }
+      );
    }
 
-
-   async getEventsByFilter(filters: any, options: { limit: number; skip: number }) {
+   async getEventsByFilter(
+      filters: any,
+      options: { limit: number; skip: number }
+   ): Promise<{ events: any[]; meta: any }> {
       const pipeline: PipelineStage[] = [
          { $match: filters },
          { $sort: { startDateTime: 1 as const } },
@@ -131,687 +208,285 @@ export class EventRespository {
                data: [
                   { $skip: options.skip },
                   { $limit: options.limit },
-                  {
-                     $lookup: {
-                        from: 'tickettypes',          // MongoDB collection name
-                        localField: '_id',            // Event _id
-                        foreignField: 'eventId',      // TicketType.eventId
-                        as: 'ticketTypes',            // result array field
-                     },
-                  },
-
-                  {
-                     $project: {
-                        ...publicResponseData,
-                        ticketTypes: {
-                           name: 1,
-                           totalQuantity: 1,
-                           soldQuantity: 1,
-                           reservedQuantity: 1,
-                           price: 1,
-                           currency: 1,
-                           isPaidEvent: 1,
-                        },
-                     },
-                  },
-               ],
-               totalCount: [
-                  { $count: 'count' }
-               ]
-            }
-         }
-      ];
-
-      const result = await this.eventModel.aggregate(pipeline);
-
-      const events = result[0].data;
-      const total = result[0].totalCount[0]?.count || 0;
-
-      return {
-         events,
-         meta: {
-            total,
-            page: Math.floor(options.skip / options.limit) + 1,
-            limit: options.limit,
-            totalPages: Math.ceil(total / options.limit)
-         }
-      };
-   }
-
-
-   async getFreeEvents(page = 1, limit = 10) {
-      const skip = (page - 1) * limit;
-
-      const pipeline: PipelineStage[] = [
-         {
-            $match: {
-               status: 'published',
-               isDeleted: false,
-               isPaid: false,
-            },
-         },
-         { $sort: { startDateTime: 1 } },
-         {
-            $facet: {
-               events: [
-                  { $skip: skip },
-                  { $limit: limit },
-                  {
-                     $lookup: {
-                        from: 'tickettypes',          // MongoDB collection name
-                        localField: '_id',            // Event _id
-                        foreignField: 'eventId',      // TicketType.eventId
-                        as: 'ticketTypes',            // result array field
-                     },
-                  },
-
-                  {
-                     $project: {
-                        ...publicResponseData,
-                        ticketTypes: {
-                           name: 1,
-                           totalQuantity: 1,
-                           soldQuantity: 1,
-                           reservedQuantity: 1,
-                           price: 1,
-                           currency: 1,
-                           isPaidEvent: 1,
-                        },
-                     },
-                  },
+                  { $lookup: { from: 'tickettypes', localField: '_id', foreignField: 'eventId', as: 'ticketTypes' } },
+                  { $project: { ...publicResponseData, ticketTypes: ticketTypeProjection } },
                ],
                totalCount: [{ $count: 'count' }],
             },
          },
       ];
 
-      const result = await this.eventModel.aggregate(pipeline);
-
-      // const perfStats = await MongoPerformanceHelper.checkAggregationPerformance(this.eventModel, pipeline);
-      // console.log(perfStats);
-
-      const events = result[0]?.events ?? [];
-      const total = result[0]?.totalCount?.[0]?.count ?? 0;
-
-      return { events, total };
+      return this.safeQuery(
+         () => this.eventModel.aggregate(pipeline).exec().then(result => {
+            const events = result[0]?.data ?? [];       // safe — was crashing on empty
+            const total = result[0]?.totalCount?.[0]?.count ?? 0;
+            return {
+               events,
+               meta: {
+                  total,
+                  page: Math.floor(options.skip / options.limit) + 1,
+                  limit: options.limit,
+                  totalPages: Math.ceil(total / options.limit),
+               },
+            };
+         }),
+         {
+            timeoutMs: 15000,
+            retry: false,
+            fallback: { events: [], meta: { total: 0, page: 1, limit: options.limit, totalPages: 0 } },
+            context: 'EventRepository.getEventsByFilter'
+         }
+      );
    }
 
-
-   async getPaidEvents(page = 1, limit = 10) {
-      const skip = (page - 1) * limit;
-
-      const pipeline: PipelineStage[] = [
-         {
-            $match: {
-               status: 'published',
-               isDeleted: false,
-               isPaid: true,
-            },
-         },
-         { $sort: { startDateTime: 1 } },
-         {
-            $facet: {
-               events: [
-                  { $skip: skip },
-                  { $limit: limit },
-                  {
-                     $lookup: {
-                        from: 'tickettypes',          // MongoDB collection name
-                        localField: '_id',            // Event _id
-                        foreignField: 'eventId',      // TicketType.eventId
-                        as: 'ticketTypes',            // result array field
-                     },
-                  },
-
-                  {
-                     $project: {
-                        ...publicResponseData,
-                        ticketTypes: {
-                           name: 1,
-                           totalQuantity: 1,
-                           soldQuantity: 1,
-                           reservedQuantity: 1,
-                           price: 1,
-                           currency: 1,
-                           isPaidEvent: 1,
-                        },
-                     },
-                  },
-               ],
-               totalCount: [{ $count: 'count' }],
-            },
-         },
-      ];
-
-      const result = await this.eventModel.aggregate(pipeline);
-
-      const events = result[0]?.events ?? [];
-      const total = result[0]?.totalCount?.[0]?.count ?? 0;
-
-      return { events, total };
+   async getFreeEvents(
+      page = 1,
+      limit = 10
+   ): Promise<{ events: any[]; total: number }> {
+      return this.runPagedAggregation(
+         { status: 'published', isDeleted: false, isPaid: false },
+         page,
+         limit,
+         'EventRepository.getFreeEvents'
+      );
    }
 
+   async getPaidEvents(
+      page = 1,
+      limit = 10
+   ): Promise<{ events: any[]; total: number }> {
+      return this.runPagedAggregation(
+         { status: 'published', isDeleted: false, isPaid: true },
+         page,
+         limit,
+         'EventRepository.getPaidEvents'
+      );
+   }
 
-   async getOrganizerEvents(id: string, page = 1, limit = 10) {
+   async getUpcomingEvents(
+      page = 1,
+      limit = 10
+   ): Promise<{ events: any[]; total: number }> {
+      return this.runPagedAggregation(
+         { status: 'published', isDeleted: false, startDateTime: { $gte: new Date() } },
+         page,
+         limit,
+         'EventRepository.getUpcomingEvents'
+      );
+   }
+
+   async getOrganizerEvents(
+      id: string,
+      page = 1,
+      limit = 10
+   ): Promise<{ events: any[]; total: number }> {
       const skip = (page - 1) * limit;
-
       const pipeline: PipelineStage[] = [
-         {
-            $match: {
-               organizerId: new Types.ObjectId(id),
-               isDeleted: false
-            }
-         },
+         { $match: { organizerId: new Types.ObjectId(id), isDeleted: false } },
          { $sort: { createdAt: -1 } },
          {
             $facet: {
                events: [
                   { $skip: skip },
                   { $limit: limit },
-                  {
-                     $lookup: {
-                        from: 'users',
-                        localField: 'organizerId', // Matches ObjectId to ObjectId directly
-                        foreignField: '_id',
-                        pipeline: [
-                           { $project: { name: 1 } } // Only fetch the name
-                        ],
-                        as: 'organizer'
-                     }
-                  },
-                  // {
-                  //    $lookup: {
-                  //       from: 'users',
-                  //       let: { organizerId: { $toObjectId: '$organizerId' } },
-                  //       pipeline: [
-                  //          {
-                  //             $match: {
-                  //                $expr: {
-                  //                   $eq: ['$_id', '$$organizerId']
-                  //                }
-                  //             }
-                  //          },
-                  //          {
-                  //             $project: {
-                  //                name: 1
-                  //             }
-                  //          }
-                  //       ],
-                  //       as: 'organizer'
-                  //    }
-                  // },
-                  {
-                     $unwind: {
-                        path: '$organizer',
-                        preserveNullAndEmptyArrays: true
-                     }
-                  },
-                  {
-                     $project: administrativeResponseData
-                  }
+                  { $lookup: { from: 'users', localField: 'organizerId', foreignField: '_id', pipeline: [{ $project: { name: 1 } }], as: 'organizer' } },
+                  { $unwind: { path: '$organizer', preserveNullAndEmptyArrays: true } },
+                  { $project: administrativeResponseData },
                ],
-               totalCount: [
-                  {
-                     $count: 'total'
-                  }
-               ]
-            }
-         }
+               totalCount: [{ $count: 'total' }],
+            },
+         },
       ];
 
-      const result = await this.eventModel.aggregate(pipeline);
-
-      const events = result[0]?.events ?? [];
-      const total = result[0]?.totalCount?.[0]?.total ?? 0;
-
-      this.logger.log(events);
-
-      return { events, total };
+      return this.safeQuery(
+         () => this.eventModel.aggregate(pipeline).exec().then(result => ({
+            events: result[0]?.events ?? [],
+            total: result[0]?.totalCount?.[0]?.total ?? 0,
+         })),
+         {
+            timeoutMs: 15000,
+            retry: false,
+            fallback: { events: [], total: 0 },
+            context: 'EventRepository.getOrganizerEvents'
+         }
+      );
    }
 
-
-   async getOrganizerOwnEvents(id: string, page = 1, limit = 10) {
+   async getOrganizerOwnEvents(
+      id: string,
+      page = 1,
+      limit = 10
+   ): Promise<{ events: any[]; total: number }> {
       const skip = (page - 1) * limit;
-
       const pipeline: PipelineStage[] = [
-         {
-            $match: {
-               organizerId: new Types.ObjectId(id)
-            }
-         },
+         { $match: { organizerId: new Types.ObjectId(id) } },
          { $sort: { createdAt: -1 } },
          {
             $facet: {
                events: [
                   { $skip: skip },
                   { $limit: limit },
-                  {
-                     $project: publicResponseData
-                  }
+                  { $project: publicResponseData },
                ],
-               totalCount: [
-                  {
-                     $count: 'total'
-                  }
-               ]
-            }
+               totalCount: [{ $count: 'total' }],
+            },
+         },
+      ];
+
+      return this.safeQuery(
+         () => this.eventModel.aggregate(pipeline).exec().then(result => ({
+            events: result[0]?.events ?? [],
+            total: result[0]?.totalCount?.[0]?.total ?? 0,
+         })),
+         {
+            timeoutMs: 15000,
+            retry: false,
+            fallback: { events: [], total: 0 },
+            context: 'EventRepository.getOrganizerOwnEvents'
          }
-      ];
-
-      const result = await this.eventModel.aggregate(pipeline);
-
-      const events = result[0]?.events ?? [];
-      const total = result[0]?.totalCount?.[0]?.total ?? 0;
-
-      return { events, total };
+      );
    }
 
-
-   async filterEventsByStatus(status: string, page = 1, limit = 10) {
-      const skip = (page - 1) * limit;
-
-      const pipeline: PipelineStage[] = [
-         {
-            $match: {
-               status: status,
-               isDeleted: false
-            }
-         },
-         { $sort: { startDateTime: 1 } },
-         {
-            $facet: {
-               events: [
-                  { $skip: skip },
-                  { $limit: limit },
-                  {
-                     $lookup: {
-                        from: 'tickettypes',          // MongoDB collection name
-                        localField: '_id',            // Event _id
-                        foreignField: 'eventId',      // TicketType.eventId
-                        as: 'ticketTypes',            // result array field
-                     },
-                  },
-
-                  {
-                     $project: {
-                        ...publicResponseData,
-                        ticketTypes: {
-                           name: 1,
-                           totalQuantity: 1,
-                           soldQuantity: 1,
-                           reservedQuantity: 1,
-                           price: 1,
-                           currency: 1,
-                           isPaidEvent: 1,
-                        },
-                     },
-                  },
-               ],
-               totalCount: [
-                  {
-                     $count: 'total'
-                  }
-               ]
-            }
-         }
-      ];
-
-      const result = await this.eventModel.aggregate(pipeline);
-
-      const events = result[0]?.events ?? [];
-      const total = result[0]?.totalCount?.[0]?.total ?? 0;
-
-      return { events, total };
+   async filterEventsByStatus(
+      status: string,
+      page = 1,
+      limit = 10
+   ): Promise<{ events: any[]; total: number }> {
+      return this.runPagedAggregation(
+         { status, isDeleted: false },
+         page, limit,
+         'EventRepository.filterEventsByStatus'
+      );
    }
 
-
-   async filterEventsByVisibility(visibility: string, page = 1, limit = 10) {
-      const skip = (page - 1) * limit;
-
-      const pipeline: PipelineStage[] = [
-         {
-            $match: {
-               visibility: visibility,
-               isDeleted: false
-            }
-         },
-         { $sort: { startDateTime: 1 } },
-         {
-            $facet: {
-               events: [
-                  { $skip: skip },
-                  { $limit: limit },
-                  {
-                     $lookup: {
-                        from: 'tickettypes',          // MongoDB collection name
-                        localField: '_id',            // Event _id
-                        foreignField: 'eventId',      // TicketType.eventId
-                        as: 'ticketTypes',            // result array field
-                     },
-                  },
-
-                  {
-                     $project: {
-                        ...publicResponseData,
-                        ticketTypes: {
-                           name: 1,
-                           totalQuantity: 1,
-                           soldQuantity: 1,
-                           reservedQuantity: 1,
-                           price: 1,
-                           currency: 1,
-                           isPaidEvent: 1,
-                        },
-                     },
-                  },
-               ],
-               totalCount: [
-                  {
-                     $count: 'total'
-                  }
-               ]
-            }
-         }
-      ];
-
-      const result = await this.eventModel.aggregate(pipeline);
-
-      const events = result[0]?.events ?? [];
-      const total = result[0]?.totalCount?.[0]?.total ?? 0;
-
-      return { events, total };
+   async filterEventsByVisibility(
+      visibility: string,
+      page = 1,
+      limit = 10
+   ): Promise<{ events: any[]; total: number }> {
+      return this.runPagedAggregation(
+         { visibility, isDeleted: false },
+         page, limit,
+         'EventRepository.filterEventsByVisibility'
+      );
    }
 
+   // ── Summary aggregations ──────────────────────────────────────
 
-   async eventStatusSummary() {
-
-      const pipeline: PipelineStage[] = [
-         {
-            $match: {
-               isDeleted: false
-            }
-         },
-         {
-            $group: {
-               _id: '$status',
-               total: { $sum: 1 }
-            }
-         },
-         {
-            $project: {
-               _id: 0,
-               status: '$_id',
-               total: 1
-            }
-         },
-         { $sort: { status: 1 } }
-      ];
-
-      const result = await this.eventModel.aggregate(pipeline);
-
-      return result;
+   async eventStatusSummary(): Promise<any[]> {
+      return this.runSummaryAggregation('$status', 'status', 'EventRepository.eventStatusSummary');
    }
 
-
-   async eventVisibilitySummary() {
-
-      const pipeline: PipelineStage[] = [
-         {
-            $match: {
-               isDeleted: false
-            }
-         },
-         {
-            $group: {
-               _id: '$visibility',
-               total: { $sum: 1 }
-            }
-         },
-         {
-            $project: {
-               _id: 0,
-               visibility: '$_id',
-               total: 1
-            }
-         }
-      ];
-
-      const result = await this.eventModel.aggregate(pipeline);
-
-      return result;
+   async eventVisibilitySummary(): Promise<any[]> {
+      return this.runSummaryAggregation('$visibility', 'visibility', 'EventRepository.eventVisibilitySummary');
    }
 
+   async eventTypeSummary(): Promise<any[]> {
+      return this.runSummaryAggregation('$eventType', 'eventType', 'EventRepository.eventTypeSummary');
+   }
 
-   async eventTagsSummary() {
-
+   async eventTagsSummary(): Promise<any[]> {
       const pipeline: PipelineStage[] = [
-         {
-            $match: {
-               isDeleted: false
-            }
-         },
+         { $match: { isDeleted: false } },
          { $unwind: '$tags' },
-         {
-            $group: {
-               _id: '$tags',
-               total: { $sum: 1 }
-            }
-         },
+         { $group: { _id: '$tags', total: { $sum: 1 } } },
          { $sort: { total: 1 } },
-         {
-            $project: {
-               _id: 0,
-               tag: '$_id',
-               total: 1
-            }
-         }
+         { $project: { _id: 0, tag: '$_id', total: 1 } },
       ];
 
-      const result = await this.eventModel.aggregate(pipeline);
-
-      return result;
-   }
-
-
-   async eventTypeSummary() {
-
-      const pipeline: PipelineStage[] = [
+      return this.safeQuery(
+         () => this.eventModel.aggregate(pipeline).exec(),
          {
-            $match: {
-               isDeleted: false
-            }
-         },
-         {
-            $group: {
-               _id: '$eventType',
-               total: { $sum: 1 }
-            }
-         },
-         {
-            $sort: { total: 1 }
-         },
-         {
-            $project: {
-               _id: 0,
-               eventType: '$_id',
-               total: 1
-            }
+            timeoutMs: 15000,
+            retry: false,
+            fallback: [],
+            context: 'EventRepository.eventTagsSummary'
          }
-      ];
-
-      const result = await this.eventModel.aggregate(pipeline);
-
-      return result;
+      );
    }
 
+   // ── Export methods ────────────────────────────────────────────
 
-   async getUpcomingEvents(page = 1, limit = 10) {
+   async findEventOwner(eventId: string): Promise<{ organizerId: string } | null> {
+      return this.safeQuery(
+         () => this.eventModel.aggregate([
+            { $match: { _id: new Types.ObjectId(eventId) } },
+            { $project: { organizerId: 1 } },
+         ]).exec().then(r => r[0] ?? null),
+         {
+            timeoutMs: 5000,
+            retry: false,
+            fallback: null,
+            context: 'EventRepository.findEventOwner'
+         }
+      );
+   }
+
+   // ── Private helpers — eliminate repeated aggregation boilerplate ──
+
+   private async runPagedAggregation(
+      match: object,
+      page: number,
+      limit: number,
+      context: string
+   ): Promise<{ events: any[]; total: number }> {
       const skip = (page - 1) * limit;
-      const now = new Date();
-
       const pipeline: PipelineStage[] = [
-         {
-            $match: {
-               status: 'published',
-               isDeleted: false,
-               startDateTime: { $gte: now }
-            }
-         },
+         { $match: match },
          { $sort: { startDateTime: 1 } },
          {
             $facet: {
                events: [
                   { $skip: skip },
                   { $limit: limit },
-                  {
-                     $lookup: {
-                        from: 'tickettypes',          // MongoDB collection name
-                        localField: '_id',            // Event _id
-                        foreignField: 'eventId',      // TicketType.eventId
-                        as: 'ticketTypes',            // result array field
-                     },
-                  },
-
-                  {
-                     $project: {
-                        ...publicResponseData,
-                        ticketTypes: {
-                           name: 1,
-                           totalQuantity: 1,
-                           soldQuantity: 1,
-                           reservedQuantity: 1,
-                           price: 1,
-                           currency: 1,
-                           isPaidEvent: 1,
-                        },
-                     },
-                  },
+                  { $lookup: { from: 'tickettypes', localField: '_id', foreignField: 'eventId', as: 'ticketTypes' } },
+                  { $project: { ...publicResponseData, ticketTypes: ticketTypeProjection } },
                ],
-               totalCount: [
-                  {
-                     $count: 'total'
-                  }
-               ]
-            }
-         }
+               totalCount: [{ $count: 'count' }],
+            },
+         },
       ];
 
-      const result = await this.eventModel.aggregate(pipeline);
-
-      // const perfStats = await MongoPerformanceHelper.checkAggregationPerformance(this.eventModel, pipeline);
-      // console.log(perfStats);
-
-      const events = result[0]?.events ?? [];
-      const total = result[0]?.totalCount?.[0]?.total ?? 0;
-
-      return { events, total };
-   }
-
-
-   async publishEvent(eventId: string, organizerId: string) {
-      return await this.eventModel.findOneAndUpdate(
-         {
-            _id: eventId,
-            organizerId: organizerId,
-            status: 'draft'
-         },
-         { $set: { status: 'published' } },
-         { new: true }
+      return this.safeQuery(
+         () => this.eventModel.aggregate(pipeline).exec().then(result => ({
+            events: result[0]?.events ?? [],
+            total: result[0]?.totalCount?.[0]?.count ?? 0,
+         })),
+         { timeoutMs: 15000, retry: false, fallback: { events: [], total: 0 }, context }
       );
    }
 
+   private async runSummaryAggregation(
+      groupField: string,
+      projectField: string,
+      context: string
+   ): Promise<any[]> {
+      const pipeline: PipelineStage[] = [
+         { $match: { isDeleted: false } },
+         { $group: { _id: groupField, total: { $sum: 1 } } },
+         { $sort: { total: 1 } },
+         { $project: { _id: 0, [projectField]: '$_id', total: 1 } },
+      ];
 
-   async cancelEvent(eventId: string, organizerId: string) {
-      return await this.eventModel.findOneAndUpdate(
-         {
-            _id: eventId,
-            organizerId: organizerId,
-            status: { $in: ['draft', 'published'] }
-         },
-         { $set: { status: 'cancelled' } },
-         { new: true }
+      return this.safeQuery(
+         () => this.eventModel.aggregate(pipeline).exec(),
+         { timeoutMs: 15000, retry: false, fallback: [], context }
       );
-   }
-
-
-   async softDeleteEvent(eventId: string, organizerId: string) {
-      return await this.eventModel.findOneAndUpdate(
-         {
-            _id: eventId,
-            organizerId: organizerId,
-            isDeleted: false
-         },
-         {
-            $set: {
-               isDeleted: true,
-               deletedAt: new Date()
-            }
-         },
-         { new: true }
-      );
-   }
-
-
-   async deleteEventPermanently(eventId: string, organizerId: string, session: ClientSession) {
-
-      const event = await this.eventModel.findOne({ _id: eventId, organizerId, isDeleted: true }).session(session);
-      if (!event) throw new NotFoundException('Event not found or not soft-deleted');
-
-      const result = await this.eventModel.findOneAndDelete(
-         {
-            _id: eventId,
-            organizerId: organizerId,
-            isDeleted: true
-         }
-      ).session(session);
-
-      return result;
-   }
-
-
-   async recoverDeletedEvent(eventId: string, organizerId: string) {
-      return await this.eventModel.findOneAndUpdate(
-         {
-            _id: eventId,
-            organizerId: organizerId,
-            isDeleted: true
-         },
-         {
-            $set: {
-               isDeleted: false,
-               deletedAt: null
-            }
-         },
-         { new: true }
-      );
-   }
-
-
-   // export services
-   async findEventById(id: string) {
-      return await this.eventModel.findById(id);
-   }
-
-   async findEventOwner(eventId: string) {
-      const result = await this.eventModel.aggregate([
-         {
-            $match: { _id: new Types.ObjectId(eventId) },
-         },
-         {
-            $project: { organizerId: 1 },
-         },
-      ]);
-
-      return result[0] || null;
-   }
-
-   async deleteEventHard(eventId: string) {
-      return this.eventModel.findByIdAndDelete(eventId);
    }
 }
 
+// ── Projection constants ──────────────────────────────────────────
 
-// helper
+const ticketTypeProjection = {
+   name: 1,
+   totalQuantity: 1,
+   soldQuantity: 1,
+   reservedQuantity: 1,
+   price: 1,
+   currency: 1,
+   isPaidEvent: 1,
+};
+
 export const publicResponseData = {
    _id: { $toString: '$_id' },
    title: 1,
@@ -820,11 +495,7 @@ export const publicResponseData = {
    tags: 1,
    eventType: 1,
    location: {
-      $cond: [
-         { $ne: ['$eventType', EventType.ONLINE] },
-         '$location',
-         '$$REMOVE'
-      ]
+      $cond: [{ $ne: ['$eventType', EventType.ONLINE] }, '$location', '$$REMOVE']
    },
    bannerImage: 1,
    startDateTime: 1,
@@ -833,9 +504,7 @@ export const publicResponseData = {
    capacity: 1,
    registeredCount: 1,
    isPaid: 1,
-   //ticketTypes: 1
-}
-
+};
 
 export const administrativeResponseData = {
    _id: { $toString: '$_id' },
@@ -845,11 +514,7 @@ export const administrativeResponseData = {
    tags: 1,
    eventType: 1,
    location: {
-      $cond: [
-         { $ne: ['$eventType', EventType.ONLINE] },
-         '$location',
-         '$$REMOVE'
-      ]
+      $cond: [{ $ne: ['$eventType', EventType.ONLINE] }, '$location', '$$REMOVE']
    },
    bannerImage: 1,
    startDateTime: 1,
@@ -859,13 +524,7 @@ export const administrativeResponseData = {
    registeredCount: 1,
    isPaid: 1,
    priceRange: {
-      $cond: [
-         { $eq: ['$isPaid', true] },
-         '$priceRange',
-         '$$REMOVE'
-      ]
+      $cond: [{ $eq: ['$isPaid', true] }, '$priceRange', '$$REMOVE']
    },
-   organizer: {
-      name: '$organizer.name'
-   }
-}
+   organizer: { name: '$organizer.name' },
+};
