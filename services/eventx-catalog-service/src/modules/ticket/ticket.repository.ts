@@ -171,7 +171,7 @@ export class TicketRepository extends BasePipeline<TicketTypeDocument> {
          () => this.ticketModel.find({
             eventId: new Types.ObjectId(eventId),
             isActive: true,
-         }).exec(),
+         }).lean().exec(),
          {
             fallback: [],  // graceful degradation — listing, not critical
             context: 'TicketRepository.findTicketsByEventId'

@@ -31,7 +31,7 @@ export class GetTicketsByEventHandler implements IQueryHandler<GetTicketsByEvent
 
       console.log('outside cahche');
 
-      const tickets = await this.ticketRepo.findTicketsByEventID(eventId);
+      const tickets = await this.ticketRepo.findTicketsByEventId(eventId);
 
       await this.redis.set(
          chacheKey,

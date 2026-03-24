@@ -75,7 +75,7 @@ export class EventRepository extends BasePipeline<EventDocument> {
    async findEventById(id: string): Promise<EventDocument | null> {
       try {
          return await this.safeQuery(
-            () => this.eventModel.findById(id).exec(),
+            () => this.eventModel.findById(id).lean().exec(),
             { context: 'EventRepository.findEventById' }
          );
       } catch (err) {

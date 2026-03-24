@@ -12,6 +12,9 @@ export class Event {
    title: string
 
    @Field()
+   capacity: number
+
+   @Field()
    date: string
 
    @Field(() => [Ticket], { nullable: true })

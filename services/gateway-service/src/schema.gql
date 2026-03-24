@@ -2,9 +2,14 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Ticket {
-  price: Float!
-  available: Float!
+type Event {
+  capacity: Float!
+  date: String!
+  id: ID!
+  organizer: Organizer
+  ticket: [Ticket!]
+  tickets: [Ticket!]!
+  title: String!
 }
 
 type Organizer {
@@ -13,5 +18,13 @@ type Organizer {
 }
 
 type Query {
-  ping: String!
+  event(id: String!): Event
+}
+
+type Ticket {
+  available: Float!
+  availableQuantity: Float!
+  name: String!
+  price: Float!
+  totalQuantity: Float!
 }

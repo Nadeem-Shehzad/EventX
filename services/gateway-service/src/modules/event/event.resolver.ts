@@ -8,27 +8,27 @@ import { Organizer } from "./dto/organizer.type";
 export class EventResolver {
    constructor(private eventService: EventService) { }
 
-   @Query(() => String)
-   async ping(): Promise<string> {
-      console.log('PING HIT')
-      return 'pong';
+   // @Query(() => String)
+   // async ping(): Promise<string> {
+   //    console.log('PING HIT')
+   //    return 'pong';
+   // }
+
+   // Main-Query
+   @Query(() => Event, { nullable: true })
+   async event(@Args('id') id: string) {
+      return this.eventService.getEvent(id);
    }
 
-   // // Main-Query
-   // @Query(() => Event)
-   // async event(@Args('id') id: string) {
-   //    console.log('----- INSIDE MAIN QUERY -----')
-   //    return this.eventService.getEvent(id);
-   // }
+   // FIELD RESOLVERS
+   @ResolveField(() => [Ticket])
+   async tickets(@Parent() event: Event) {
+      //console.log('Parent event:', event);
+      return this.eventService.getTickets(event.id);
+   }
 
-   // // FIELD RESOLVERS
-   // @ResolveField(() => [Ticket])
-   // async tickets(@Parent() event: Event) {
-   //    return this.eventService.getTickets(event.id);
-   // }
-
-   // @ResolveField(() => Organizer)
-   // async organizer(@Parent() event: Event) {
-   //    //return this.eventService.getOrganizer(event.organizerId);
-   // }
+   @ResolveField(() => Organizer)
+   async organizer(@Parent() event: Event) {
+      //return this.eventService.getOrganizer(event.organizerId);
+   }
 }
