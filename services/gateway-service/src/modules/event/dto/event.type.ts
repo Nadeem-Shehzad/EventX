@@ -15,7 +15,22 @@ export class Event {
    capacity: number
 
    @Field()
-   date: string
+   startDateTime: string
+
+   @Field()
+   endDateTime: string
+
+   @Field()
+   registrationDeadline: string
+
+   @Field(() => BannerImage)
+   bannerImage: string
+
+   @Field()
+   isPaid: boolean
+
+   @Field()
+   eventType: string
 
    @Field(() => [Ticket], { nullable: true })
    ticket?: Ticket[]
@@ -24,5 +39,15 @@ export class Event {
    organizer?: Organizer
 
    // internal field
-   organizerId?: string
+   organizerId: string
+}
+
+
+@ObjectType()
+class BannerImage {
+   @Field()
+   url: string
+
+   @Field()
+   publicId: string
 }

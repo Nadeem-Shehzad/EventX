@@ -23,7 +23,7 @@ import { IdempotencyInterceptor } from "src/common/interceptors/idempotency.inte
 
 @ApiTags('user')
 @ApiBearerAuth('JWT-auth')
-@Controller({ path: 'user', version: '1' })
+@Controller({ path: 'users', version: '1' })
 export class UserController {
 
    constructor(private readonly userService: UserService) { }

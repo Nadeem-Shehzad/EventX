@@ -6,13 +6,8 @@ import { Organizer } from "./dto/organizer.type";
 
 @Resolver(() => Event)
 export class EventResolver {
-   constructor(private eventService: EventService) { }
 
-   // @Query(() => String)
-   // async ping(): Promise<string> {
-   //    console.log('PING HIT')
-   //    return 'pong';
-   // }
+   constructor(private eventService: EventService) { }
 
    // Main-Query
    @Query(() => Event, { nullable: true })
@@ -20,15 +15,13 @@ export class EventResolver {
       return this.eventService.getEvent(id);
    }
 
-   // FIELD RESOLVERS
    @ResolveField(() => [Ticket])
    async tickets(@Parent() event: Event) {
-      //console.log('Parent event:', event);
       return this.eventService.getTickets(event.id);
    }
 
    @ResolveField(() => Organizer)
    async organizer(@Parent() event: Event) {
-      //return this.eventService.getOrganizer(event.organizerId);
+      return this.eventService.getOrganizer(event.organizerId);
    }
 }

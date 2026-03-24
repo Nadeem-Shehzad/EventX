@@ -12,11 +12,16 @@ export class EventService {
       return { ...data, id: id };
    }
 
-   async getTickets(eventId: string) {
-      return this.http.get(`${process.env.CATALOG_SERVICE_URL}/tickets/event/${eventId}`);
+   async getOrganizer(organizerId: string) {
+      if (!organizerId) return null;
+      const data = await this.http.get(`${process.env.IDENTITY_SERVICE_URL}/users/internal/${organizerId}`);
+      return {
+         ...data,
+         id: organizerId,
+      };
    }
 
-   async getOrganizer(orgId: string) {
-      return this.http.get(`${process.env.IDENTITY_SERVICE_URL}users/${orgId}`);
+   async getTickets(eventId: string) {
+      return this.http.get(`${process.env.CATALOG_SERVICE_URL}/tickets/event/${eventId}`);
    }
 }

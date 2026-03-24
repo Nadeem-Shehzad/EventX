@@ -2,11 +2,21 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type BannerImage {
+  publicId: String!
+  url: String!
+}
+
 type Event {
+  bannerImage: BannerImage!
   capacity: Float!
-  date: String!
+  endDateTime: String!
+  eventType: String!
   id: ID!
+  isPaid: Boolean!
   organizer: Organizer
+  registrationDeadline: String!
+  startDateTime: String!
   ticket: [Ticket!]
   tickets: [Ticket!]!
   title: String!
