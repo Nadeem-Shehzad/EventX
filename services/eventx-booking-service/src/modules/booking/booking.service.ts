@@ -1,24 +1,22 @@
 import {
-   BadRequestException, ConflictException, forwardRef, Inject,
+   BadRequestException, ConflictException,
    Injectable, NotFoundException
 } from "@nestjs/common";
 import { BookingRepository } from "./repository/booking.repository";
-import { Connection, Model, Types } from "mongoose";
-import { InjectConnection, InjectModel } from "@nestjs/mongoose";
+import { Connection, Types } from "mongoose";
+import { InjectConnection } from "@nestjs/mongoose";
 import { CreateBookingDTO } from "./dto/create-booking.dto";
 import { BookingStatus } from "./enum/booking-status.enum";
-import { PaymentService } from "src/modules/payment/payment.service";
 import { BookingQueryDTO } from "./dto/booking-query.dto";
 import { plainToInstance } from "class-transformer";
 import { BookingResponseDTO } from "./dto/booking.response.dto";
 import { RedisService } from "src/redis/redis.service";
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PaymentStatus } from "../../constants/payment-status.enum";
-import { BookingJob, EmailJob } from "src/constants/email-queue.constants";
+import { BookingJob } from "src/constants/email-queue.constants";
 import { OutboxService } from "src/outbox/outbox.service";
 import {
    BookingConfirmedFailedPayload,
-   BookingConfirmedPayload,
    BookingCreatedPayload
 } from "src/constants/events/domain-event-payloads";
 import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
@@ -51,23 +49,23 @@ export class BookingService {
 
    async createBooking(userId: string, dto: CreateBookingDTO) {
 
+      // check db level idempotency
+      const existingBooking = await this.bookingRepo.checkBookingExists(
+         userId,
+         dto.eventId,
+         dto.ticketTypeId
+      );
+
+      if (existingBooking) {
+         throw new ConflictException(
+            'You already have an active booking for this event!'
+         );
+      }
+
       const session = await this.connection.startSession();
       session.startTransaction();
 
       try {
-
-         // check db level idempotency
-         const existingBooking = await this.bookingRepo.checkBookingExists(
-            userId,
-            dto.eventId,
-            dto.ticketTypeId
-         );
-
-         if (existingBooking) {
-            throw new ConflictException(
-               'You already have an active booking for this event!'
-            );
-         }
 
          let status = BookingStatus.PENDING;
 

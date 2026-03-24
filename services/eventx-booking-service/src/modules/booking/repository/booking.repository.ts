@@ -4,11 +4,16 @@ import { ClientSession, Model, PipelineStage, Types } from "mongoose";
 import { BookingDocument } from "../schema/booking.schema";
 import { BookingStatus } from "../enum/booking-status.enum";
 import { PaymentStatus } from "../../../constants/payment-status.enum";
+import { throwDbException } from "src/common/utils/db-error.util";
+import { BasePipeline } from "src/common/base/base.pipeline";
 
 @Injectable()
-export class BookingRepository {
+export class BookingRepository extends BasePipeline<BookingDocument> {
 
-   constructor(@InjectModel('Booking') private bookingModel: Model<BookingDocument>) { }
+   constructor(@InjectModel('Booking') private bookingModel: Model<BookingDocument>) {
+      super(bookingModel);
+   }
+
 
    async createBooking(data: Partial<BookingDocument>, session: ClientSession) {
       const [booking] = await this.bookingModel.create([data], { session });
@@ -17,18 +22,25 @@ export class BookingRepository {
 
 
    async checkBookingExists(userId: string, eventId: string, ticketTypeId: string) {
-      const existingBooking = await this.bookingModel.findOne({
-         userId: new Types.ObjectId(userId),
-         eventId: new Types.ObjectId(eventId),
-         ticketTypeId: new Types.ObjectId(ticketTypeId),
-         status: {
-            $in: [
-               BookingStatus.PENDING,
-               BookingStatus.CONFIRMED
-            ]
-         }
-      });
-      return existingBooking;
+      try {
+         return await this.safeQuery(
+            () => this.bookingModel.findOne({
+               userId: new Types.ObjectId(userId),
+               eventId: new Types.ObjectId(eventId),
+               ticketTypeId: new Types.ObjectId(ticketTypeId),
+               status: {
+                  $in: [
+                     BookingStatus.PENDING,
+                     BookingStatus.CONFIRMED
+                  ]
+               }
+            }).lean().exec(),
+            { context: 'BookingRepository.checkBookingExists' }
+         );
+
+      } catch (error) {
+         throwDbException(error, 'BookingRepository.checkBookingExists');
+      }
    }
 
 
@@ -114,8 +126,14 @@ export class BookingRepository {
 
 
    async findBookingById(bookingId: string) {
-      const booking = await this.bookingModel.findById(bookingId);
-      return booking;
+      try {
+         return await this.safeQuery(
+            () => this.bookingModel.findById(bookingId),
+            { context: 'BookingRepository.findBookingById' }
+         )
+      } catch (error) {
+         throwDbException(error, 'BookingRepository.findBookingById');
+      }
    }
 
 
@@ -129,12 +147,17 @@ export class BookingRepository {
 
       const objId = new Types.ObjectId(eventId);
 
-      const bookings = await this.bookingModel.find({
-         eventId: objId,
-         paymentStatus: PaymentStatus.SUCCEEDED
-      });
-
-      return bookings;
+      try {
+         return await this.safeQuery(
+            () => this.bookingModel.find({
+               eventId: objId,
+               paymentStatus: PaymentStatus.SUCCEEDED
+            }),
+            { context: 'BookingRepository.findBookingsByEventIdAndPaymentStatus' }
+         )
+      } catch (error) {
+         throwDbException(error, 'BookingRepository.findBookingsByEventIdAndPaymentStatus');
+      }
    }
 
 
