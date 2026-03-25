@@ -1,7 +1,7 @@
 import { ObjectType, Field } from "@nestjs/graphql";
 
 
-@ObjectType()
+@ObjectType('EventTicket')
 export class Ticket {
 
    @Field()

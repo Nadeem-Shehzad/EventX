@@ -10,7 +10,7 @@ import { EventFilterInput } from "./dto/event-filter.type.dto";
 @Resolver(() => Event)
 export class EventResolver {
 
-   constructor(private eventService: EventService) { }
+   constructor(private eventService: EventService) { } 
 
    // Main-Query
    @Query(() => Event, { nullable: true })

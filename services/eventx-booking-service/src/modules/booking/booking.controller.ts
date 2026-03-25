@@ -275,6 +275,24 @@ export class BookingController {
 
    // internal Services Communications
 
+   @Get('internal/user-bookings')
+   async getUserBookings_Internal(
+      @Query('id') id: string,
+      @Query('page') page: number,
+      @Query('limit') limit: number,
+      @Headers('x-internal-api-key') apiKey: string,
+   ) {
+
+      if (apiKey !== process.env.INTERNAL_API_KEY) {
+         throw new UnauthorizedException('Invalid internal API key');
+      }
+
+      const data = await this.service.getUserBookings(id, page, limit);
+
+      return data;
+   }
+
+
    @Get('internal/:id')
    async getBookingInternal(
       @Param('id') id: string,
@@ -295,5 +313,4 @@ export class BookingController {
 
       return data;
    }
-
 }

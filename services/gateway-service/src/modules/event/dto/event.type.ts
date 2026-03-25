@@ -4,6 +4,16 @@ import { Organizer } from "./organizer.type";
 
 
 @ObjectType()
+export class BannerImage {
+   @Field()
+   url: string
+
+   @Field()
+   publicId: string
+}
+
+
+@ObjectType('Event')
 export class Event {
    @Field(() => ID)
    id: string
@@ -24,7 +34,7 @@ export class Event {
    registrationDeadline: string
 
    @Field(() => BannerImage)
-   bannerImage: string
+   bannerImage: BannerImage
 
    @Field()
    isPaid: boolean
@@ -40,14 +50,4 @@ export class Event {
 
    // internal field
    organizerId: string
-}
-
-
-@ObjectType()
-class BannerImage {
-   @Field()
-   url: string
-
-   @Field()
-   publicId: string
 }

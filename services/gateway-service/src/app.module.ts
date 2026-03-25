@@ -8,6 +8,7 @@ import { corsConfig } from './config/cors.config';
 import redisConfig from './config/redis.config';
 import serviceConfig from './config/service.config';
 import { validationSchema } from './config/validation.schema';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
    imports: [
@@ -28,6 +29,7 @@ import { validationSchema } from './config/validation.schema';
       }),
 
       EventModule,
+      UserModule
    ],
 })
 

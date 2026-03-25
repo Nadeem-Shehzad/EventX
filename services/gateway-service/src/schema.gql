@@ -7,6 +7,13 @@ type BannerImage {
   url: String!
 }
 
+type BookingMeta {
+  limit: Int!
+  page: Int!
+  total: Int!
+  totalPages: Int!
+}
+
 type Event {
   bannerImage: BannerImage!
   capacity: Float!
@@ -17,8 +24,8 @@ type Event {
   organizer: Organizer
   registrationDeadline: String!
   startDateTime: String!
-  ticket: [Ticket!]
-  tickets: [Ticket!]!
+  ticket: [EventTicket!]
+  tickets: [EventTicket!]!
   title: String!
 }
 
@@ -29,6 +36,14 @@ input EventFilterInput {
   page: Float
   search: String
   tags: String
+}
+
+type EventTicket {
+  available: Float!
+  availableQuantity: Float!
+  name: String!
+  price: Float!
+  totalQuantity: Float!
 }
 
 type EventsList {
@@ -46,12 +61,44 @@ type Organizer {
 type Query {
   event(id: String!): Event
   events(filter: EventFilterInput, limit: Int = 10, page: Int = 1): EventsList!
+  user(id: String!): User
 }
 
-type Ticket {
-  available: Float!
-  availableQuantity: Float!
+type User {
+  email: String!
+  id: ID!
+  image: UserImage!
+  isVerified: Boolean!
   name: String!
-  price: Float!
-  totalQuantity: Float!
+  role: String!
+  userBookings(limit: Int = 5, page: Int = 1): UserBookingsList
+}
+
+type UserBooking {
+  amount: Float!
+  event: UserEvent
+  id: ID!
+  quantity: Float!
+  status: String!
+}
+
+type UserBookingsList {
+  bookings: [UserBooking!]!
+  meta: BookingMeta!
+}
+
+type UserEvent {
+  bannerImage: BannerImage!
+  endDateTime: String!
+  eventType: String!
+  id: ID!
+  isPaid: Boolean!
+  startDateTime: String!
+  ticket: [EventTicket!]
+  title: String!
+}
+
+type UserImage {
+  publicId: String!
+  url: String!
 }

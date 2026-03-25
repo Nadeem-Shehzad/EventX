@@ -91,7 +91,6 @@ export class EventService {
       private readonly eventOutboxService: EventOutboxService,
    ) { }
 
-   // ── Create ────────────────────────────────────────────────────
 
    async createEvent(organizerId: string, dto: CreateEventDTO) {
       const session = await this.connection.startSession();
@@ -131,7 +130,6 @@ export class EventService {
       }
    }
 
-   // ── Update ────────────────────────────────────────────────────
 
    async updateEvent(eventId: string, dataToUpdate: UpdateEventDTO) {
       // Find event BEFORE starting session — if not found, no session needed
@@ -218,7 +216,6 @@ export class EventService {
       }
    }
 
-   // ── Reads ─────────────────────────────────────────────────────
 
    async getAllEventsByAggregate(page = 1, limit = 10) {
       return withCache({
@@ -314,7 +311,6 @@ export class EventService {
       };
    }
 
-   // ── Status / visibility changes ───────────────────────────────
 
    async publishEvent(eventId: string, organizerId: string) {
       const result = await this.eventRepo.publishEvent(eventId, organizerId);
@@ -348,7 +344,6 @@ export class EventService {
       return plainToInstance(EventResponseDTO, result.toObject(), { excludeExtraneousValues: true });
    }
 
-   // ── Permanent delete ──────────────────────────────────────────
 
    async deleteEventPermanently(eventId: string, organizerId: string) {
       const session = await this.connection.startSession();
@@ -384,7 +379,6 @@ export class EventService {
       }
    }
 
-   // ── Summaries ─────────────────────────────────────────────────
 
    async filterEventsByStatus(status: string, page = 1, limit = 10) {
       const { events, total } = await this.eventRepo.filterEventsByStatus(status, page, limit);
@@ -406,8 +400,6 @@ export class EventService {
    async eventVisibilitySummary() { return this.eventRepo.eventVisibilitySummary(); }
    async eventTypeSummary() { return this.eventRepo.eventTypeSummary(); }
    async eventTagsSummary() { return this.eventRepo.eventTagsSummary(); }
-
-   // ── Export methods ────────────────────────────────────────────
 
    async findById(id: string) {
       return this.eventRepo.findEventById(id);

@@ -504,7 +504,7 @@ export class EventController {
       return this.eventService.getEventsByFilter(query);
    }
 
-   
+
    @Get('internal/:id')
    async getEvent_Internal(
       @Param('id') id: string,
