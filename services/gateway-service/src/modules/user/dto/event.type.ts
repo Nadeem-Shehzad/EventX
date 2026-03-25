@@ -25,7 +25,4 @@ export class UserEvent {
 
    @Field()
    eventType: string
-
-   @Field(() => [Ticket], { nullable: true })
-   ticket?: Ticket[]
 }

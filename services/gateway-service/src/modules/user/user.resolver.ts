@@ -1,14 +1,15 @@
 import { Args, Int, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { UserService } from "./user.service";
 import { User } from "./dto/user.type";
-import { UserEvent } from "./dto/event.type";
 import { UserBooking } from "./dto/booking.type";
 
 
 @Resolver(() => User)
 export class UserResolver {
 
-   constructor(private userService: UserService) { }
+   constructor(
+      private userService: UserService,
+   ) { }
 
 
    @Query(() => User, { nullable: true })

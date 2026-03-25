@@ -10,5 +10,9 @@ import { HttpService } from '../../common/http/http.service';
       EventService,
       HttpService
    ],
+
+   exports: [
+      EventService
+   ]
 })
 export class EventModule { }

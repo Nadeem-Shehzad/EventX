@@ -32,8 +32,15 @@ export class UserService {
          `${process.env.BOOKING_SERVICE_URL}/bookings/internal/user-bookings?${params.toString()}`
       );
 
-      console.log(`Bookings Response --> `, response);
+      const { bookings, meta } = response.data;
 
-      return response.data;
+      return {
+         bookings: bookings.map(booking => ({
+            ...booking,
+            id: booking._id?.toString() || booking.id,
+         })),
+         meta,
+      };
+
    }
 }

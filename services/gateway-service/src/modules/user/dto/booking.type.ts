@@ -16,6 +16,9 @@ export class UserBooking {
     @Field()
     status: string
 
+    @Field()
+    eventId: string
+
     @Field(() => UserEvent, { nullable: true })
     event?: UserEvent
 }

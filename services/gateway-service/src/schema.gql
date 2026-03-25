@@ -77,6 +77,7 @@ type User {
 type UserBooking {
   amount: Float!
   event: UserEvent
+  eventId: String!
   id: ID!
   quantity: Float!
   status: String!
@@ -94,7 +95,6 @@ type UserEvent {
   id: ID!
   isPaid: Boolean!
   startDateTime: String!
-  ticket: [EventTicket!]
   title: String!
 }
 
