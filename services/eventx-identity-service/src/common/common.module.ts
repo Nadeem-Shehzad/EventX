@@ -1,4 +1,4 @@
-import { forwardRef, Module } from "@nestjs/common";
+import { Global, Module } from "@nestjs/common";
 import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 import { JwtModule } from "@nestjs/jwt";
 import { JwtRefreshTokenGuard } from "./guards/ref-token.guard";
@@ -6,8 +6,11 @@ import { AccountOwnerShipGuard } from "./guards/ownership.guard";
 import { RoleCheckGuard } from "./guards/role.guard";
 import { MyRedisModule } from "src/redis/redis.module";
 import { IdempotencyInterceptor } from "./interceptors/idempotency.interceptor";
+import { LoggerService } from "./logger/logger.service";
+import { RequestContextService } from "./logger/request-context.service";
 
 
+@Global()
 @Module({
    imports: [
       JwtModule.register({}),
@@ -19,6 +22,8 @@ import { IdempotencyInterceptor } from "./interceptors/idempotency.interceptor";
       AccountOwnerShipGuard,
       RoleCheckGuard,
       IdempotencyInterceptor,
+      LoggerService,
+      RequestContextService
    ],
    exports: [
       JwtAuthGuard,
@@ -26,6 +31,8 @@ import { IdempotencyInterceptor } from "./interceptors/idempotency.interceptor";
       JwtModule,
       AccountOwnerShipGuard,
       RoleCheckGuard,
+      LoggerService,
+      RequestContextService
    ]
 })
 

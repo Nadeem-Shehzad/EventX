@@ -3,16 +3,12 @@ auth_enabled: false
 server:
   http_listen_port: 3100
 
+limits_config:
+  allow_structured_metadata: false
+
 common:
   path_prefix: /loki
   replication_factor: 1
-  ring:
-    kvstore:
-      store: inmemory
-  storage:
-    filesystem:
-      chunks_directory: /loki/chunks
-      rules_directory: /loki/rules
 
 schema_config:
   configs:
@@ -24,5 +20,23 @@ schema_config:
         prefix: index_
         period: 24h
 
-limits_config:
-  retention_period: 168h   # 7 days
+storage_config:
+  tsdb_shipper:
+    active_index_directory: /loki/index
+    cache_location: /loki/cache
+  filesystem:
+    directory: /loki/chunks
+
+# 🔥 THIS IS THE FIX (disable distributed components)
+ingester:
+  lifecycler:
+    ring:
+      kvstore:
+        store: inmemory   # ❗ instead of consul
+      replication_factor: 1
+
+query_scheduler:
+  max_outstanding_requests_per_tenant: 2048
+
+frontend:
+  scheduler_address: ""   # ❗ disable scheduler

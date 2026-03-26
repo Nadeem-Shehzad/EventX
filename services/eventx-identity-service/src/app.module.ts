@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { validationSchema } from './config/validation.schema';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -8,6 +8,8 @@ import redisConfig from './config/redis.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import serviceConfig from './config/service.config';
+import { CommonModule } from './common/common.module';
+import { RequestIdMiddleware } from './common/logger/middleware/request-id.middleware';
 
 
 @Module({
@@ -26,9 +28,14 @@ import serviceConfig from './config/service.config';
          }),
       }),
 
+      CommonModule,
       AuthModule,
       UserModule
    ],
 })
 
-export class AppModule { }
+export class AppModule {
+   configure(consumer: MiddlewareConsumer){
+      consumer.apply(RequestIdMiddleware).forRoutes('*')
+   }
+}

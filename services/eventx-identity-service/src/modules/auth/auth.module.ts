@@ -4,7 +4,6 @@ import { AuthService } from "./auth.service";
 import { UserModule } from "../user/user.module";
 import { JwtModule } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
-import { CommonModule } from "src/common/common.module";
 import { MailerModule } from "@nestjs-modules/mailer";
 import { MyRedisModule } from "src/redis/redis.module";
 import { LoggingModule } from "src/logging/logging.module";
@@ -44,8 +43,7 @@ import { AuthHelper } from "./helpers/auth.helper";
       }),
 
       LoggingModule,
-      MyRedisModule,
-      CommonModule
+      MyRedisModule
    ],
    controllers: [AuthController],
    providers: [AuthService, AuthHelper]
