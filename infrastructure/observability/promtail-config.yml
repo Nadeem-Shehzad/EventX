@@ -14,4 +14,16 @@ scrape_configs:
           - localhost
         labels:
           job: eventx
-          __path__: /var/log/eventx/*.log
+          __path__: /var/log/eventx/**/logs/*.log
+
+    pipeline_stages:
+      - json:
+          expressions:
+            level: level
+            service: service
+      - template:
+          source: level
+          template: "{{if eq .Value \"10\"}}trace{{else if eq .Value \"20\"}}debug{{else if eq .Value \"30\"}}info{{else if eq .Value \"40\"}}warn{{else if eq .Value \"50\"}}error{{else if eq .Value \"60\"}}fatal{{else}}unknown{{end}}"
+      - labels:
+          level:
+          service:

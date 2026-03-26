@@ -76,7 +76,7 @@ export class AuthService {
          'password',
       );
       if (!passwordMatched) {
-         this.pinoLogger.error('Login Failed', {
+         this.pinoLogger.warn('Try Again', {
             userId: user._id.toString(),
             error: 'Invalid Password'
          });
@@ -98,7 +98,6 @@ export class AuthService {
       return { accessToken, refreshToken };
    }
 
-   // ── Change password ──────────────────────────────────────────
 
    async changePassword(id: string, cpData: ChangePasswordDTO) {
       const user = await this.userService.findUserByIDWithPassword(id);
@@ -126,14 +125,12 @@ export class AuthService {
       return { message: 'Password changed successfully' };
    }
 
-   // ── Logout ───────────────────────────────────────────────────
 
    async logout(id: string) {
       await this.userService.removeUserToken(id);
       return { loggedOut: true };
    }
 
-   // ── Refresh token ────────────────────────────────────────────
 
    async refreshToken(userData: any, rf_Token: string) {
       const user = await this.userService.getUserByIdWithRefreshToken(userData.id);
@@ -162,7 +159,6 @@ export class AuthService {
       return { accessToken, refreshToken: newRefreshToken };
    }
 
-   // ── Send verification email ──────────────────────────────────
 
    async sendVerificationEmail(id: string, email: string): Promise<void> {
       let token: string;
@@ -193,7 +189,6 @@ export class AuthService {
       }
    }
 
-   // ── Verify email ─────────────────────────────────────────────
 
    async verifyEmail(token: string) {
 
@@ -221,7 +216,6 @@ export class AuthService {
       return { message: 'Email verified successfully' };
    }
 
-   // ── Forgot password ──────────────────────────────────────────
 
    async forgotPassword(email: string) {
 
@@ -263,7 +257,6 @@ export class AuthService {
       return { message: 'If this email is registered, a reset link has been sent' };
    }
 
-   // ── Reset password ───────────────────────────────────────────
 
    async resetPassword(dto: ResetPasswordDTO) {
       const { token, newPassword, confirmPassword } = dto;

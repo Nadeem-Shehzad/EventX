@@ -1,12 +1,13 @@
 version: "3.8"
 
 services:
-
   loki:
     image: grafana/loki:latest
     container_name: loki
     ports:
       - "3100:3100"
+    networks:
+      - observability
     volumes:
       - ./loki-config.yml:/etc/loki/local-config.yaml
       - loki-data:/loki
@@ -15,9 +16,11 @@ services:
   promtail:
     image: grafana/promtail:latest
     container_name: promtail
+    networks:
+      - observability
     volumes:
+      - /home/nadeem-shahzad/EventX/services:/var/log/eventx
       - ./promtail-config.yml:/etc/promtail/config.yml
-      - ../../logs:/var/log/eventx   
     command: -config.file=/etc/promtail/config.yml
     depends_on:
       - loki
@@ -27,10 +30,16 @@ services:
     container_name: grafana
     ports:
       - "3001:3000"
+    networks:
+      - observability
     depends_on:
       - loki
     volumes:
       - grafana-data:/var/lib/grafana
+
+networks:
+  observability:
+    driver: bridge
 
 volumes:
   loki-data:
