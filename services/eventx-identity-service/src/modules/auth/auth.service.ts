@@ -1,22 +1,19 @@
 import {
    BadRequestException,
-   ConflictException,
    Injectable,
    InternalServerErrorException,
    Logger,
    NotFoundException,
-   RequestTimeoutException,
    ServiceUnavailableException,
    UnauthorizedException
 } from "@nestjs/common";
 
 import { RegisterDTO } from "./dto/request/register.dto";
 import { UserService } from "../user/user.service";
-import * as bcrypt from 'bcrypt';
 import { UserResponseDTO } from "../user/dto/user-response.dto";
 import { plainToInstance } from "class-transformer";
 import { LoginDTO } from "./dto/request/login.dto";
-import { JsonWebTokenError, JwtService, JwtSignOptions, TokenExpiredError } from "@nestjs/jwt";
+import { JsonWebTokenError, JwtService, TokenExpiredError } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { ChangePasswordDTO } from "./dto/request/change-password.dto";
 import { MailerService } from "@nestjs-modules/mailer";
@@ -24,6 +21,7 @@ import { randomBytes } from "crypto";
 import { RedisService } from "src/redis/redis.service";
 import { ResetPasswordDTO } from "./dto/request/reset-password.dto";
 import { AuthHelper } from "./helpers/auth.helper";
+import { LoggerService } from "../../common/logger/logger.service";
 
 
 
@@ -36,7 +34,8 @@ export class AuthService {
       private readonly configService: ConfigService,
       private readonly mailService: MailerService,
       private readonly redis: RedisService,
-      private readonly helper: AuthHelper
+      private readonly helper: AuthHelper,
+      private readonly pinoLogger: LoggerService
    ) { }
 
    private readonly logger = new Logger(AuthService.name);
@@ -65,27 +64,36 @@ export class AuthService {
 
 
    async login(loginData: LoginDTO) {
+
       const user = await this.userService.getUserByEmailWithPassword(loginData.email);
       if (!user) throw new NotFoundException('User not registered');
+
+      this.pinoLogger.info('User Login Started', { userId: user._id.toString() });
 
       const passwordMatched = await this.helper.compareValue(
          loginData.password,
          user.password,
          'password',
       );
-      if (!passwordMatched) throw new UnauthorizedException('Invalid password');
+      if (!passwordMatched) {
+         this.pinoLogger.error('Login Failed', {
+            userId: user._id.toString(),
+            error: 'Invalid Password'
+         });
+         throw new UnauthorizedException('Invalid password');
+      }
 
       const payload = this.helper.buildPayload(user);
       const accessToken = this.helper.signAccessToken(payload);
       const refreshToken = this.helper.signRefreshToken(payload);
 
-      // Non-critical — token persistence should not block login response
-      // If this fails, user still gets their tokens and can log in
       this.helper.hashValue(refreshToken, 'refresh token')
          .then(hashed => this.userService.updateUser(user._id, { refreshToken: hashed }))
          .catch(err =>
             this.logger.error(`Failed to persist refresh token for ${user._id}: ${err.message}`)
          );
+
+      this.pinoLogger.info('User login success', { userId: user._id.toString() });
 
       return { accessToken, refreshToken };
    }
