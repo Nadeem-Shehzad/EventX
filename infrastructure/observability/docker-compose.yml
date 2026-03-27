@@ -32,6 +32,8 @@ services:
       - "9090:9090"
     networks:
       - observability
+    extra_hosts:
+    - "host.docker.internal:host-gateway"  
     volumes:
       - ./prometheus-config.yml:/etc/prometheus/prometheus.yml
       - prometheus-data:/prometheus

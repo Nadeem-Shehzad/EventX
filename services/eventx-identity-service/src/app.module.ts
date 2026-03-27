@@ -11,6 +11,7 @@ import serviceConfig from './config/service.config';
 import { CommonModule } from './common/common.module';
 import { RequestIdMiddleware } from './common/logger/middleware/request-id.middleware';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
+import { MetricsModule } from './metrics/metrics.module';
 
 
 @Module({
@@ -21,8 +22,10 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
          defaultMetrics: {
             enabled: true
          },
-         global: true    // ← add this
+         global: true 
       }),
+
+      MetricsModule,
 
       ConfigModule.forRoot({
          isGlobal: true,

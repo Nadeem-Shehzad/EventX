@@ -22,6 +22,7 @@ import { RedisService } from "src/redis/redis.service";
 import { ResetPasswordDTO } from "./dto/request/reset-password.dto";
 import { AuthHelper } from "./helpers/auth.helper";
 import { LoggerService } from "../../common/logger/logger.service";
+import { MetricsService } from "../../metrics/metrics.service";
 
 
 
@@ -35,7 +36,8 @@ export class AuthService {
       private readonly mailService: MailerService,
       private readonly redis: RedisService,
       private readonly helper: AuthHelper,
-      private readonly pinoLogger: LoggerService
+      private readonly pinoLogger: LoggerService,
+      private readonly metricsService: MetricsService
    ) { }
 
    private readonly logger = new Logger(AuthService.name);
@@ -75,11 +77,15 @@ export class AuthService {
          user.password,
          'password',
       );
+      
       if (!passwordMatched) {
          this.pinoLogger.error('Try Again', {
             userId: user._id.toString(),
             error: 'Invalid Password'
          });
+
+         this.metricsService.incrementLogin('failure');
+
          throw new UnauthorizedException('Invalid password');
       }
 
@@ -94,6 +100,8 @@ export class AuthService {
          );
 
       this.pinoLogger.info('User login success', { userId: user._id.toString() });
+
+      this.metricsService.incrementLogin('success');
 
       return { accessToken, refreshToken };
    }
