@@ -12,6 +12,7 @@ import { AuthHelper } from "./helpers/auth.helper";
 
 @Module({
    imports: [
+      
       forwardRef(() => UserModule),
 
       JwtModule.registerAsync({

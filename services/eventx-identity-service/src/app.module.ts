@@ -10,10 +10,19 @@ import { UserModule } from './modules/user/user.module';
 import serviceConfig from './config/service.config';
 import { CommonModule } from './common/common.module';
 import { RequestIdMiddleware } from './common/logger/middleware/request-id.middleware';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 
 @Module({
    imports: [
+
+      PrometheusModule.register({
+         path: '/metrics',
+         defaultMetrics: {
+            enabled: true
+         },
+         global: true    // ← add this
+      }),
 
       ConfigModule.forRoot({
          isGlobal: true,
@@ -35,7 +44,7 @@ import { RequestIdMiddleware } from './common/logger/middleware/request-id.middl
 })
 
 export class AppModule {
-   configure(consumer: MiddlewareConsumer){
+   configure(consumer: MiddlewareConsumer) {
       consumer.apply(RequestIdMiddleware).forRoutes('*')
    }
 }

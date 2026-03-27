@@ -76,7 +76,7 @@ export class AuthService {
          'password',
       );
       if (!passwordMatched) {
-         this.pinoLogger.warn('Try Again', {
+         this.pinoLogger.error('Try Again', {
             userId: user._id.toString(),
             error: 'Invalid Password'
          });

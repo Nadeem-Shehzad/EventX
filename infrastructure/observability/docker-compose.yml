@@ -25,6 +25,24 @@ services:
     depends_on:
       - loki
 
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - observability
+    volumes:
+      - ./prometheus-config.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=15d     # keep 15 days of metrics
+      - --web.enable-lifecycle                # allow hot reload
+    depends_on:
+      - loki    
+
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
@@ -34,6 +52,7 @@ services:
       - observability
     depends_on:
       - loki
+      - prometheus
     volumes:
       - grafana-data:/var/lib/grafana
 
@@ -43,4 +62,5 @@ networks:
 
 volumes:
   loki-data:
+  prometheus-data:
   grafana-data:
