@@ -66,6 +66,8 @@ export class AuthService {
 
 
    async login(loginData: LoginDTO) {
+      
+      this.metricsService.incrementLoginAttempt();
 
       const user = await this.userService.getUserByEmailWithPassword(loginData.email);
       if (!user) throw new NotFoundException('User not registered');
@@ -77,14 +79,14 @@ export class AuthService {
          user.password,
          'password',
       );
-      
+
       if (!passwordMatched) {
          this.pinoLogger.error('Try Again', {
             userId: user._id.toString(),
             error: 'Invalid Password'
          });
 
-         this.metricsService.incrementLogin('failure');
+         this.metricsService.incrementLoginFailed('invalid_credentials');
 
          throw new UnauthorizedException('Invalid password');
       }
@@ -101,7 +103,7 @@ export class AuthService {
 
       this.pinoLogger.info('User login success', { userId: user._id.toString() });
 
-      this.metricsService.incrementLogin('success');
+      this.metricsService.incrementLoginSuccess(user._id.toString());
 
       return { accessToken, refreshToken };
    }

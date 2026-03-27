@@ -1,34 +1,44 @@
 import { Injectable } from '@nestjs/common';
-import * as client from 'prom-client';
+import { InjectMetric } from '@willsoto/nestjs-prometheus';
+import { Counter, Gauge } from 'prom-client';   // ← add Gauge
 
 @Injectable()
 export class MetricsService {
-   private readonly register = new client.Registry();
 
-   constructor() {
-      // default system metrics (cpu, memory etc.)
-      client.collectDefaultMetrics({ register: this.register });
+   constructor(
+      @InjectMetric('auth_login_total')
+      private readonly loginTotal: Counter<string>,
+
+      @InjectMetric('auth_login_success_total')
+      private readonly loginSuccess: Counter<string>,
+
+      @InjectMetric('auth_login_failed_total')
+      private readonly loginFailed: Counter<string>,
+
+      @InjectMetric('auth_active_users_total')
+      private readonly activeUsers: Gauge<string>,   // ← Gauge not Counter
+   ) { }
+
+   incrementLoginAttempt() {
+      this.loginTotal.inc({ status: 'attempt' });
    }
 
-   // 🔥 LOGIN COUNTER
-   private authLoginCounter = new client.Counter({
-      name: 'auth_login_total',
-      help: 'Total login attempts',
-      labelNames: ['status'], // success | failure
-      registers: [this.register],
-   });
-
-   // ===== METHODS =====
-
-   incrementLogin(status: 'success' | 'failure') {
-      this.authLoginCounter.inc({ status });
+   incrementLoginSuccess(userId: string) {
+      this.loginSuccess.inc({
+         service: 'identity-service',
+         userId,
+      });
+      this.activeUsers.inc({ service: 'identity-service' });  // ← Gauge has inc
    }
 
-   async getMetrics() {
-      return this.register.metrics();
+   incrementLoginFailed(reason: 'invalid_credentials' | 'user_not_found' | 'unknown') {
+      this.loginFailed.inc({
+         service: 'identity-service',
+         reason,
+      });
    }
 
-   getContentType() {
-      return this.register.contentType;
+   decrementActiveUsers() {
+      this.activeUsers.dec({ service: 'identity-service' });  // ← Gauge has dec ✅
    }
 }
