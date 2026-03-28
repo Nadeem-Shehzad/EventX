@@ -26,6 +26,21 @@ import { makeCounterProvider, makeGaugeProvider } from '@willsoto/nestjs-prometh
          help: 'Total currently active users',
          labelNames: ['service'],
       }),
+      makeCounterProvider({
+         name: 'auth_register_total',
+         help: 'Total register attempts',
+         labelNames: ['status']
+      }),
+      makeCounterProvider({
+         name: 'auth_register_success_total',
+         help: 'Total successful register',
+         labelNames: ['service', 'userId']
+      }),
+      makeCounterProvider({
+         name: 'auth_register_failed_total',
+         help: 'Total failed register',
+         labelNames: ['service', 'reason']
+      })
    ],
    exports: [MetricsService],
 })

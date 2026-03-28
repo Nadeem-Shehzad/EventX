@@ -45,6 +45,8 @@ export class AuthService {
 
    async register(data: RegisterDTO): Promise<UserResponseDTO> {
 
+      this.metricsService.incrementRegisterAttempts();
+
       const hashedPassword = await this.helper.hashValue(data.password, 'credentials');
 
       const user = await this.userService.createUser({
@@ -52,9 +54,13 @@ export class AuthService {
          password: hashedPassword,
       });
 
-      if (!user) throw new InternalServerErrorException('User creation failed');
+      if (!user) {
+         this.metricsService.incrementRegisterFailed('invalid_credentials');
+         throw new InternalServerErrorException('User creation failed');
+      }
 
-      // Fire verification email — non-critical, must never block registration
+      this.metricsService.incrementRegisterSuccess(user._id.toString());
+
       this.sendVerificationEmail(String(user._id), user.email).catch(err =>
          this.logger.error(`Verification email failed for ${user.email}: ${err.message}`)
       );
@@ -66,7 +72,7 @@ export class AuthService {
 
 
    async login(loginData: LoginDTO) {
-      
+
       this.metricsService.incrementLoginAttempt();
 
       const user = await this.userService.getUserByEmailWithPassword(loginData.email);

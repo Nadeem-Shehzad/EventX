@@ -4,13 +4,15 @@ import { Model } from "mongoose";
 import { User, UserDocument } from "./user.schema";
 import { BaseRepository } from "src/common/base/base.pipeline";
 import { throwDbException } from "src/common/utils/db-error.util";
+import { MetricsService } from "../../metrics/metrics.service";
 
 
 @Injectable()
 export class UserRepository extends BaseRepository<UserDocument> {
 
    constructor(
-      @InjectModel(User.name) private userModel: Model<UserDocument>
+      @InjectModel(User.name) private userModel: Model<UserDocument>,
+      private readonly metricsService: MetricsService
    ) { super(userModel) }
 
 
@@ -21,6 +23,7 @@ export class UserRepository extends BaseRepository<UserDocument> {
             { retry: false, context: 'UserRepository.create' }
          );
       } catch (err) {
+         this.metricsService.incrementRegisterFailed('db_down');
          throwDbException(err, 'UserRepository.create');
       }
    }

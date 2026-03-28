@@ -18,9 +18,20 @@ export class MetricsService {
       private readonly loginFailed: Counter<string>,
 
       @InjectMetric('auth_active_users_total')
-      private readonly activeUsers: Gauge<string>,   // ← Gauge not Counter
+      private readonly activeUsers: Gauge<string>,
+
+      @InjectMetric('auth_register_total')
+      private readonly registerTotal: Counter<string>,
+
+      @InjectMetric('auth_register_success_total')
+      private readonly registerSuccess: Counter<string>,
+
+      @InjectMetric('auth_register_failed_total')
+      private readonly registerFailed: Counter<string>
    ) { }
 
+
+   // --- Login Metrics ---
    incrementLoginAttempt() {
       this.loginTotal.inc({ status: 'attempt' });
    }
@@ -45,9 +56,29 @@ export class MetricsService {
    }
 
    decrementActiveUsers(userId: string) {
-      if(this.activeUserIds.has(userId)){
+      if (this.activeUserIds.has(userId)) {
          this.activeUserIds.delete(userId);
          this.activeUsers.dec({ service: 'identity-service' });
       }
+   }
+
+
+   // --- Register Metrics ---
+   incrementRegisterAttempts() {
+      this.registerTotal.inc({ status: 'attempt' });
+   }
+
+   incrementRegisterSuccess(userId: string) {
+      this.registerSuccess.inc({
+         service: 'identity-service',
+         userId,
+      });
+   }
+
+   incrementRegisterFailed(reason: 'invalid_credentials' | 'db_down' | 'unknown') {
+      this.registerFailed.inc({
+         service: 'identity-service',
+         reason,
+      });
    }
 }
