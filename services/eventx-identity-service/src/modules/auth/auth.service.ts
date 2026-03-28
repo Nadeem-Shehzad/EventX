@@ -136,8 +136,9 @@ export class AuthService {
    }
 
 
-   async logout(id: string) {
-      await this.userService.removeUserToken(id);
+   async logout(userId: string) {
+      await this.userService.removeUserToken(userId);
+      this.metricsService.decrementActiveUsers(userId);
       return { loggedOut: true };
    }
 

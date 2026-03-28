@@ -5,6 +5,8 @@ import { Counter, Gauge } from 'prom-client';   // ← add Gauge
 @Injectable()
 export class MetricsService {
 
+   private activeUserIds = new Set<string>();
+
    constructor(
       @InjectMetric('auth_login_total')
       private readonly loginTotal: Counter<string>,
@@ -28,7 +30,11 @@ export class MetricsService {
          service: 'identity-service',
          userId,
       });
-      this.activeUsers.inc({ service: 'identity-service' });  // ← Gauge has inc
+
+      if (!this.activeUserIds.has(userId)) {
+         this.activeUserIds.add(userId);
+         this.activeUsers.inc({ service: 'identity-service' });
+      }
    }
 
    incrementLoginFailed(reason: 'invalid_credentials' | 'user_not_found' | 'unknown') {
@@ -38,7 +44,10 @@ export class MetricsService {
       });
    }
 
-   decrementActiveUsers() {
-      this.activeUsers.dec({ service: 'identity-service' });  // ← Gauge has dec ✅
+   decrementActiveUsers(userId: string) {
+      if(this.activeUserIds.has(userId)){
+         this.activeUserIds.delete(userId);
+         this.activeUsers.dec({ service: 'identity-service' });
+      }
    }
 }
