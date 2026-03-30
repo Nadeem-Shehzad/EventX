@@ -1,6 +1,10 @@
 import { Global, Module } from '@nestjs/common';
 import { MetricsService } from './metrics.service';
-import { makeCounterProvider, makeGaugeProvider } from '@willsoto/nestjs-prometheus';
+import {
+   makeCounterProvider,
+   makeGaugeProvider,
+   makeHistogramProvider
+} from '@willsoto/nestjs-prometheus';
 
 @Global()
 @Module({
@@ -34,12 +38,19 @@ import { makeCounterProvider, makeGaugeProvider } from '@willsoto/nestjs-prometh
       makeCounterProvider({
          name: 'auth_register_success_total',
          help: 'Total successful register',
-         labelNames: ['service', 'userId']
+         labelNames: ['service']
       }),
       makeCounterProvider({
          name: 'auth_register_failed_total',
          help: 'Total failed register',
          labelNames: ['service', 'reason']
+      }),
+
+      makeHistogramProvider({
+         name: 'auth_login_duration_seconds',
+         help: 'How long login takes in seconds',
+         labelNames: ['status'],
+         buckets: [0.01, 0.05, 0.1, 0.5, 1, 2, 5]  // ← time buckets in seconds
       })
    ],
    exports: [MetricsService],

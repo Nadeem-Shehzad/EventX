@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectMetric } from '@willsoto/nestjs-prometheus';
-import { Counter, Gauge } from 'prom-client';   // ← add Gauge
+import { Counter, Gauge, Histogram } from 'prom-client';   // ← add Gauge
 
 @Injectable()
 export class MetricsService {
@@ -27,7 +27,11 @@ export class MetricsService {
       private readonly registerSuccess: Counter<string>,
 
       @InjectMetric('auth_register_failed_total')
-      private readonly registerFailed: Counter<string>
+      private readonly registerFailed: Counter<string>,
+
+
+      @InjectMetric('auth_login_duration_seconds')
+      private readonly loginDuration: Histogram<string>
    ) { }
 
 
@@ -68,10 +72,9 @@ export class MetricsService {
       this.registerTotal.inc({ status: 'attempt' });
    }
 
-   incrementRegisterSuccess(userId: string) {
+   incrementRegisterSuccess() {
       this.registerSuccess.inc({
-         service: 'identity-service',
-         userId,
+         service: 'identity-service'
       });
    }
 
@@ -80,5 +83,14 @@ export class MetricsService {
          service: 'identity-service',
          reason,
       });
+   }
+
+
+   // Histogram
+   async incrementLoginDuration(status: string, durationMs: number) {
+      this.loginDuration.observe(
+         { status },
+         durationMs / 1000
+      )
    }
 }

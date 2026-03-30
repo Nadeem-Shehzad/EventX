@@ -59,7 +59,7 @@ export class AuthService {
          throw new InternalServerErrorException('User creation failed');
       }
 
-      this.metricsService.incrementRegisterSuccess(user._id.toString());
+      this.metricsService.incrementRegisterSuccess();
 
       this.sendVerificationEmail(String(user._id), user.email).catch(err =>
          this.logger.error(`Verification email failed for ${user.email}: ${err.message}`)
@@ -87,6 +87,7 @@ export class AuthService {
       );
 
       if (!passwordMatched) {
+         
          this.pinoLogger.error('Try Again', {
             userId: user._id.toString(),
             error: 'Invalid Password'
@@ -103,9 +104,9 @@ export class AuthService {
 
       this.helper.hashValue(refreshToken, 'refresh token')
          .then(hashed => this.userService.updateUser(user._id, { refreshToken: hashed }))
-         .catch(err =>
+         .catch((err) => {
             this.logger.error(`Failed to persist refresh token for ${user._id}: ${err.message}`)
-         );
+         });
 
       this.pinoLogger.info('User login success', { userId: user._id.toString() });
 
