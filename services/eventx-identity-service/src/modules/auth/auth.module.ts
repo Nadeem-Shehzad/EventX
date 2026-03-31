@@ -6,13 +6,12 @@ import { JwtModule } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { MailerModule } from "@nestjs-modules/mailer";
 import { MyRedisModule } from "src/redis/redis.module";
-import { LoggingModule } from "src/logging/logging.module";
 import { AuthHelper } from "./helpers/auth.helper";
 
 
 @Module({
    imports: [
-      
+
       forwardRef(() => UserModule),
 
       JwtModule.registerAsync({
@@ -43,7 +42,6 @@ import { AuthHelper } from "./helpers/auth.helper";
          })
       }),
 
-      LoggingModule,
       MyRedisModule
    ],
    controllers: [AuthController],

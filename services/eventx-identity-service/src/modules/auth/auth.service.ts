@@ -57,7 +57,7 @@ export class AuthService {
 
       if (!user) {
          this.metricsService.incrementRegisterFailed('invalid_credentials');
-         this.pinoLogger.info('Register attempt failed', { reason: 'invalid_credentials' });
+         this.pinoLogger.error('Register attempt failed', { reason: 'invalid_credentials' });
          throw new InternalServerErrorException('User creation failed');
       }
 
@@ -296,7 +296,7 @@ export class AuthService {
       const user = await this.userService.getUserByEmail(email);
 
       if (!user) {
-         this.pinoLogger.info('User not Found', { email: email.toString() });
+         this.pinoLogger.error('User not Found', { email: email.toString() });
          return { message: 'User not Found' };
       }
 
