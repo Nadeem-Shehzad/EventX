@@ -160,7 +160,7 @@ export class AuthService {
       const newHashedPassword = await this.helper.hashValue(cpData.newPassword, 'new password');
 
       await this.userService.updateUser(user._id, { password: newHashedPassword });
-      this.pinoLogger.error('Password changed successfully', { UserId: id.toString() });
+      this.pinoLogger.info('Password changed successfully', { UserId: id.toString() });
 
       return { message: 'Password changed successfully' };
    }
@@ -170,11 +170,11 @@ export class AuthService {
       this.pinoLogger.info('logout attempt started', { UserId: userId.toString() });
 
       await this.userService.removeUserToken(userId);
-      
+
       this.metricsService.decrementActiveUsers(userId);
-      
+
       this.pinoLogger.info('logout successfully', { UserId: userId.toString() });
-      
+
       return { loggedOut: true };
    }
 
@@ -184,12 +184,12 @@ export class AuthService {
 
       const user = await this.userService.getUserByIdWithRefreshToken(userData.id);
       if (!user) {
-         this.pinoLogger.info('User not found', { UserId: userData.id.toString() });
+         this.pinoLogger.error('User not found', { UserId: userData.id.toString() });
          throw new NotFoundException('User not found')
       }
 
       if (!user.refreshToken) {
-         this.pinoLogger.info('No active session', { UserId: userData.id.toString() });
+         this.pinoLogger.error('No active session', { UserId: userData.id.toString() });
          throw new UnauthorizedException('No active session')
       }
 
@@ -200,7 +200,7 @@ export class AuthService {
       );
 
       if (!isValid) {
-         this.pinoLogger.info('Invalid refresh token', { UserId: userData.id.toString() });
+         this.pinoLogger.warn('Invalid refresh token', { UserId: userData.id.toString() });
          throw new UnauthorizedException('Invalid refresh token');
       }
 
@@ -222,18 +222,20 @@ export class AuthService {
 
 
    async sendVerificationEmail(id: string, email: string): Promise<void> {
+
+      this.pinoLogger.info('sendVerificationEmail attempt started', { email: email.toString() });
+
       let token: string;
       try {
          token = await this.jwtService.signAsync({ id }, { expiresIn: '15m' });
       } catch {
+         this.pinoLogger.error('Failed to generate verification token', { email: email.toString() });
          throw new InternalServerErrorException('Failed to generate verification token');
       }
 
       const APP_URL = this.configService.get<string>('app_url');
-      const url = `${APP_URL}/auth/verify-email?token=${token}`;
+      const url = `${APP_URL}/auth/v1/verify-email?token=${token}`;
 
-      // Mail failure is logged but never throws to caller
-      // Caller (register) fires this without await intentionally
       try {
          await this.mailService.sendMail({
             to: email,
@@ -245,6 +247,7 @@ export class AuthService {
         `,
          });
       } catch (err) {
+         this.pinoLogger.error(`Failed to send verification email to ${email}: ${err.message}`);
          this.logger.error(`Failed to send verification email to ${email}: ${err.message}`);
          // intentionally not rethrowing — mail is non-critical
       }
@@ -252,12 +255,14 @@ export class AuthService {
 
 
    async verifyEmail(token: string) {
+      this.pinoLogger.info('verifyEmail attempt started');
 
       let payload: any;
 
       try {
          payload = await this.jwtService.verifyAsync(token);
       } catch (err) {
+         this.pinoLogger.error('Token verification failed', { token: token.toString() });
          if (err instanceof TokenExpiredError) {
             throw new BadRequestException('Verification link has expired');
          }
@@ -268,22 +273,31 @@ export class AuthService {
       }
 
       const user = await this.userService.getUserById(payload.id);
-      if (!user) throw new NotFoundException('User not found');
+      if (!user) {
+         this.pinoLogger.error('User not found', { UserId: payload.id.toString() });
+         throw new NotFoundException('User not found')
+      }
 
-      if (user.isVerified) return { message: 'Email already verified' };
+      if (user.isVerified) {
+         this.pinoLogger.warn('Email already verified', { UserId: payload.id.toString() });
+         return { message: 'Email already verified' }
+      }
 
       await this.userService.updateUser(user._id, { isVerified: true });
+      this.pinoLogger.info('Email verified successfully', { UserId: user._id.toString() });
 
       return { message: 'Email verified successfully' };
    }
 
 
    async forgotPassword(email: string) {
+      this.pinoLogger.info('forgotPassword attempt started');
 
       const user = await this.userService.getUserByEmail(email);
 
       if (!user) {
-         return { message: 'If this email is registered, a reset link has been sent' };
+         this.pinoLogger.info('User not Found', { email: email.toString() });
+         return { message: 'User not Found' };
       }
 
       const token = randomBytes(32).toString('hex');
@@ -292,12 +306,13 @@ export class AuthService {
       try {
          await this.redis.set(`fp:${token}`, userId, 60 * 15);
       } catch (err) {
+         this.pinoLogger.error(`Redis unavailable for forgot password: ${err.message}`);
          this.logger.error(`Redis unavailable for forgot password: ${err.message}`);
          throw new ServiceUnavailableException('Unable to process request, please try again');
       }
 
       const APP_URL = this.configService.get<string>('app_url');
-      const url = `${APP_URL}/auth/reset-password?token=${token}`;
+      const url = `${APP_URL}/auth/v1/reset-password?token=${token}`;
 
       // Mail is non-critical — token is already in Redis
       // If mail fails, user can request again
@@ -315,14 +330,18 @@ export class AuthService {
             this.logger.error(`Failed to send reset email to ${email}: ${err.message}`)
          );
 
+      this.pinoLogger.info('If this email is registered, a reset link has been sent', { email: email.toString() });
       return { message: 'If this email is registered, a reset link has been sent' };
    }
 
 
    async resetPassword(dto: ResetPasswordDTO) {
+      this.pinoLogger.info('resetPassword attempt started');
+
       const { token, newPassword, confirmPassword } = dto;
 
       if (newPassword !== confirmPassword) {
+         this.pinoLogger.warn('Passwords do not match');
          throw new BadRequestException('Passwords do not match');
       }
 
@@ -330,14 +349,21 @@ export class AuthService {
       try {
          userId = await this.redis.get(`fp:${token}`);
       } catch (err) {
+         this.pinoLogger.error(`Redis unavailable for reset password: ${err.message}`);
          this.logger.error(`Redis unavailable for reset password: ${err.message}`);
          throw new ServiceUnavailableException('Unable to process request, please try again');
       }
 
-      if (!userId) throw new BadRequestException('Invalid or expired token');
+      if (!userId) {
+         this.pinoLogger.error(`Invalid or expired token`);
+         throw new BadRequestException('Invalid or expired token');
+      }
 
       const user = await this.userService.getUserById(userId);
-      if (!user) throw new NotFoundException('User not found');
+      if (!user) {
+         this.pinoLogger.error(`User not found`);
+         throw new NotFoundException('User not found');
+      }
 
       // Hash first — if this fails, token stays valid so user can retry
       const hashed = await this.helper.hashValue(newPassword, 'new password');
@@ -347,9 +373,10 @@ export class AuthService {
 
       // Delete token only after successful password update
       // If del fails it's non-critical — token TTL (15m) will clean it up
-      this.redis.del(`fp:${token}`).catch(err =>
+      this.redis.del(`fp:${token}`).catch((err) => {
+         this.pinoLogger.error(`Failed to delete reset token from Redis: ${err.message}`);
          this.logger.warn(`Failed to delete reset token from Redis: ${err.message}`)
-      );
+      });
 
       return { message: 'Password reset successfully' };
    }
