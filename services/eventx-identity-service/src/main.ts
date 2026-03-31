@@ -7,17 +7,16 @@ import { GlobalExceptionFilter } from './common/filters/global-exception-filter'
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import compression from 'compression';
-import { Logger } from 'nestjs-pino';
 import { VersioningType } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { corsConfig } from './config/cors.config';
 
 
 async function bootstrap() {
-   
+
    const app = await NestFactory.create(AppModule, {
-      bufferLogs: false,
-      logger: ['error', 'warn'],
+      bufferLogs: true,
+      logger: false,
    });
 
    app.use(helmet());
@@ -53,7 +52,7 @@ async function bootstrap() {
    app.useGlobalInterceptors(
       new ClassSerializerInterceptor(app.get(Reflector)),
    );
-   
+
    app.useGlobalPipes(new ValidationPipe({
       whitelist: true,
       transform: true,
@@ -63,9 +62,8 @@ async function bootstrap() {
    }));
 
    await app.init();
-   await app.listen(process.env.PORT ?? 3000);
-
-   app.useLogger(app.get(Logger));
+   await app.listen(process.env.PORT ?? 3002);
+   console.log(`🚀 identity-service running on port ${process.env.PORT ?? 3002}`);
 }
 
 bootstrap();
