@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { User, UserDocument } from "./user.schema";
 import { UserRepository } from "./user.repository";
 import { plainToInstance } from "class-transformer";
@@ -8,7 +8,7 @@ import { v2 as cloudinary } from 'cloudinary';
 
 
 @Injectable()
-export class UserService {
+export class UserService {  
 
    constructor(private readonly userRepo: UserRepository) { }
 
