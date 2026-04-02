@@ -6,6 +6,8 @@ export const validationSchema = Joi.object({
 
    PORT: Joi.number().default(3003),
 
+   SERVICE_NAME: Joi.string().required(),
+
    JWT_SECRET: Joi.string().required(),
 
    TICKET_MONGO_URI: Joi.string().required(),

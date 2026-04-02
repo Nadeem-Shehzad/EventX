@@ -1,4 +1,4 @@
-import { forwardRef, Module } from "@nestjs/common";
+import { forwardRef, Module, Global } from "@nestjs/common";
 import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 import { JwtModule } from "@nestjs/jwt";
 import { JwtRefreshTokenGuard } from "./guards/ref-token.guard";
@@ -9,10 +9,11 @@ import { MyRedisModule } from "src/redis/redis.module";
 import { IdempotencyInterceptor } from "./interceptors/idempotency.interceptor";
 
 
+@Global()
 @Module({
    imports: [
       JwtModule.register({}),
-      forwardRef(() => EventModule),
+      EventModule,
       MyRedisModule
    ],
    providers: [

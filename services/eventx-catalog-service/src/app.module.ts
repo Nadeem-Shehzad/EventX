@@ -13,6 +13,7 @@ import rabbitConfig from './config/rabbit.config';
 import { CustomRabbitMQModule } from './rabbitmq/rabbitmq.module';
 import { EventModule } from './modules/event/event.module';
 import authConfig from './config/auth.config';
+import { CommonModule } from './common/common.module';
 
 
 @Module({
@@ -30,6 +31,8 @@ import authConfig from './config/auth.config';
             uri: config.get<string>('CATALOG_MONGO_URI'),
          }),
       }),
+
+      CommonModule,
 
       CustomRabbitMQModule,
       MyRedisModule,

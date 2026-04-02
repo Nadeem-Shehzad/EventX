@@ -18,7 +18,6 @@ import { TicketConsumer } from "./listeners/event-creation.listener";
 
       MongooseModule.forFeature([{ name: 'Event', schema: EventSchema }]),
 
-      forwardRef(() => CommonModule),
       TicketModule,
       EventOutboxModule,
       ImageQueueModule,
