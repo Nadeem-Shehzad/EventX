@@ -7,7 +7,7 @@ import {
 import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
 import { OutboxService } from "src/outbox/outbox.service";
 import { TicketService } from "../../ticket.service";
-import { AppLogger } from "src/logging/logging.service";
+//import { AppLogger } from "src/logging/logging.service";
 import { BookingClient } from "src/clients/booking/booking.client";
 
 
@@ -17,19 +17,19 @@ export class TicketHandler {
    constructor(
       private readonly ticketService: TicketService,
       private readonly outboxService: OutboxService,
-      private readonly logger: AppLogger,
+      //private readonly logger: AppLogger,
       private readonly bookingClient: BookingClient
    ) { }
 
    async handleTicketSold(data: TicketsSoldPayload) {
 
-      this.logger.info({
-         module: 'Ticket',
-         service: TicketHandler.name,
-         msg: 'Inside TicketSold',
-         //eventId: data.eventId,
-         bookingId: data.bookingId,
-      });
+      // this.logger.info({
+      //    module: 'Ticket',
+      //    service: TicketHandler.name,
+      //    msg: 'Inside TicketSold',
+      //    //eventId: data.eventId,
+      //    bookingId: data.bookingId,
+      // });
 
       try {
 

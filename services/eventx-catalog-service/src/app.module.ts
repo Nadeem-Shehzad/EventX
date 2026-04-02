@@ -1,6 +1,6 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { TicketModule } from './modules/ticket/ticket.module';
-import { LoggingModule } from './logging/logging.module';
+//import { LoggingModule } from './logging/logging.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import redisConfig from './config/redis.config';

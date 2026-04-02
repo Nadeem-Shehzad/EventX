@@ -6,7 +6,7 @@ import { TicketSagaService } from "./ticket-saga.service";
 import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
 import { AGGREGATES } from "src/constants/events/domain-aggregate";
 import { OutboxService } from "src/outbox/outbox.service";
-import { AppLogger } from "src/logging/logging.service";
+//import { AppLogger } from "src/logging/logging.service";
 
 
 @Processor(QUEUES.TICKET_QUEUE, { 
@@ -22,17 +22,16 @@ export class TicketSagaProcessor extends WorkerHost {
    constructor(
       private readonly sagaService: TicketSagaService,
       private readonly outboxService: OutboxService,
-      private readonly logger: AppLogger
    ) { super() }
 
 
    async process(job: Job) {
 
-      this.logger.info({
-         module: 'Ticket',
-         service: TicketSagaProcessor.name,
-         msg: 'Inside Ticket-Module-SAGA',
-      });
+      // this.logger.info({
+      //    module: 'Ticket',
+      //    service: TicketSagaProcessor.name,
+      //    msg: 'Inside Ticket-Module-SAGA',
+      // });
 
       return this.sagaService.handle(job);
    }
@@ -45,20 +44,20 @@ export class TicketSagaProcessor extends WorkerHost {
 
       if (job.attemptsMade < maxAttempts) {
 
-         this.logger.warn({
-            module: 'Ticket',
-            service: TicketSagaProcessor.name,
-            msg: `Job ${job.id} failed (Attempt ${job.attemptsMade} of ${maxAttempts}). Retrying...`,
-         });
+         // this.logger.warn({
+         //    module: 'Ticket',
+         //    service: TicketSagaProcessor.name,
+         //    msg: `Job ${job.id} failed (Attempt ${job.attemptsMade} of ${maxAttempts}). Retrying...`,
+         // });
 
          return;
       }
 
-      this.logger.error({
-         module: 'Ticket',
-         service: TicketSagaProcessor.name,
-         msg: `Job ${job.id} failed permanently. Triggering Saga Rollback.`,
-      });
+      // this.logger.error({
+      //    module: 'Ticket',
+      //    service: TicketSagaProcessor.name,
+      //    msg: `Job ${job.id} failed permanently. Triggering Saga Rollback.`,
+      // });
 
       const failureEvent = this.failureMap[job.name];
       if (!failureEvent) return;

@@ -156,10 +156,12 @@ export class TicketService {
    }
 
    async getTicketByID(ticketTypeId: string) {
+      this.pinoLogger.info(`getTicketByID Started`, { ticketTypeId: ticketTypeId.toString() });
       try {
          return await this.queryBus.execute(new GetTicketByIdQuery(ticketTypeId));
       } catch (err) {
          this.logger.error(`getTicketByID failed: ${err.message}`);
+         this.pinoLogger.error(`getTicketByID failed`, { error: err.message.toString() });
          throw new InternalServerErrorException('Failed to fetch ticket');
       }
    }

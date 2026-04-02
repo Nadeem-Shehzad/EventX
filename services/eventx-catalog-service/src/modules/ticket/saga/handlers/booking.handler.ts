@@ -8,7 +8,7 @@ import {
 import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
 import { OutboxService } from "src/outbox/outbox.service";
 import { TicketService } from "../../ticket.service";
-import { AppLogger } from "src/logging/logging.service";
+//import { AppLogger } from "src/logging/logging.service";
 
 
 @Injectable()
@@ -17,19 +17,19 @@ export class BookingTicketHandler {
    constructor(
       private readonly ticketService: TicketService,
       private readonly outboxService: OutboxService,
-      private readonly logger: AppLogger,
+      //private readonly logger: AppLogger,
    ) {}
 
    async handleBookingCreated(data: BookingCreatedPayload) {
 
-      this.logger.info({
-         module: 'Ticket',
-         service: BookingTicketHandler.name,
-         msg: 'Inside BookingCreated',
-         eventId: data.eventId,
-         bookingId: data.bookingId,
-         ticketId: data.ticketTypeId
-      });
+      // this.logger.info({
+      //    module: 'Ticket',
+      //    service: BookingTicketHandler.name,
+      //    msg: 'Inside BookingCreated',
+      //    eventId: data.eventId,
+      //    bookingId: data.bookingId,
+      //    ticketId: data.ticketTypeId
+      // });
 
       try {
          const { userId, bookingId, ticketTypeId, quantity } = data;
@@ -65,12 +65,12 @@ export class BookingTicketHandler {
 
       } catch (error) {
 
-         this.logger.error({
-            module: 'Ticket',
-            service: BookingTicketHandler.name,
-            msg: `Ticket reservation failed: ${error.message}`,
-            bookingId: data.bookingId,
-         });
+         // this.logger.error({
+         //    module: 'Ticket',
+         //    service: BookingTicketHandler.name,
+         //    msg: `Ticket reservation failed: ${error.message}`,
+         //    bookingId: data.bookingId,
+         // });
 
          const { bookingId } = data;
          await this.emit(DOMAIN_EVENTS.TICKET_RESERVATION_FAILED, bookingId, { bookingId });

@@ -8,7 +8,7 @@ import { OutboxModule } from "src/outbox/outbox.module";
 import { TicketSagaProcessor } from "./saga/ticket-saga.processor";
 import { TicketSagaService } from "./saga/ticket-saga.service";
 import { BookingTicketHandler } from "./saga/handlers/booking.handler";
-import { LoggingModule } from "../../logging/logging.module";
+//import { LoggingModule } from "../../logging/logging.module";
 import { TicketHandler } from "./saga/handlers/ticket.handler";
 import { BookingClientModule } from "src/clients/booking/booking.client.module";
 import { ReserveTicketHandler } from "./cqrs/handlers/commands/reserve-ticket.handler";
@@ -39,7 +39,6 @@ const QueryHandlers = [
    imports: [
       CqrsModule,
       MongooseModule.forFeature([{ name: 'TicketType', schema: TicketTypeSchema }]),
-      LoggingModule,
       OutboxModule,
       BookingClientModule,
       MyRedisModule
