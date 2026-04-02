@@ -24,6 +24,8 @@ import { UpdateEventDTO } from './dto/request/update-event.dto';
 import { EventQueryDTO } from './dto/request/event-query.dto';
 import { EventResponseDTO } from './dto/response/event-response.dto';
 import { CreateTicketDTO } from '../ticket/dto/request/create-ticket.dto';
+import { LoggerService } from '../../common/logger/logger.service';
+
 
 // ── Redis cache helper ────────────────────────────────────────────
 // Centralizes the repeated get→miss→fetch→set pattern used across methods
@@ -58,8 +60,7 @@ async function withCache<T>(opts: CacheOptions<T>): Promise<T> {
    return result;
 }
 
-// ── Queue helper ──────────────────────────────────────────────────
-// Queue failures must never crash core flows — always fire-and-forget
+
 async function enqueueFireAndForget(
    queue: Queue,
    jobName: string,
@@ -77,6 +78,7 @@ async function enqueueFireAndForget(
       );
 }
 
+
 @Injectable()
 export class EventService {
 
@@ -89,23 +91,33 @@ export class EventService {
       @InjectQueue(QUEUES.EVENT_IMAGE) private readonly imageQueue: Queue,
       private readonly ticketService: TicketService,
       private readonly eventOutboxService: EventOutboxService,
+      private readonly pinoLogger: LoggerService,
    ) { }
 
 
    async createEvent(organizerId: string, dto: CreateEventDTO) {
+      this.pinoLogger.info(`Create Event Started`, { title: dto.title.toString() });
+
       const session = await this.connection.startSession();
       session.startTransaction();
+
+      this.pinoLogger.info(`DB Transaction started`, { title: dto.title.toString() });
 
       try {
          const existingEvent = await this.eventRepo.checkEventExist(organizerId, dto);
          if (existingEvent) {
+            this.pinoLogger.warn(`Event with same title, date and venue already exists`, { title: dto.title.toString() });
             throw new ConflictException('Event with same title, date and venue already exists');
          }
+
+         this.pinoLogger.info(`No Event with same title, date and venue exists`);
 
          const slug = `${slugify(dto.title, { lower: true })}-${Date.now()}`;
          const dataObject = { ...dto, organizerId, slug };
 
          const event = await this.eventRepo.create(dataObject, session);
+
+         this.pinoLogger.info(`Event Created`, { title: dto.title.toString() });
 
          const ticketTypesData = dto.ticketTypes.map(tt => ({
             ...tt,
@@ -115,6 +127,8 @@ export class EventService {
 
          await this.ticketService.createTickets(ticketTypesData, session);
 
+         this.pinoLogger.info(`Tickets Created for event`, { title: dto.title.toString() });
+
          await session.commitTransaction();
 
          return {
@@ -123,6 +137,7 @@ export class EventService {
          };
 
       } catch (err) {
+         this.pinoLogger.error(`Error in creating event`, { title: dto.title.toString() });
          await session.abortTransaction();
          throw err;
       } finally {
@@ -132,9 +147,13 @@ export class EventService {
 
 
    async updateEvent(eventId: string, dataToUpdate: UpdateEventDTO) {
-      // Find event BEFORE starting session — if not found, no session needed
+      this.pinoLogger.info(`updateEvent Started`, { eventId: eventId.toString() });
+
       const event = await this.eventRepo.findEventById(eventId);
-      if (!event) throw new NotFoundException('Event not found');
+      if (!event) {
+         this.pinoLogger.error('Event not found', { eventId: eventId.toString() });
+         throw new NotFoundException('Event not found');
+      }
 
       if (dataToUpdate.title) {
          dataToUpdate.slug = slugify(dataToUpdate.title, { lower: true });
@@ -145,6 +164,8 @@ export class EventService {
 
       const session = await this.connection.startSession();
       session.startTransaction();
+
+      this.pinoLogger.info(`DB session Started`, { eventId: eventId.toString() });
 
       try {
          if (dataToUpdate.ticketTypes?.length) {
@@ -194,6 +215,8 @@ export class EventService {
          const result = await this.eventRepo.updateEvent(eventId, dataToUpdate, session);
          await session.commitTransaction();
 
+         this.pinoLogger.info(`DB Transaction committed `, { eventId: eventId.toString() });
+
          // Queue is non-critical — fires after commit, never blocks response
          // If queue fails, old image stays in Cloudinary — acceptable, can be cleaned up later
          if (newImagePublicId && newImagePublicId !== oldImagePublicId && oldImagePublicId) {
@@ -206,9 +229,14 @@ export class EventService {
             );
          }
 
+         result
+            ? this.pinoLogger.info(`Event updated successfully`, { eventId: eventId.toString() })
+            : this.pinoLogger.info(`Event not updated`, { eventId: eventId.toString() })
+
          return result ? 'Event updated successfully' : 'Event not updated';
 
       } catch (err) {
+         this.pinoLogger.error(`Error in updating event`, { eventId: eventId.toString() });
          await session.abortTransaction();
          throw err;
       } finally {

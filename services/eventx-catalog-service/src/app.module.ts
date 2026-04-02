@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { TicketModule } from './modules/ticket/ticket.module';
 import { LoggingModule } from './logging/logging.module';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -14,6 +14,7 @@ import { CustomRabbitMQModule } from './rabbitmq/rabbitmq.module';
 import { EventModule } from './modules/event/event.module';
 import authConfig from './config/auth.config';
 import { CommonModule } from './common/common.module';
+import { RequestIdMiddleware } from './common/logger/middleware/request-id.middleware';
 
 
 @Module({
@@ -42,4 +43,8 @@ import { CommonModule } from './common/common.module';
    ],
 })
 
-export class AppModule { }
+export class AppModule {
+   configure(consumer: MiddlewareConsumer) {
+      consumer.apply(RequestIdMiddleware).forRoutes('*')
+   }
+}

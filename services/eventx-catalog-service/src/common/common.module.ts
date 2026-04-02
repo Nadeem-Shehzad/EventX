@@ -7,6 +7,8 @@ import { RoleCheckGuard } from "./guards/role.guard";
 import { EventModule } from "src/modules/event/event.module";
 import { MyRedisModule } from "src/redis/redis.module";
 import { IdempotencyInterceptor } from "./interceptors/idempotency.interceptor";
+import { LoggerService } from "./logger/logger.service";
+import { RequestContextService } from "./logger/request-context.service";
 
 
 @Global()
@@ -21,7 +23,9 @@ import { IdempotencyInterceptor } from "./interceptors/idempotency.interceptor";
       JwtRefreshTokenGuard,
       AccountOwnerShipGuard,
       RoleCheckGuard,
-      IdempotencyInterceptor
+      IdempotencyInterceptor,
+      LoggerService,
+      RequestContextService
    ],
    exports: [
       JwtAuthGuard,
@@ -29,7 +33,9 @@ import { IdempotencyInterceptor } from "./interceptors/idempotency.interceptor";
       JwtModule,
       AccountOwnerShipGuard,
       RoleCheckGuard,
-      IdempotencyInterceptor
+      IdempotencyInterceptor,
+      LoggerService,
+      RequestContextService
    ]
 })
 
