@@ -20,6 +20,8 @@ import {
    GetTicketByIdQuery,
    GetTicketsByEventQuery,
 } from './cqrs/queries/ticket.queries';
+import { LoggerService } from '../../common/logger/logger.service';
+
 
 @Injectable()
 export class TicketService {
@@ -30,6 +32,7 @@ export class TicketService {
       private readonly ticketRepo: TicketRepository,
       private readonly commandBus: CommandBus,
       private readonly queryBus: QueryBus,
+      private readonly pinoLogger: LoggerService,
    ) { }
 
    // ── Session-based writes (called from EventService transactions) ──
@@ -60,10 +63,7 @@ export class TicketService {
 
    // ── Session-based reads ───────────────────────────────────────
 
-   async findTicketById(
-      id: string,
-      session: ClientSession
-   ): Promise<TicketTypeDocument | null> {
+   async findTicketById(id: string, session: ClientSession): Promise<TicketTypeDocument | null> {
       return this.ticketRepo.findById(id, session);
    }
 
@@ -146,10 +146,11 @@ export class TicketService {
    // ── CQRS Queries ──────────────────────────────────────────────
 
    async getTicketsByEvent(eventId: string) {
+      this.pinoLogger.info(`getTicketsByEvent Started`, { eventId: eventId.toString() });
       try {
          return await this.queryBus.execute(new GetTicketsByEventQuery(eventId));
       } catch (err) {
-         this.logger.error(`getTicketsByEvent failed: ${err.message}`);
+         this.pinoLogger.error(`getTicketsByEvent failed`, { error: err.message.toString() });
          throw new InternalServerErrorException('Failed to fetch tickets');
       }
    }
