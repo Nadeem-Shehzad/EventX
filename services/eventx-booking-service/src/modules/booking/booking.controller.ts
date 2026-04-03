@@ -21,7 +21,6 @@ import {
 import { CreateBookingResponseDTO } from "./swagger/response/create-booking-response.dto";
 import { BookingResponseDTO } from "./dto/booking.response.dto";
 import { PaginatedBookingsResponseDTO } from "./swagger/response/all-bookings-response.dto";
-import { BookingStatusResponseDTO } from "./swagger/response/booking-status-response.dto";
 import { IdempotencyInterceptor } from "src/common/interceptors/idempotency.interceptor";
 
 
@@ -50,6 +49,7 @@ export class BookingController {
    @ApiResponse({ status: 404, description: 'Event not Found' })
    @ApiResponse({ status: 500, description: 'Server Error' })
    createBooking(@GetUserID() userId: string, @Body() dto: CreateBookingDTO) {
+      console.log('Inside CreateBooking - Contorller')
       return this.service.createBooking(userId, dto);
    }
 

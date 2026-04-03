@@ -12,7 +12,7 @@ import { EmailJob } from "src/constants/email-queue.constants";
 import { OutboxService } from "src/outbox/outbox.service";
 import { AppLogger } from "src/logging/logging.service";
 import { PaymentRepository } from "./payment.repo";
-import * as CircuitBreaker from "opossum";
+import CircuitBreaker from "opossum";
 import { CircuitBreakerService } from "src/circuit-breaker/circuit-breaker.service";
 
 

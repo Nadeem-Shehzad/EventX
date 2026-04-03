@@ -25,6 +25,7 @@ import { MetricsService } from "src/monitoring/metrics.service";
 import { NotificationOutboxService } from "./outbox/notification/notification-outbox.service";
 import { IdentityClient } from "src/clients/identity/identity.client";
 import { EventClient } from "src/clients/catalog/event.client";
+import { LoggerService } from "../../common/logger/logger.service";
 
 
 @Injectable()
@@ -43,11 +44,16 @@ export class BookingService {
       private readonly redis: RedisService,
       private readonly eventEmitter: EventEmitter2,
       private readonly outboxService: OutboxService,
+      private readonly pinoLogger: LoggerService,
       private readonly matricsService: MetricsService
    ) { }
 
 
    async createBooking(userId: string, dto: CreateBookingDTO) {
+
+      console.log('Inside create-booking');
+     
+      this.pinoLogger.info('createBooking attempt started', { userId: userId.toString(), eventId: dto.eventId.toString() });
 
       // check db level idempotency
       const existingBooking = await this.bookingRepo.checkBookingExists(
@@ -57,9 +63,8 @@ export class BookingService {
       );
 
       if (existingBooking) {
-         throw new ConflictException(
-            'You already have an active booking for this event!'
-         );
+         this.pinoLogger.error('You already have an active booking for this event!', { userId: userId.toString(), eventId: dto.eventId.toString() });
+         throw new ConflictException('You already have an active booking for this event!');
       }
 
       const session = await this.connection.startSession();
@@ -124,11 +129,13 @@ export class BookingService {
             userId
          });
 
-         console.log(`Booking Created ID --> ${booking._id.toString()}`);
+         this.pinoLogger.info('booking created', { userId: userId.toString(), eventId: dto.eventId.toString() });
 
          return { bookingId: booking._id.toString(), status: 'PENDING' };
 
       } catch (error) {
+
+         this.pinoLogger.error('Booking not creating for this event!', { userId: userId.toString(), eventId: dto.eventId.toString() });
 
          await session.abortTransaction();
 

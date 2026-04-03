@@ -11,7 +11,7 @@ import { DOMAIN_EVENTS } from "src/constants/events/domain-events";
 import { AppLogger } from "src/logging/logging.service";
 import { OutboxService } from "src/outbox/outbox.service";
 import { PaymentService } from "src/modules/payment/payment.service";
-import * as CircuitBreaker from "opossum";
+import CircuitBreaker from "opossum";
 import { CircuitBreakerService } from "src/circuit-breaker/circuit-breaker.service";
 
 
