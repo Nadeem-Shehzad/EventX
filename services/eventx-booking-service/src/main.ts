@@ -8,18 +8,15 @@ import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import * as compression from 'compression';
 import { corsConfig } from './config/cors.config';
-import { Logger } from 'nestjs-pino';
 import { VersioningType } from '@nestjs/common';
 import * as bodyParser from 'body-parser';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { MetricsInterceptor } from './monitoring/metrics.interceptor';
-
 
 async function bootstrap() {
-   
+
    const app = await NestFactory.create(AppModule, {
-      bufferLogs: false,
-      logger: ['error', 'warn'],
+      bufferLogs: true,    
+      logger: false,      
    });
 
    app.use(helmet());
@@ -31,7 +28,6 @@ async function bootstrap() {
       defaultVersion: '1',
    });
 
-   // 🔹 Swagger Configuration
    const config = new DocumentBuilder()
       .setTitle('EventX APIs')
       .setDescription('EventX Backend API Documentation')
@@ -47,7 +43,6 @@ async function bootstrap() {
       .build();
 
    const document = SwaggerModule.createDocument(app, config);
-
    SwaggerModule.setup('docs', app, document);
 
    app.use(
@@ -56,11 +51,9 @@ async function bootstrap() {
    );
 
    app.useGlobalFilters(new GlobalExceptionFilter());
-
    app.useGlobalInterceptors(
       new ClassSerializerInterceptor(app.get(Reflector)),
    );
-
    app.useGlobalPipes(new ValidationPipe({
       whitelist: true,
       transform: true,
@@ -69,12 +62,8 @@ async function bootstrap() {
       },
    }));
 
-   await app.init();
-   
    await app.listen(process.env.PORT ?? 3000);
-   console.log(`Server Running on PORT ::: ${process.env.PORT}`);
-
-   app.useLogger(app.get(Logger));
+   console.log(`booking-service running on PORT ${process.env.PORT ?? 3000}`);
 }
 
 bootstrap();

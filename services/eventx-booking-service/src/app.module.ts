@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -23,14 +23,13 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { LoggingModule } from './logging/logging.module';
 import { MonitoringModule } from './monitoring/monitoring.module';
 import { RabbitMQConfigModule } from './rabbitmq/rabbitmq-config.module';
+import { RequestIdMiddleware } from './common/logger/middleware/request-id.middleware';
 
 
 const isProd = process.env.NODE_ENV === 'production';
 
 @Module({
   imports: [
-
-    RabbitMQConfigModule,
 
     ConfigModule.forRoot({
       isGlobal: true,
@@ -45,17 +44,7 @@ const isProd = process.env.NODE_ENV === 'production';
       ],
       validationSchema
     }),
-
-    LoggingModule,
-    MonitoringModule,
-
-
-    EventEmitterModule.forRoot(),
-    QueuesModule,
-    //ImageQueueModule,
-
-    ScheduleModule.forRoot(),
-
+    
     MongooseModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
@@ -65,13 +54,25 @@ const isProd = process.env.NODE_ENV === 'production';
         connectTimeoutMS: 20000,        // ⏱️ initial connection timeout
       })
     }),
+    
+    CommonModule,
+    RabbitMQConfigModule,
+
+    LoggingModule,
+    MonitoringModule,
+
+    EventEmitterModule.forRoot(),
+    QueuesModule,
+    //ImageQueueModule,
+
+    ScheduleModule.forRoot(),
+
 
     MyRedisModule,
     RateLimitModule,
 
     PaymentModule,
     //EventModule,
-    CommonModule,
     BookingModule
   ],
   providers: [
@@ -82,7 +83,11 @@ const isProd = process.env.NODE_ENV === 'production';
   ]
 })
 
-export class AppModule { }
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestIdMiddleware).forRoutes('*')
+  }
+}
 
 
 // <-------- VIP - apply 'compression' when implementing these modules -------->

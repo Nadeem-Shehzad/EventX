@@ -5,11 +5,9 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { BookingSchema } from "./schema/booking.schema";
 import { BookingRepository } from "./repository/booking.repository";
 import { CommonModule } from "src/common/common.module";
-//import { EventModule } from "../event/event.module";
 import { PaymentModule } from "src/modules/payment/payment.module";
 import { MyRedisModule } from "src/redis/redis.module";
 import { BookingCacheListener } from "./listeners/booking-cache-listener";
-//import { BookingEmailListener } from "./listeners/booking-email-listener";
 import { EmailQueueModule } from "src/queue/email/email.queue.module";
 import { OutboxModule } from "src/outbox/outbox.module";
 import { BookingSagaProcessor } from "./saga/booking-saga.processor";
@@ -31,7 +29,6 @@ import { EventClientModule } from "src/clients/catalog/catalog.module";
      // EventModule,
       OutboxModule,
       forwardRef(() => PaymentModule),
-      CommonModule,
       MyRedisModule,
       
       NotificationOutboxModule,

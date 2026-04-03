@@ -23,7 +23,6 @@ import { CircuitBreakerService } from 'src/circuit-breaker/circuit-breaker.servi
       forwardRef(() => BookingModule),
       LoggingModule,
       OutboxModule,
-      CommonModule
    ],
    controllers: [PaymentController],
    providers: [
