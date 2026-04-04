@@ -168,13 +168,9 @@ export class AuthService {
 
    async logout(userId: string) {
       this.pinoLogger.info('logout attempt started', { UserId: userId.toString() });
-
       await this.userService.removeUserToken(userId);
-
       this.metricsService.decrementActiveUsers(userId);
-
       this.pinoLogger.info('logout successfully', { UserId: userId.toString() });
-
       return { loggedOut: true };
    }
 
@@ -247,8 +243,9 @@ export class AuthService {
         `,
          });
       } catch (err) {
-         this.pinoLogger.error(`Failed to send verification email to ${email}: ${err.message}`);
-         this.logger.error(`Failed to send verification email to ${email}: ${err.message}`);
+         const message = err instanceof Error ? err.message : String(err);
+         this.pinoLogger.error(`Failed to send verification email`, { email, error: message });
+         this.logger.error(`Failed to send verification email to ${email}: ${message}`);
          // intentionally not rethrowing — mail is non-critical
       }
    }
@@ -306,8 +303,9 @@ export class AuthService {
       try {
          await this.redis.set(`fp:${token}`, userId, 60 * 15);
       } catch (err) {
-         this.pinoLogger.error(`Redis unavailable for forgot password: ${err.message}`);
-         this.logger.error(`Redis unavailable for forgot password: ${err.message}`);
+         const message = err instanceof Error ? err.message : String(err);
+         this.pinoLogger.error(`Redis unavailable for forgot password`, { userId, error: message });
+         this.logger.error(`Redis unavailable for forgot password: ${message}`);
          throw new ServiceUnavailableException('Unable to process request, please try again');
       }
 
@@ -349,8 +347,9 @@ export class AuthService {
       try {
          userId = await this.redis.get(`fp:${token}`);
       } catch (err) {
-         this.pinoLogger.error(`Redis unavailable for reset password: ${err.message}`);
-         this.logger.error(`Redis unavailable for reset password: ${err.message}`);
+         const message = err instanceof Error ? err.message : String(err);
+         this.pinoLogger.error(`Redis unavailable for reset password`, { token, error: message });
+         this.logger.error(`Redis unavailable for reset password: ${message}`);
          throw new ServiceUnavailableException('Unable to process request, please try again');
       }
 

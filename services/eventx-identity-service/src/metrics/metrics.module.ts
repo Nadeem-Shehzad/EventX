@@ -10,6 +10,7 @@ import {
 @Module({
    providers: [
       MetricsService,
+
       makeCounterProvider({
          name: 'auth_login_total',
          help: 'Total login attempts',
@@ -25,11 +26,22 @@ import {
          help: 'Total failed logins',
          labelNames: ['service', 'reason'],
       }),
+
+
       makeGaugeProvider({                  // ← Gauge not Counter
          name: 'auth_active_users_total',
          help: 'Total currently active users',
          labelNames: ['service'],
       }),
+
+
+      makeCounterProvider({
+         name: 'auth_logout_total',
+         help: 'Total logouts',
+         labelNames: ['service'],
+      }),
+
+
       makeCounterProvider({
          name: 'auth_register_total',
          help: 'Total register attempts',
@@ -52,6 +64,7 @@ import {
          labelNames: ['status'],
          buckets: [0.01, 0.05, 0.1, 0.5, 1, 2, 5]  // ← time buckets in seconds
       })
+      
    ],
    exports: [MetricsService],
 })

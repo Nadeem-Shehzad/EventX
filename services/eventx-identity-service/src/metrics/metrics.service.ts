@@ -8,6 +8,7 @@ export class MetricsService {
    private activeUserIds = new Set<string>();
 
    constructor(
+
       @InjectMetric('auth_login_total')
       private readonly loginTotal: Counter<string>,
 
@@ -17,8 +18,14 @@ export class MetricsService {
       @InjectMetric('auth_login_failed_total')
       private readonly loginFailed: Counter<string>,
 
+
       @InjectMetric('auth_active_users_total')
       private readonly activeUsers: Gauge<string>,
+
+
+      @InjectMetric('auth_logout_total')
+      private readonly logoutUsers: Counter<string>,
+
 
       @InjectMetric('auth_register_total')
       private readonly registerTotal: Counter<string>,
@@ -32,6 +39,7 @@ export class MetricsService {
 
       @InjectMetric('auth_login_duration_seconds')
       private readonly loginDuration: Histogram<string>
+
    ) { }
 
 
@@ -59,9 +67,13 @@ export class MetricsService {
       });
    }
 
+
+   // --- Logout Metrics ---
    decrementActiveUsers(userId: string) {
       if (this.activeUserIds.has(userId)) {
          this.activeUserIds.delete(userId);
+
+         this.logoutUsers.inc({ service: 'identity-service' });
          this.activeUsers.dec({ service: 'identity-service' });
       }
    }

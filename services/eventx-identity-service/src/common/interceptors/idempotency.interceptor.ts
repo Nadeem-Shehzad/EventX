@@ -47,14 +47,14 @@ export class IdempotencyInterceptor implements NestInterceptor {
                await this.redis.set(
                   `idempotency:${namespacedKey}`,
                   JSON.stringify({ isError: false, data: responseData }),
-                  300
+                  60
                );
             },
             error: async (error) => {
                await this.redis.set(
                   `idempotency:${namespacedKey}`,
                   JSON.stringify({ isError: true, error: error.response, statusCode: error.status }),
-                  300
+                  60
                );
             }
          })
