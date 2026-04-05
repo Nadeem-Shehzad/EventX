@@ -23,6 +23,7 @@ import { ResetPasswordDTO } from "./dto/request/reset-password.dto";
 import { AuthHelper } from "./helpers/auth.helper";
 import { LoggerService } from "../../common/logger/logger.service";
 import { MetricsService } from "../../metrics/metrics.service";
+import { PersistentMetricsService } from "src/metrics/persistent-metrics/metrics.service";
 
 
 
@@ -37,7 +38,8 @@ export class AuthService {
       private readonly redis: RedisService,
       private readonly helper: AuthHelper,
       private readonly pinoLogger: LoggerService,
-      private readonly metricsService: MetricsService
+      private readonly metricsService: MetricsService,
+      private readonly persistentMetrics: PersistentMetricsService
    ) { }
 
    private readonly logger = new Logger(AuthService.name);
@@ -78,12 +80,18 @@ export class AuthService {
    async login(loginData: LoginDTO) {
 
       this.metricsService.incrementLoginAttempt();
+
+      await this.persistentMetrics.incrementLoginTotal();
+      
       this.pinoLogger.info('Login attempt started', { email: loginData.email });
 
       const user = await this.userService.getUserByEmailWithPassword(loginData.email);
       if (!user) {
-         this.pinoLogger.warn('Login failed - user not found', { email: loginData.email });
          this.metricsService.incrementLoginFailed('user_not_found');
+
+         await this.persistentMetrics.incrementLoginFailed();
+
+         this.pinoLogger.warn('Login failed - user not found', { email: loginData.email });
          throw new NotFoundException('User not registered');
       }
 
@@ -94,6 +102,8 @@ export class AuthService {
       );
 
       if (!passwordMatched) {
+
+         await this.persistentMetrics.incrementLoginFailed();
 
          this.pinoLogger.warn('Login failed - invalid password', {
             userId: user._id.toString(),
@@ -120,6 +130,7 @@ export class AuthService {
          });
 
       this.pinoLogger.info('Login successful', { userId: user._id.toString() });
+      await this.persistentMetrics.incrementLoginSuccess();
       this.metricsService.incrementLoginSuccess(user._id.toString());
 
       return { accessToken, refreshToken };

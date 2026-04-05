@@ -5,11 +5,14 @@ import {
    makeGaugeProvider,
    makeHistogramProvider
 } from '@willsoto/nestjs-prometheus';
+import { PersistentMetricsService } from './persistent-metrics/metrics.service';
 
 @Global()
 @Module({
    providers: [
       MetricsService,
+
+      PersistentMetricsService,
 
       makeCounterProvider({
          name: 'auth_login_total',
@@ -66,7 +69,10 @@ import {
       })
       
    ],
-   exports: [MetricsService],
+   exports: [
+      MetricsService,
+      PersistentMetricsService,
+   ],
 })
 
 export class MetricsModule { }

@@ -33,17 +33,25 @@ services:
     networks:
       - observability
     extra_hosts:
-    - "host.docker.internal:host-gateway"  
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./prometheus-config.yml:/etc/prometheus/prometheus.yml
       - prometheus-data:/prometheus
     command:
       - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.path=/prometheus
-      - --storage.tsdb.retention.time=15d     # keep 15 days of metrics
-      - --web.enable-lifecycle                # allow hot reload
+      - --storage.tsdb.retention.time=15d # keep 15 days of metrics
+      - --web.enable-lifecycle # allow hot reload
     depends_on:
-      - loki    
+      - loki
+
+  pushgateway:
+    image: prom/pushgateway:latest
+    container_name: pushgateway
+    ports:
+      - "9091:9091"
+    networks:
+      - observability
 
   grafana:
     image: grafana/grafana:latest

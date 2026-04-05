@@ -9,6 +9,12 @@ scrape_configs:
       - targets:
           - localhost:9090
 
+  - job_name: pushgateway
+    honor_labels: true
+    static_configs:
+      - targets:
+          - pushgateway:9091        
+
   - job_name: eventx-services
     metrics_path: /v1/metrics
     static_configs:
