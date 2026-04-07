@@ -1,0 +1,833 @@
+{"level":30,"time":1772305958093,"pid":12526,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: booking.created"}
+{"level":30,"time":1772305960504,"pid":12526,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772305960505,"pid":12526,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69a33e25e52ebc6c81cb52ed","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1772305960694,"pid":12526,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: payment.request"}
+{"level":30,"time":1772305960877,"pid":12526,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772305960877,"pid":12526,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a33e25e52ebc6c81cb52ed","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1772305962034,"pid":12526,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: booking.confirm.requested"}
+{"level":30,"time":1772305962227,"pid":12526,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772349699012,"pid":9108,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: booking.created"}
+{"level":30,"time":1772349701388,"pid":9108,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772349701388,"pid":9108,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69a3e90293f5af65216261f6","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1772349702073,"pid":9108,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: payment.request"}
+{"level":30,"time":1772349702262,"pid":9108,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772349702262,"pid":9108,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a3e90293f5af65216261f6","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1772349704467,"pid":9108,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: booking.confirm.requested"}
+{"level":30,"time":1772349704693,"pid":9108,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772352151015,"pid":8660,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: booking.created"}
+{"level":30,"time":1772352151922,"pid":8660,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772352151922,"pid":8660,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69a3f2965959b8ee963db592","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1772352152163,"pid":8660,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: payment.request"}
+{"level":30,"time":1772352153667,"pid":8660,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772352153668,"pid":8660,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a3f2965959b8ee963db592","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1772352154942,"pid":8660,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: booking.confirm.requested"}
+{"level":30,"time":1772352155423,"pid":8660,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772353403087,"pid":9995,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: booking.created"}
+{"level":30,"time":1772353404036,"pid":9995,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772353404036,"pid":9995,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69a3f77af448a3636181e85c","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1772353404269,"pid":9995,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: payment.request"}
+{"level":30,"time":1772353404510,"pid":9995,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772353404510,"pid":9995,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a3f77af448a3636181e85c","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1772353405684,"pid":9995,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: booking.confirm.requested"}
+{"level":30,"time":1772353405895,"pid":9995,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772353405896,"pid":9995,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69a3f77af448a3636181e85c","msg":"Inside handleBookingConfirmedRequest"}
+{"level":50,"time":1772353406435,"pid":9995,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a20c6c2915d37577895d7b: Invalid URL"}
+{"level":30,"time":1772353407039,"pid":9995,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69a3f77af448a3636181e85c"}
+{"level":30,"time":1772353407223,"pid":9995,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: booking.confirmed"}
+{"level":30,"time":1772353407512,"pid":9995,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772353407513,"pid":9995,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69a3f77af448a3636181e85c","ticketId":"69a20c6c2915d37577895d7d","msg":"Inside handleBookingConfirmed"}
+{"level":30,"time":1772353408852,"pid":9995,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69a3f77af448a3636181e85c"}
+{"level":30,"time":1772353557474,"pid":9995,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: booking.created"}
+{"level":30,"time":1772353560370,"pid":9995,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772353560371,"pid":9995,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69a3f811f448a3636181e86f","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1772353561130,"pid":9995,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: payment.request"}
+{"level":30,"time":1772353561343,"pid":9995,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772353561343,"pid":9995,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a3f811f448a3636181e86f","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1772353569581,"pid":9995,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: booking.confirm.requested"}
+{"level":30,"time":1772353570445,"pid":9995,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772353570445,"pid":9995,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69a3f811f448a3636181e86f","msg":"Inside handleBookingConfirmedRequest"}
+{"level":50,"time":1772353570922,"pid":9995,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a20c6c2915d37577895d7b: Invalid URL"}
+{"level":30,"time":1772353572096,"pid":9995,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69a3f811f448a3636181e86f"}
+{"level":30,"time":1772353572343,"pid":9995,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69a3f811f448a3636181e86f"}
+{"level":30,"time":1772353572351,"pid":9995,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: booking.confirmed"}
+{"level":30,"time":1772353572897,"pid":9995,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772353572897,"pid":9995,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69a3f811f448a3636181e86f","ticketId":"69a20c6c2915d37577895d7d","msg":"Inside handleBookingConfirmed"}
+{"level":30,"time":1772648165765,"pid":17606,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: booking.created"}
+{"level":30,"time":1772648167199,"pid":17606,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772648167200,"pid":17606,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69a876e4f04fdf74f44e3910","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1772648167949,"pid":17606,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: payment.request"}
+{"level":30,"time":1772648168138,"pid":17606,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772648168138,"pid":17606,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a876e4f04fdf74f44e3910","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1772648169808,"pid":17606,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: booking.confirm.requested"}
+{"level":30,"time":1772648169995,"pid":17606,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772648169995,"pid":17606,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69a876e4f04fdf74f44e3910","msg":"Inside handleBookingConfirmedRequest"}
+{"level":50,"time":1772648170397,"pid":17606,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a20c6c2915d37577895d7b: Invalid URL"}
+{"level":30,"time":1772648170933,"pid":17606,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69a876e4f04fdf74f44e3910"}
+{"level":30,"time":1772648171259,"pid":17606,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: booking.confirmed"}
+{"level":30,"time":1772648171446,"pid":17606,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772648171446,"pid":17606,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69a876e4f04fdf74f44e3910","ticketId":"69a20c6c2915d37577895d7d","msg":"Inside handleBookingConfirmed"}
+{"level":30,"time":1772648173078,"pid":17606,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69a876e4f04fdf74f44e3910"}
+{"level":30,"time":1772649207481,"pid":18661,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: booking.created"}
+{"level":30,"time":1772649208377,"pid":18661,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772649208377,"pid":18661,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69a87af6a0fca88890005dd6","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1772649208678,"pid":18661,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: payment.request"}
+{"level":30,"time":1772649208887,"pid":18661,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772649208887,"pid":18661,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a87af6a0fca88890005dd6","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1772649215008,"pid":18661,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: booking.confirm.requested"}
+{"level":30,"time":1772649215184,"pid":18661,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772649215184,"pid":18661,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69a87af6a0fca88890005dd6","msg":"Inside handleBookingConfirmedRequest"}
+{"level":50,"time":1772649215654,"pid":18661,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a20c6c2915d37577895d7b: Invalid URL"}
+{"level":30,"time":1772649216207,"pid":18661,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69a87af6a0fca88890005dd6"}
+{"level":30,"time":1772649216747,"pid":18661,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: booking.confirmed"}
+{"level":30,"time":1772649216948,"pid":18661,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772649216949,"pid":18661,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69a87af6a0fca88890005dd6","ticketId":"69a20c6c2915d37577895d7d","msg":"Inside handleBookingConfirmed"}
+{"level":30,"time":1772649217374,"pid":18661,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69a87af6a0fca88890005dd6"}
+{"level":30,"time":1772655039904,"pid":27698,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: booking.created"}
+{"level":30,"time":1772655040777,"pid":27698,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772655040778,"pid":27698,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69a891bf5acb1134307b55d4","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1772655040965,"pid":27698,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: payment.request"}
+{"level":30,"time":1772655041168,"pid":27698,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772655041170,"pid":27698,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a891bf5acb1134307b55d4","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1772655042294,"pid":27698,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: booking.confirm.requested"}
+{"level":30,"time":1772655042464,"pid":27698,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772655042464,"pid":27698,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69a891bf5acb1134307b55d4","msg":"Inside handleBookingConfirmedRequest"}
+{"level":50,"time":1772655042914,"pid":27698,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a20c6c2915d37577895d7b: Invalid URL"}
+{"level":30,"time":1772655043551,"pid":27698,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69a891bf5acb1134307b55d4"}
+{"level":30,"time":1772655043735,"pid":27698,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"⚡ New outbox event detected: booking.confirmed"}
+{"level":30,"time":1772655043913,"pid":27698,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772655043913,"pid":27698,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69a891bf5acb1134307b55d4","ticketId":"69a20c6c2915d37577895d7d","msg":"Inside handleBookingConfirmed"}
+{"level":30,"time":1772655045887,"pid":27698,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69a891bf5acb1134307b55d4"}
+{"level":30,"time":1772742563177,"pid":18585,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772742564446,"pid":18585,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772742564447,"pid":18585,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69a9e7a2400ab06bf733a2fa","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1772742565034,"pid":18585,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1772742565568,"pid":18585,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772742565569,"pid":18585,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9e7a2400ab06bf733a2fa","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1772742566688,"pid":18585,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirm.requested"}
+{"level":30,"time":1772742566867,"pid":18585,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772742566867,"pid":18585,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69a9e7a2400ab06bf733a2fa","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1772742567599,"pid":18585,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1772742567771,"pid":18585,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772742567771,"pid":18585,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69a9e7a2400ab06bf733a2fa","ticketId":"69a20c6c2915d37577895d7d","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1772742568256,"pid":18585,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a20c6c2915d37577895d7b: Invalid URL"}
+{"level":30,"time":1772742568856,"pid":18585,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69a9e7a2400ab06bf733a2fa"}
+{"level":30,"time":1772742569049,"pid":18585,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69a9e7a2400ab06bf733a2fa"}
+{"level":30,"time":1772743145565,"pid":19019,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772743146305,"pid":19019,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772743146305,"pid":19019,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69a9e9e8b1aaa434f6ef7a01","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1772743146477,"pid":19019,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1772743149004,"pid":19019,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772743149005,"pid":19019,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9e9e8b1aaa434f6ef7a01","msg":"Inside handleBookingPaymentRequest"}
+{"level":40,"time":1772743149908,"pid":19019,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Job 69a9e9eab1aaa434f6ef7a06 failed (Attempt 1 of 3). Retrying..."}
+{"level":30,"time":1772743151911,"pid":19019,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772743151911,"pid":19019,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9e9e8b1aaa434f6ef7a01","msg":"Inside handleBookingPaymentRequest"}
+{"level":40,"time":1772743152321,"pid":19019,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Job 69a9e9eab1aaa434f6ef7a06 failed (Attempt 2 of 3). Retrying..."}
+{"level":30,"time":1772743156358,"pid":19019,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772743156358,"pid":19019,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9e9e8b1aaa434f6ef7a01","msg":"Inside handleBookingPaymentRequest"}
+{"level":50,"time":1772743156760,"pid":19019,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Job 69a9e9eab1aaa434f6ef7a06 failed permanently. Triggering Saga Rollback."}
+{"level":30,"time":1772743156965,"pid":19019,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.failed"}
+{"level":30,"time":1772743157168,"pid":19019,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772743157169,"pid":19019,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9e9e8b1aaa434f6ef7a01","msg":"Inside handleBookingPaymentFailed"}
+{"level":30,"time":1772743157356,"pid":19019,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.payment.failed"}
+{"level":30,"time":1772743157539,"pid":19019,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772743157540,"pid":19019,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69a9e9e8b1aaa434f6ef7a01","msg":"Inside handleBookingPaymentFailed"}
+{"level":30,"time":1772744363257,"pid":19019,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772744363982,"pid":19019,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772744363982,"pid":19019,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69a9eeaab1aaa434f6ef7a11","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1772744364159,"pid":19019,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1772744364329,"pid":19019,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772744364329,"pid":19019,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9eeaab1aaa434f6ef7a11","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1772744365264,"pid":19019,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirm.requested"}
+{"level":30,"time":1772744365432,"pid":19019,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772744365432,"pid":19019,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69a9eeaab1aaa434f6ef7a11","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1772744366594,"pid":19019,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1772744366796,"pid":19019,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772744366797,"pid":19019,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69a9eeaab1aaa434f6ef7a11","ticketId":"69a20c6c2915d37577895d7d","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1772744367211,"pid":19019,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a20c6c2915d37577895d7b: Invalid URL"}
+{"level":30,"time":1772744367477,"pid":19019,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69a9eeaab1aaa434f6ef7a11"}
+{"level":30,"time":1772744367653,"pid":19019,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69a9eeaab1aaa434f6ef7a11"}
+{"level":30,"time":1772744404588,"pid":20031,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772744405296,"pid":20031,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772744405296,"pid":20031,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69a9eed4b53b3748b9d830c9","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1772744405478,"pid":20031,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1772744405648,"pid":20031,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772744405648,"pid":20031,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9eed4b53b3748b9d830c9","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1772744406595,"pid":20031,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirm.requested"}
+{"level":30,"time":1772744406785,"pid":20031,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772744406785,"pid":20031,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69a9eed4b53b3748b9d830c9","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1772744407494,"pid":20031,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1772744407691,"pid":20031,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772744407691,"pid":20031,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69a9eed4b53b3748b9d830c9","ticketId":"69a20c6c2915d37577895d7d","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1772744408070,"pid":20031,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a20c6c2915d37577895d7b: Invalid URL"}
+{"level":30,"time":1772744408296,"pid":20031,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69a9eed4b53b3748b9d830c9"}
+{"level":30,"time":1772744408497,"pid":20031,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69a9eed4b53b3748b9d830c9"}
+{"level":30,"time":1772744662748,"pid":20501,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772744664432,"pid":20501,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772744664432,"pid":20501,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69a9efd6929f549f11472cc2","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1772744664606,"pid":20501,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1772744664784,"pid":20501,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772744664785,"pid":20501,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9efd6929f549f11472cc2","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1772744665695,"pid":20501,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirm.requested"}
+{"level":30,"time":1772744665869,"pid":20501,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772744665869,"pid":20501,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69a9efd6929f549f11472cc2","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1772744666571,"pid":20501,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1772744666777,"pid":20501,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772744666778,"pid":20501,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69a9efd6929f549f11472cc2","ticketId":"69a20c6c2915d37577895d7d","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1772744667193,"pid":20501,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a20c6c2915d37577895d7b: Invalid URL"}
+{"level":30,"time":1772744667377,"pid":20501,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69a9efd6929f549f11472cc2"}
+{"level":30,"time":1772744667559,"pid":20501,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69a9efd6929f549f11472cc2"}
+{"level":30,"time":1772745066321,"pid":21012,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772745068587,"pid":21012,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772745068587,"pid":21012,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69a9f169a5dde6e6d443293d","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1772745068826,"pid":21012,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1772745069002,"pid":21012,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772745069003,"pid":21012,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9f169a5dde6e6d443293d","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1772745069976,"pid":21012,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirm.requested"}
+{"level":30,"time":1772745070149,"pid":21012,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772745070150,"pid":21012,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69a9f169a5dde6e6d443293d","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1772745070840,"pid":21012,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1772745071011,"pid":21012,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772745071011,"pid":21012,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69a9f169a5dde6e6d443293d","ticketId":"69a20c6c2915d37577895d7d","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1772745071440,"pid":21012,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a20c6c2915d37577895d7b: Invalid URL"}
+{"level":30,"time":1772745071618,"pid":21012,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69a9f169a5dde6e6d443293d"}
+{"level":30,"time":1772745071822,"pid":21012,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69a9f169a5dde6e6d443293d"}
+{"level":30,"time":1772746410469,"pid":22088,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772746413013,"pid":22088,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772746413014,"pid":22088,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69a9f6a9ae1b601538f45ed4","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1772746413196,"pid":22088,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1772746413389,"pid":22088,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772746413390,"pid":22088,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9f6a9ae1b601538f45ed4","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1772746414541,"pid":22088,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirm.requested"}
+{"level":30,"time":1772746414744,"pid":22088,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772746414744,"pid":22088,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69a9f6a9ae1b601538f45ed4","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1772746415447,"pid":22088,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1772746415639,"pid":22088,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772746415640,"pid":22088,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69a9f6a9ae1b601538f45ed4","ticketId":"69a20c6c2915d37577895d7d","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1772746416092,"pid":22088,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a20c6c2915d37577895d7b: Invalid URL"}
+{"level":30,"time":1772746416315,"pid":22088,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69a9f6a9ae1b601538f45ed4"}
+{"level":30,"time":1772746416543,"pid":22088,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69a9f6a9ae1b601538f45ed4"}
+{"level":30,"time":1772746512562,"pid":22088,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772746513380,"pid":22088,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772746513380,"pid":22088,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69a9f70fae1b601538f45ee8","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1772746513581,"pid":22088,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1772746514033,"pid":22088,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772746514033,"pid":22088,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9f70fae1b601538f45ee8","msg":"Inside handleBookingPaymentRequest"}
+{"level":40,"time":1772746514813,"pid":22088,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Job 69a9f711ae1b601538f45eed failed (Attempt 1 of 3). Retrying..."}
+{"level":30,"time":1772746516828,"pid":22088,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772746516828,"pid":22088,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9f70fae1b601538f45ee8","msg":"Inside handleBookingPaymentRequest"}
+{"level":40,"time":1772746517214,"pid":22088,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Job 69a9f711ae1b601538f45eed failed (Attempt 2 of 3). Retrying..."}
+{"level":30,"time":1772746521284,"pid":22088,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772746521284,"pid":22088,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9f70fae1b601538f45ee8","msg":"Inside handleBookingPaymentRequest"}
+{"level":50,"time":1772746521777,"pid":22088,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Job 69a9f711ae1b601538f45eed failed permanently. Triggering Saga Rollback."}
+{"level":30,"time":1772746521985,"pid":22088,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.failed"}
+{"level":30,"time":1772746522184,"pid":22088,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772746522184,"pid":22088,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9f70fae1b601538f45ee8","msg":"Inside handleBookingPaymentFailed"}
+{"level":30,"time":1772746522386,"pid":22088,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.payment.failed"}
+{"level":30,"time":1772746522595,"pid":22088,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772746522596,"pid":22088,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69a9f70fae1b601538f45ee8","msg":"Inside handleBookingPaymentFailed"}
+{"level":30,"time":1772746558965,"pid":22640,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772746559744,"pid":22640,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772746559745,"pid":22640,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69a9f73d926a4f3f678bb780","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1772746559931,"pid":22640,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1772746560133,"pid":22640,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772746560134,"pid":22640,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9f73d926a4f3f678bb780","msg":"Inside handleBookingPaymentRequest"}
+{"level":40,"time":1772746560940,"pid":22640,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Job 69a9f73f926a4f3f678bb78b failed (Attempt 1 of 3). Retrying..."}
+{"level":30,"time":1772746562970,"pid":22640,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772746562971,"pid":22640,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9f73d926a4f3f678bb780","msg":"Inside handleBookingPaymentRequest"}
+{"level":40,"time":1772746563373,"pid":22640,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Job 69a9f73f926a4f3f678bb78b failed (Attempt 2 of 3). Retrying..."}
+{"level":30,"time":1772746567473,"pid":22640,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772746567474,"pid":22640,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9f73d926a4f3f678bb780","msg":"Inside handleBookingPaymentRequest"}
+{"level":50,"time":1772746567868,"pid":22640,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Job 69a9f73f926a4f3f678bb78b failed permanently. Triggering Saga Rollback."}
+{"level":30,"time":1772746568062,"pid":22640,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.failed"}
+{"level":30,"time":1772746568253,"pid":22640,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772746568253,"pid":22640,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9f73d926a4f3f678bb780","msg":"Inside handleBookingPaymentFailed"}
+{"level":30,"time":1772746568462,"pid":22640,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.payment.failed"}
+{"level":30,"time":1772746568643,"pid":22640,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772746568644,"pid":22640,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69a9f73d926a4f3f678bb780","msg":"Inside handleBookingPaymentFailed"}
+{"level":30,"time":1772746743096,"pid":23052,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772746744987,"pid":23052,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772746744988,"pid":23052,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69a9f7f69bf9e00364a9f89d","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1772746745214,"pid":23052,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1772746745427,"pid":23052,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772746745427,"pid":23052,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9f7f69bf9e00364a9f89d","msg":"Inside handleBookingPaymentRequest"}
+{"level":40,"time":1772746746331,"pid":23052,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Job 69a9f7f89bf9e00364a9f8a2 failed (Attempt 1 of 3). Retrying..."}
+{"level":30,"time":1772746748431,"pid":23052,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772746748431,"pid":23052,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9f7f69bf9e00364a9f89d","msg":"Inside handleBookingPaymentRequest"}
+{"level":40,"time":1772746748840,"pid":23052,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Job 69a9f7f89bf9e00364a9f8a2 failed (Attempt 2 of 3). Retrying..."}
+{"level":30,"time":1772746752882,"pid":23052,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772746752882,"pid":23052,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9f7f69bf9e00364a9f89d","msg":"Inside handleBookingPaymentRequest"}
+{"level":50,"time":1772746753414,"pid":23052,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Job 69a9f7f89bf9e00364a9f8a2 failed permanently. Triggering Saga Rollback."}
+{"level":30,"time":1772746753703,"pid":23052,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.failed"}
+{"level":30,"time":1772746753883,"pid":23052,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772746753883,"pid":23052,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9f7f69bf9e00364a9f89d","msg":"Inside handleBookingPaymentFailed"}
+{"level":30,"time":1772746754127,"pid":23052,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.payment.failed"}
+{"level":30,"time":1772746754327,"pid":23052,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772746754328,"pid":23052,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69a9f7f69bf9e00364a9f89d","msg":"Inside handleBookingPaymentFailed"}
+{"level":30,"time":1772746923799,"pid":23492,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772746924684,"pid":23492,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772746924686,"pid":23492,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69a9f8a9f657bce9694d9d9f","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1772746924880,"pid":23492,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1772746925086,"pid":23492,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772746925087,"pid":23492,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9f8a9f657bce9694d9d9f","msg":"Inside handleBookingPaymentRequest"}
+{"level":40,"time":1772746925862,"pid":23492,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Job 69a9f8acf657bce9694d9da7 failed (Attempt 1 of 3). Retrying..."}
+{"level":30,"time":1772746927878,"pid":23492,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772746927879,"pid":23492,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9f8a9f657bce9694d9d9f","msg":"Inside handleBookingPaymentRequest"}
+{"level":40,"time":1772746928305,"pid":23492,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Job 69a9f8acf657bce9694d9da7 failed (Attempt 2 of 3). Retrying..."}
+{"level":30,"time":1772746932333,"pid":23492,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772746932333,"pid":23492,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9f8a9f657bce9694d9d9f","msg":"Inside handleBookingPaymentRequest"}
+{"level":50,"time":1772746932718,"pid":23492,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Job 69a9f8acf657bce9694d9da7 failed permanently. Triggering Saga Rollback."}
+{"level":30,"time":1772746932901,"pid":23492,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.failed"}
+{"level":30,"time":1772746933080,"pid":23492,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772746933081,"pid":23492,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69a9f8a9f657bce9694d9d9f","msg":"Inside handleBookingPaymentFailed"}
+{"level":30,"time":1772746933258,"pid":23492,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.payment.failed"}
+{"level":30,"time":1772746933501,"pid":23492,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772746933503,"pid":23492,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69a9f8a9f657bce9694d9d9f","msg":"Inside handleBookingPaymentFailed"}
+{"level":30,"time":1772746989457,"pid":23844,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772746990362,"pid":23844,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772746990364,"pid":23844,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69a9f8ec165d356b0e8c76aa","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1772746990551,"pid":23844,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: tickets.sold"}
+{"level":30,"time":1772789890110,"pid":9675,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772789891145,"pid":9675,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772789891145,"pid":9675,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69aaa081ee3a363f4eecdfa4","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1772789891441,"pid":9675,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1772789891614,"pid":9675,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772789891615,"pid":9675,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69aaa081ee3a363f4eecdfa4","msg":"Inside handleBookingPaymentRequest"}
+{"level":40,"time":1772789892361,"pid":9675,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Job 69aaa083ee3a363f4eecdfa9 failed (Attempt 1 of 3). Retrying..."}
+{"level":30,"time":1772789894366,"pid":9675,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772789894366,"pid":9675,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69aaa081ee3a363f4eecdfa4","msg":"Inside handleBookingPaymentRequest"}
+{"level":40,"time":1772789894742,"pid":9675,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Job 69aaa083ee3a363f4eecdfa9 failed (Attempt 2 of 3). Retrying..."}
+{"level":30,"time":1772789898793,"pid":9675,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772789898793,"pid":9675,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69aaa081ee3a363f4eecdfa4","msg":"Inside handleBookingPaymentRequest"}
+{"level":50,"time":1772789899170,"pid":9675,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Job 69aaa083ee3a363f4eecdfa9 failed permanently. Triggering Saga Rollback."}
+{"level":30,"time":1772789899341,"pid":9675,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.failed"}
+{"level":30,"time":1772789900990,"pid":9675,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772789900990,"pid":9675,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69aaa081ee3a363f4eecdfa4","msg":"Inside handleBookingPaymentFailed"}
+{"level":30,"time":1772789901170,"pid":9675,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.payment.failed"}
+{"level":30,"time":1772789901368,"pid":9675,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772789901368,"pid":9675,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69aaa081ee3a363f4eecdfa4","msg":"Inside handleBookingPaymentFailed"}
+{"level":30,"time":1772790102371,"pid":10269,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772790103182,"pid":10269,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772790103183,"pid":10269,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69aaa1551463e7ac2a1d5b9b","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1772790103358,"pid":10269,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1772790104702,"pid":10269,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772790104703,"pid":10269,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69aaa1551463e7ac2a1d5b9b","msg":"Inside handleBookingPaymentRequest"}
+{"level":40,"time":1772790105366,"pid":10269,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Job 69aaa1571463e7ac2a1d5ba0 failed (Attempt 1 of 3). Retrying..."}
+{"level":30,"time":1772790107398,"pid":10269,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772790107399,"pid":10269,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69aaa1551463e7ac2a1d5b9b","msg":"Inside handleBookingPaymentRequest"}
+{"level":40,"time":1772790107779,"pid":10269,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Job 69aaa1571463e7ac2a1d5ba0 failed (Attempt 2 of 3). Retrying..."}
+{"level":30,"time":1772790111847,"pid":10269,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772790111847,"pid":10269,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69aaa1551463e7ac2a1d5b9b","msg":"Inside handleBookingPaymentRequest"}
+{"level":50,"time":1772790112240,"pid":10269,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Job 69aaa1571463e7ac2a1d5ba0 failed permanently. Triggering Saga Rollback."}
+{"level":30,"time":1772790112489,"pid":10269,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.failed"}
+{"level":30,"time":1772790112719,"pid":10269,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772790112720,"pid":10269,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69aaa1551463e7ac2a1d5b9b","msg":"Inside handleBookingPaymentFailed"}
+{"level":30,"time":1772790112993,"pid":10269,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.payment.failed"}
+{"level":30,"time":1772790113160,"pid":10269,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772790113160,"pid":10269,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69aaa1551463e7ac2a1d5b9b","msg":"Inside handleBookingPaymentFailed"}
+{"level":30,"time":1772790380297,"pid":10269,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772790436466,"pid":10822,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772790457570,"pid":10822,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772790472149,"pid":10822,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772790479473,"pid":10822,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772790516644,"pid":10822,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772790532640,"pid":10822,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772790543995,"pid":10822,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772790551110,"pid":10822,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772790605785,"pid":10822,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772790673872,"pid":10822,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772790675276,"pid":10822,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772790675277,"pid":10822,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69aaa38d78409e70fa479dc7","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1772790675485,"pid":10822,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1772790675786,"pid":10822,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772790675786,"pid":10822,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69aaa38d78409e70fa479dc7","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1772790676873,"pid":10822,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirm.requested"}
+{"level":30,"time":1772790677059,"pid":10822,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772790677059,"pid":10822,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69aaa38d78409e70fa479dc7","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1772790677913,"pid":10822,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1772790678202,"pid":10822,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772790678202,"pid":10822,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69aaa38d78409e70fa479dc7","ticketId":"69a20c6c2915d37577895d7e","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1772790678658,"pid":10822,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a20c6c2915d37577895d7b: Invalid URL"}
+{"level":30,"time":1772790678925,"pid":10822,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69aaa38d78409e70fa479dc7"}
+{"level":30,"time":1772790679165,"pid":10822,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69aaa38d78409e70fa479dc7"}
+{"level":30,"time":1772791253197,"pid":12577,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772791620047,"pid":12577,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772792009534,"pid":12577,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772792010967,"pid":12577,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772792010967,"pid":12577,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69aaa8c96c95b258c532324e","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1772792011867,"pid":12577,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1772792012044,"pid":12577,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772792012044,"pid":12577,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aaa8c96c95b258c532324e","ticketId":"69aaa22295960786afa37ec6","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1772792012452,"pid":12577,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69aaa22195960786afa37ec3: Invalid URL"}
+{"level":30,"time":1772792012699,"pid":12577,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69aaa8c96c95b258c532324e"}
+{"level":30,"time":1772792012875,"pid":12577,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69aaa8c96c95b258c532324e"}
+{"level":30,"time":1772792615956,"pid":13757,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772792617652,"pid":13757,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772792617653,"pid":13757,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69aaab272eb33bbe91a733f8","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1772792617836,"pid":13757,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1772792618007,"pid":13757,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772792618008,"pid":13757,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69aaab272eb33bbe91a733f8","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1772792619316,"pid":13757,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirm.requested"}
+{"level":30,"time":1772792619498,"pid":13757,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772792619499,"pid":13757,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69aaab272eb33bbe91a733f8","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1772792620433,"pid":13757,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1772792620786,"pid":13757,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772792620786,"pid":13757,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69aaab272eb33bbe91a733f8","ticketId":"69a20c6c2915d37577895d7e","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1772792621293,"pid":13757,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a20c6c2915d37577895d7b: Invalid URL"}
+{"level":30,"time":1772792621479,"pid":13757,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69aaab272eb33bbe91a733f8"}
+{"level":30,"time":1772792621705,"pid":13757,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69aaab272eb33bbe91a733f8"}
+{"level":30,"time":1772799606228,"pid":16607,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772800022619,"pid":17155,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772800333100,"pid":17155,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772800565826,"pid":18084,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772800713731,"pid":18084,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772800801227,"pid":18084,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772800860014,"pid":18084,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772801002428,"pid":19635,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772801142457,"pid":20025,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772801249567,"pid":20677,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772801351022,"pid":21023,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772801558613,"pid":21023,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772801688918,"pid":21023,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772801692670,"pid":21023,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772801692670,"pid":21023,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69aace982d0829b720d522d7","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1772801693386,"pid":21023,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1772801693567,"pid":21023,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772801693568,"pid":21023,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aace982d0829b720d522d7","ticketId":"69aaa22295960786afa37ec6","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1772801695018,"pid":21023,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69aaa22195960786afa37ec3: Request failed with status code 500"}
+{"level":30,"time":1772801695204,"pid":21023,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69aace982d0829b720d522d7"}
+{"level":30,"time":1772801695438,"pid":21023,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69aace982d0829b720d522d7"}
+{"level":30,"time":1772864554411,"pid":9383,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772864557461,"pid":9383,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772864557462,"pid":9383,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69abc42979eed0a935b5415c","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1772864558161,"pid":9383,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1772864558347,"pid":9383,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772864558348,"pid":9383,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69abc42979eed0a935b5415c","ticketId":"69aaa22295960786afa37ec6","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1772864559441,"pid":9383,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69aaa22195960786afa37ec3: Request failed with status code 500"}
+{"level":30,"time":1772864559629,"pid":9383,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69abc42979eed0a935b5415c"}
+{"level":30,"time":1772864559822,"pid":9383,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69abc42979eed0a935b5415c"}
+{"level":30,"time":1772864614127,"pid":9383,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1772864615395,"pid":9383,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772864615395,"pid":9383,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69abc46579eed0a935b5416f","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1772864615575,"pid":9383,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1772864615764,"pid":9383,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1772864615765,"pid":9383,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69abc46579eed0a935b5416f","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1772864616921,"pid":9383,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: tickets.sold"}
+{"level":30,"time":1772864618339,"pid":9383,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772864618340,"pid":9383,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69abc46579eed0a935b5416f","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1772864619033,"pid":9383,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1772864619215,"pid":9383,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1772864619215,"pid":9383,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69abc46579eed0a935b5416f","ticketId":"69a20c6c2915d37577895d7e","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1772864620074,"pid":9383,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a20c6c2915d37577895d7b: Request failed with status code 500"}
+{"level":30,"time":1772864620253,"pid":9383,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69abc46579eed0a935b5416f"}
+{"level":30,"time":1772864620425,"pid":9383,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69abc46579eed0a935b5416f"}
+{"level":30,"time":1773250256436,"pid":10228,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773250259382,"pid":10228,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773250259383,"pid":10228,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69b1a6cfdf814114c40c772b","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1773250260596,"pid":10228,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1773250262384,"pid":10228,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773250262386,"pid":10228,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69b143285f7a84624311e087","bookingId":"69b1a6cfdf814114c40c772b","ticketId":"69b143285f7a84624311e089","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1773250263873,"pid":10228,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69b143285f7a84624311e087: Request failed with status code 500"}
+{"level":30,"time":1773250264117,"pid":10228,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69b1a6cfdf814114c40c772b"}
+{"level":30,"time":1773250264390,"pid":10228,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69b1a6cfdf814114c40c772b"}
+{"level":30,"time":1773259864008,"pid":11348,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773259865668,"pid":11348,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773259865669,"pid":11348,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69b1cc57d0d4361c59b77489","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1773259865860,"pid":11348,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1773259866067,"pid":11348,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773259866069,"pid":11348,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b1cc57d0d4361c59b77489","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1773259867980,"pid":11348,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: tickets.sold"}
+{"level":30,"time":1773259868974,"pid":11348,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773259868975,"pid":11348,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69b1cc57d0d4361c59b77489","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1773259869724,"pid":11348,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1773259870019,"pid":11348,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773259870019,"pid":11348,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b1cc57d0d4361c59b77489","ticketId":"69a292b6218a2beaff264001","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1773259871293,"pid":11348,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a292b6218a2beaff263fff: Request failed with status code 500"}
+{"level":30,"time":1773259871535,"pid":11348,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69b1cc57d0d4361c59b77489"}
+{"level":30,"time":1773259871780,"pid":11348,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69b1cc57d0d4361c59b77489"}
+{"level":30,"time":1773311582921,"pid":9601,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773311584939,"pid":9601,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773311584939,"pid":9601,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69b2965b75a4a7117c307040","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1773311585251,"pid":9601,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1773311585719,"pid":9601,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773311585720,"pid":9601,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b2965b75a4a7117c307040","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1773311589376,"pid":9601,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: tickets.sold"}
+{"level":30,"time":1773311591994,"pid":9601,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773311591994,"pid":9601,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69b2965b75a4a7117c307040","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1773311593675,"pid":9601,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1773311594137,"pid":9601,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773311594137,"pid":9601,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b2965b75a4a7117c307040","ticketId":"69a292b6218a2beaff264001","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1773311595648,"pid":9601,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a292b6218a2beaff263fff: Request failed with status code 500"}
+{"level":30,"time":1773311595829,"pid":9601,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69b2965b75a4a7117c307040"}
+{"level":30,"time":1773311596905,"pid":9601,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69b2965b75a4a7117c307040"}
+{"level":30,"time":1773330420414,"pid":9474,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773330689756,"pid":9474,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773330689767,"pid":9474,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69b2dff25e1b334e9bdb9d70","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1773330690059,"pid":9474,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1773330691526,"pid":9474,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773330691528,"pid":9474,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b2dff25e1b334e9bdb9d70","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1773330695592,"pid":9474,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: tickets.sold"}
+{"level":30,"time":1773330697746,"pid":9474,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773330697749,"pid":9474,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69b2dff25e1b334e9bdb9d70","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1773330699495,"pid":9474,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1773330699881,"pid":9474,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773330699883,"pid":9474,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b2dff25e1b334e9bdb9d70","ticketId":"69a292b6218a2beaff264001","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1773330703257,"pid":9474,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a292b6218a2beaff263fff: Request failed with status code 500"}
+{"level":30,"time":1773330703542,"pid":9474,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69b2dff25e1b334e9bdb9d70"}
+{"level":30,"time":1773330703949,"pid":9474,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69b2dff25e1b334e9bdb9d70"}
+{"level":30,"time":1773336842298,"pid":13655,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773336843226,"pid":13655,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773336843226,"pid":13655,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69b2f90967ea7d4970b671f4","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1773336843409,"pid":13655,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1773336843584,"pid":13655,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773336843585,"pid":13655,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b2f90967ea7d4970b671f4","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1773336845208,"pid":13655,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: tickets.sold"}
+{"level":30,"time":1773336846392,"pid":13655,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773336846393,"pid":13655,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69b2f90967ea7d4970b671f4","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1773336847964,"pid":13655,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1773336848179,"pid":13655,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773336848179,"pid":13655,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b2f90967ea7d4970b671f4","ticketId":"69a292b6218a2beaff264001","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1773336849477,"pid":13655,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a292b6218a2beaff263fff: Request failed with status code 500"}
+{"level":30,"time":1773336849670,"pid":13655,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69b2f90967ea7d4970b671f4"}
+{"level":30,"time":1773336850305,"pid":13655,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69b2f90967ea7d4970b671f4"}
+{"level":30,"time":1773558879901,"pid":11460,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773558881302,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773558881302,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69b65c5fdf81e5696dca79e5","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1773558881589,"pid":11460,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1773558881825,"pid":11460,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773558881825,"pid":11460,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b65c5fdf81e5696dca79e5","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1773558883958,"pid":11460,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: tickets.sold"}
+{"level":30,"time":1773558885902,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773558885902,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69b65c5fdf81e5696dca79e5","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1773558886805,"pid":11460,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1773558887862,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773558887863,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b65c5fdf81e5696dca79e5","ticketId":"69a292b6218a2beaff264001","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1773558889196,"pid":11460,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a292b6218a2beaff263fff: Request failed with status code 500"}
+{"level":30,"time":1773558889394,"pid":11460,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69b65c5fdf81e5696dca79e5"}
+{"level":30,"time":1773558889632,"pid":11460,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69b65c5fdf81e5696dca79e5"}
+{"level":30,"time":1773559240619,"pid":11460,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773559242054,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773559242055,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69b65dc7df81e5696dca7a02","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1773559242256,"pid":11460,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1773559242487,"pid":11460,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773559242487,"pid":11460,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b65dc7df81e5696dca7a02","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1773559245574,"pid":11460,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: tickets.sold"}
+{"level":30,"time":1773559246595,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773559246595,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69b65dc7df81e5696dca7a02","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1773559247297,"pid":11460,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1773559247474,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773559247474,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b65dc7df81e5696dca7a02","ticketId":"69a292b6218a2beaff264001","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1773559248304,"pid":11460,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a292b6218a2beaff263fff: Request failed with status code 500"}
+{"level":30,"time":1773559248477,"pid":11460,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69b65dc7df81e5696dca7a02"}
+{"level":30,"time":1773559248695,"pid":11460,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69b65dc7df81e5696dca7a02"}
+{"level":30,"time":1773559408021,"pid":11460,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773559408822,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773559408822,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69b65e6fdf81e5696dca7a1f","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1773559409012,"pid":11460,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1773559409204,"pid":11460,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773559409204,"pid":11460,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b65e6fdf81e5696dca7a1f","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1773559410955,"pid":11460,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: tickets.sold"}
+{"level":30,"time":1773559411953,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773559411953,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69b65e6fdf81e5696dca7a1f","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1773559412673,"pid":11460,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1773559412851,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773559412851,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b65e6fdf81e5696dca7a1f","ticketId":"69a292b6218a2beaff264001","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1773559413653,"pid":11460,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a292b6218a2beaff263fff: Request failed with status code 500"}
+{"level":30,"time":1773559413899,"pid":11460,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69b65e6fdf81e5696dca7a1f"}
+{"level":30,"time":1773559414113,"pid":11460,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69b65e6fdf81e5696dca7a1f"}
+{"level":30,"time":1773560105145,"pid":11460,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773560105982,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773560105982,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69b66128df81e5696dca7a3c","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1773560106162,"pid":11460,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1773560106340,"pid":11460,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773560106340,"pid":11460,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b66128df81e5696dca7a3c","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1773560107716,"pid":11460,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: tickets.sold"}
+{"level":30,"time":1773560108690,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773560108691,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69b66128df81e5696dca7a3c","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1773560109385,"pid":11460,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1773560109637,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773560109638,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b66128df81e5696dca7a3c","ticketId":"69a292b6218a2beaff264001","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1773560110660,"pid":11460,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a292b6218a2beaff263fff: Request failed with status code 500"}
+{"level":30,"time":1773560110848,"pid":11460,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69b66128df81e5696dca7a3c"}
+{"level":30,"time":1773560111059,"pid":11460,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69b66128df81e5696dca7a3c"}
+{"level":30,"time":1773560184410,"pid":11460,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773560185190,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773560185190,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69b66177df81e5696dca7a59","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1773560185377,"pid":11460,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1773560185607,"pid":11460,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773560185607,"pid":11460,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b66177df81e5696dca7a59","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1773560187251,"pid":11460,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: tickets.sold"}
+{"level":30,"time":1773560188476,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773560188476,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69b66177df81e5696dca7a59","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1773560189170,"pid":11460,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1773560189344,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773560189344,"pid":11460,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b66177df81e5696dca7a59","ticketId":"69a292b6218a2beaff264001","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1773560190273,"pid":11460,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a292b6218a2beaff263fff: Request failed with status code 500"}
+{"level":30,"time":1773560190560,"pid":11460,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69b66177df81e5696dca7a59"}
+{"level":30,"time":1773560190822,"pid":11460,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69b66177df81e5696dca7a59"}
+{"level":30,"time":1773563392863,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773563393745,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773563393745,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69b66e000dcee35254dc6ba1","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1773563393949,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1773563394273,"pid":9158,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773563394274,"pid":9158,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b66e000dcee35254dc6ba1","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1773563395853,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: tickets.sold"}
+{"level":30,"time":1773563396924,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773563396924,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69b66e000dcee35254dc6ba1","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1773563398060,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1773563398242,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773563398242,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b66e000dcee35254dc6ba1","ticketId":"69a292b6218a2beaff264001","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1773563399161,"pid":9158,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a292b6218a2beaff263fff: Request failed with status code 500"}
+{"level":30,"time":1773563399364,"pid":9158,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69b66e000dcee35254dc6ba1"}
+{"level":30,"time":1773563399576,"pid":9158,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69b66e000dcee35254dc6ba1"}
+{"level":30,"time":1773563493651,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773563494639,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773563494639,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69b66e650dcee35254dc6bbe","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1773563494824,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1773563495061,"pid":9158,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773563495061,"pid":9158,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b66e650dcee35254dc6bbe","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1773563496608,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: tickets.sold"}
+{"level":30,"time":1773563497540,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773563497540,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69b66e650dcee35254dc6bbe","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1773563498281,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1773563498451,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773563498451,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b66e650dcee35254dc6bbe","ticketId":"69a292b6218a2beaff264001","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1773563499192,"pid":9158,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a292b6218a2beaff263fff: Request failed with status code 500"}
+{"level":30,"time":1773563499364,"pid":9158,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69b66e650dcee35254dc6bbe"}
+{"level":30,"time":1773563499566,"pid":9158,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69b66e650dcee35254dc6bbe"}
+{"level":30,"time":1773564238441,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773564239289,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773564239289,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69b6714d0dcee35254dc6bdb","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1773564239470,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1773564239649,"pid":9158,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773564239649,"pid":9158,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b6714d0dcee35254dc6bdb","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1773564241232,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: tickets.sold"}
+{"level":30,"time":1773564242152,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773564242152,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69b6714d0dcee35254dc6bdb","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1773564242868,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1773564243048,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773564243048,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b6714d0dcee35254dc6bdb","ticketId":"69a292b6218a2beaff264001","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1773564243865,"pid":9158,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a292b6218a2beaff263fff: Request failed with status code 500"}
+{"level":30,"time":1773564244036,"pid":9158,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69b6714d0dcee35254dc6bdb"}
+{"level":30,"time":1773564244256,"pid":9158,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69b6714d0dcee35254dc6bdb"}
+{"level":30,"time":1773564345675,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773564346470,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773564346470,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69b671b90dcee35254dc6bf8","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1773564346660,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1773564346931,"pid":9158,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773564346932,"pid":9158,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b671b90dcee35254dc6bf8","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1773564348312,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: tickets.sold"}
+{"level":30,"time":1773564349262,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773564349262,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69b671b90dcee35254dc6bf8","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1773564350066,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1773564350241,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773564350241,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b671b90dcee35254dc6bf8","ticketId":"69a292b6218a2beaff264001","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1773564351153,"pid":9158,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a292b6218a2beaff263fff: Request failed with status code 500"}
+{"level":30,"time":1773564351335,"pid":9158,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69b671b90dcee35254dc6bf8"}
+{"level":30,"time":1773564351514,"pid":9158,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69b671b90dcee35254dc6bf8"}
+{"level":30,"time":1773564664346,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773564665865,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773564665865,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69b672f70dcee35254dc6c15","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1773564666056,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1773564666232,"pid":9158,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773564666232,"pid":9158,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b672f70dcee35254dc6c15","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1773564668227,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: tickets.sold"}
+{"level":30,"time":1773564669715,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773564669715,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69b672f70dcee35254dc6c15","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1773564670537,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1773564670726,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773564670726,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b672f70dcee35254dc6c15","ticketId":"69a292b6218a2beaff264001","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1773564671506,"pid":9158,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a292b6218a2beaff263fff: Request failed with status code 500"}
+{"level":30,"time":1773564671714,"pid":9158,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69b672f70dcee35254dc6c15"}
+{"level":30,"time":1773564671895,"pid":9158,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69b672f70dcee35254dc6c15"}
+{"level":30,"time":1773565068576,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773565071162,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773565071162,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69b6748b0dcee35254dc6c32","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1773565071362,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1773565071541,"pid":9158,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773565071541,"pid":9158,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b6748b0dcee35254dc6c32","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1773565072953,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: tickets.sold"}
+{"level":30,"time":1773565074049,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773565074049,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69b6748b0dcee35254dc6c32","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1773565074871,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1773565075054,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773565075054,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b6748b0dcee35254dc6c32","ticketId":"69a292b6218a2beaff264001","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1773565076832,"pid":9158,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a292b6218a2beaff263fff: Request failed with status code 500"}
+{"level":30,"time":1773565077027,"pid":9158,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69b6748b0dcee35254dc6c32"}
+{"level":30,"time":1773565077268,"pid":9158,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69b6748b0dcee35254dc6c32"}
+{"level":30,"time":1773565431224,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773565433282,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773565433282,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69b675f60dcee35254dc6c4f","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1773565433468,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1773565433659,"pid":9158,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773565433659,"pid":9158,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b675f60dcee35254dc6c4f","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1773565435038,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: tickets.sold"}
+{"level":30,"time":1773565436034,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773565436034,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69b675f60dcee35254dc6c4f","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1773565436787,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1773565436959,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773565436959,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b675f60dcee35254dc6c4f","ticketId":"69a292b6218a2beaff264001","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1773565437697,"pid":9158,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a292b6218a2beaff263fff: Request failed with status code 500"}
+{"level":30,"time":1773565438025,"pid":9158,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69b675f60dcee35254dc6c4f"}
+{"level":30,"time":1773565438228,"pid":9158,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69b675f60dcee35254dc6c4f"}
+{"level":30,"time":1773565877528,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773565878425,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773565878425,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69b677b40dcee35254dc6c6c","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1773565878614,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1773565878789,"pid":9158,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773565878789,"pid":9158,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b677b40dcee35254dc6c6c","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1773565880094,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: tickets.sold"}
+{"level":30,"time":1773565880948,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773565880948,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69b677b40dcee35254dc6c6c","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1773565881617,"pid":9158,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1773565881787,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773565881787,"pid":9158,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b677b40dcee35254dc6c6c","ticketId":"69a292b6218a2beaff264001","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1773565882406,"pid":9158,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a292b6218a2beaff263fff: Request failed with status code 500"}
+{"level":30,"time":1773565882578,"pid":9158,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69b677b40dcee35254dc6c6c"}
+{"level":30,"time":1773565882755,"pid":9158,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69b677b40dcee35254dc6c6c"}
+{"level":30,"time":1773573599772,"pid":17070,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773573600826,"pid":17070,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773573600827,"pid":17070,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69b695df4980a6cdcac8a0cb","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1773573601155,"pid":17070,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1773573601446,"pid":17070,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773573601449,"pid":17070,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b695df4980a6cdcac8a0cb","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1773573602871,"pid":17070,"hostname":"Ubuntu","context":"CircuitBreakerService","msg":"✅ [stripe-payment] success"}
+{"level":30,"time":1773573603207,"pid":17070,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: tickets.sold"}
+{"level":30,"time":1773573604554,"pid":17070,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773573604556,"pid":17070,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69b695df4980a6cdcac8a0cb","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1773573605741,"pid":17070,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1773573605941,"pid":17070,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773573605942,"pid":17070,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b695df4980a6cdcac8a0cb","ticketId":"69a292b6218a2beaff264001","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1773573607603,"pid":17070,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a292b6218a2beaff263fff: Request failed with status code 500"}
+{"level":30,"time":1773573607784,"pid":17070,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69b695df4980a6cdcac8a0cb"}
+{"level":30,"time":1773573607999,"pid":17070,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69b695df4980a6cdcac8a0cb"}
+{"level":30,"time":1773574674991,"pid":18311,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773574677282,"pid":18311,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773574677282,"pid":18311,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69b69a115c2f49d7e05e4cb6","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1773574678214,"pid":18311,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1773574678712,"pid":18311,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773574678712,"pid":18311,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b69a115c2f49d7e05e4cb6","msg":"Inside handleBookingPaymentRequest"}
+{"level":50,"time":1773574678715,"pid":18311,"hostname":"Ubuntu","context":"CircuitBreakerService","msg":"❌ [stripe-payment] failure: Stripe is down!"}
+{"level":40,"time":1773574678715,"pid":18311,"hostname":"Ubuntu","context":"CircuitBreakerService","msg":"🔴 [stripe-payment] Circuit OPEN"}
+{"level":50,"time":1773574678716,"pid":18311,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b69a115c2f49d7e05e4cb6","msg":"🔴 Circuit OPEN — triggering compensation immediately"}
+{"level":30,"time":1773574679198,"pid":18311,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.failed"}
+{"level":30,"time":1773574679917,"pid":18311,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773574679917,"pid":18311,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b69a115c2f49d7e05e4cb6","msg":"Inside handleBookingPaymentFailed"}
+{"level":30,"time":1773574680196,"pid":18311,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.payment.failed"}
+{"level":30,"time":1773574680632,"pid":18311,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773574680632,"pid":18311,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69b69a115c2f49d7e05e4cb6","msg":"Inside handleBookingPaymentFailed"}
+{"level":30,"time":1773574688724,"pid":18311,"hostname":"Ubuntu","context":"CircuitBreakerService","msg":"🟡 [stripe-payment] Circuit HALF-OPEN — testing"}
+{"level":30,"time":1773575326718,"pid":18717,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773575328249,"pid":18717,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773575328250,"pid":18717,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69b69c9e9ed30961cd5824da","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1773575328439,"pid":18717,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1773575328629,"pid":18717,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773575328630,"pid":18717,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b69c9e9ed30961cd5824da","msg":"Inside handleBookingPaymentRequest"}
+{"level":50,"time":1773575328631,"pid":18717,"hostname":"Ubuntu","context":"CircuitBreakerService","msg":"❌ [stripe-payment] failure: Stripe is down!"}
+{"level":50,"time":1773575328631,"pid":18717,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b69c9e9ed30961cd5824da","error":"Stripe is down!","msg":"Payment failed — will retry"}
+{"level":40,"time":1773575328655,"pid":18717,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Job 69b69ca09ed30961cd5824df failed (Attempt 1 of 3). Retrying..."}
+{"level":30,"time":1773575330661,"pid":18717,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773575330661,"pid":18717,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b69c9e9ed30961cd5824da","msg":"Inside handleBookingPaymentRequest"}
+{"level":50,"time":1773575330661,"pid":18717,"hostname":"Ubuntu","context":"CircuitBreakerService","msg":"❌ [stripe-payment] failure: Stripe is down!"}
+{"level":50,"time":1773575330662,"pid":18717,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b69c9e9ed30961cd5824da","error":"Stripe is down!","msg":"Payment failed — will retry"}
+{"level":40,"time":1773575330664,"pid":18717,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Job 69b69ca09ed30961cd5824df failed (Attempt 2 of 3). Retrying..."}
+{"level":30,"time":1773575334767,"pid":18717,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773575334767,"pid":18717,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b69c9e9ed30961cd5824da","msg":"Inside handleBookingPaymentRequest"}
+{"level":50,"time":1773575334768,"pid":18717,"hostname":"Ubuntu","context":"CircuitBreakerService","msg":"❌ [stripe-payment] failure: Stripe is down!"}
+{"level":50,"time":1773575334768,"pid":18717,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b69c9e9ed30961cd5824da","error":"Stripe is down!","msg":"Payment failed — will retry"}
+{"level":50,"time":1773575334770,"pid":18717,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Job 69b69ca09ed30961cd5824df failed permanently. Triggering Saga Rollback."}
+{"level":30,"time":1773575335013,"pid":18717,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.failed"}
+{"level":30,"time":1773575335195,"pid":18717,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773575335195,"pid":18717,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b69c9e9ed30961cd5824da","msg":"Inside handleBookingPaymentFailed"}
+{"level":30,"time":1773575335418,"pid":18717,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.payment.failed"}
+{"level":30,"time":1773575335602,"pid":18717,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773575335602,"pid":18717,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69b69c9e9ed30961cd5824da","msg":"Inside handleBookingPaymentFailed"}
+{"level":30,"time":1773575467600,"pid":19106,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773575468464,"pid":19106,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773575468464,"pid":19106,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69b69d2bc8dbd6cb715d7c84","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1773575469088,"pid":19106,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1773575469284,"pid":19106,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773575469285,"pid":19106,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b69d2bc8dbd6cb715d7c84","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1773575470605,"pid":19106,"hostname":"Ubuntu","context":"CircuitBreakerService","msg":"✅ [stripe-payment] success"}
+{"level":30,"time":1773575470796,"pid":19106,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: tickets.sold"}
+{"level":30,"time":1773575471973,"pid":19106,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773575471974,"pid":19106,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69b69d2bc8dbd6cb715d7c84","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1773575472699,"pid":19106,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1773575472867,"pid":19106,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773575472867,"pid":19106,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b69d2bc8dbd6cb715d7c84","ticketId":"69a292b6218a2beaff264001","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1773575473753,"pid":19106,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a292b6218a2beaff263fff: Request failed with status code 500"}
+{"level":30,"time":1773575473931,"pid":19106,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69b69d2bc8dbd6cb715d7c84"}
+{"level":30,"time":1773575474165,"pid":19106,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69b69d2bc8dbd6cb715d7c84"}
+{"level":30,"time":1773579285706,"pid":20540,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773579286710,"pid":20540,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773579286711,"pid":20540,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69b6ac1527c211161045e680","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1773579286903,"pid":20540,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1773579287219,"pid":20540,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773579287221,"pid":20540,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b6ac1527c211161045e680","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1773579289588,"pid":20540,"hostname":"Ubuntu","context":"CircuitBreakerService","msg":"✅ [stripe-payment] success"}
+{"level":30,"time":1773579289761,"pid":20540,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: tickets.sold"}
+{"level":30,"time":1773579290707,"pid":20540,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773579290708,"pid":20540,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69b6ac1527c211161045e680","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1773579292319,"pid":20540,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1773579294074,"pid":20540,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773579294074,"pid":20540,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b6ac1527c211161045e680","ticketId":"69a292b6218a2beaff264001","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1773579296411,"pid":20540,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a292b6218a2beaff263fff: Request failed with status code 500"}
+{"level":30,"time":1773579297613,"pid":20540,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69b6ac1527c211161045e680"}
+{"level":30,"time":1773579297894,"pid":20540,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69b6ac1527c211161045e680"}
+{"level":30,"time":1773594612911,"pid":11234,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773594614198,"pid":11234,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773594614199,"pid":11234,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69b6e7f4b86c5fe9e82c42b2","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1773594614573,"pid":11234,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1773594614772,"pid":11234,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773594614774,"pid":11234,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b6e7f4b86c5fe9e82c42b2","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1773594616195,"pid":11234,"hostname":"Ubuntu","context":"CircuitBreakerService","msg":"✅ [stripe-payment] success"}
+{"level":30,"time":1773594616440,"pid":11234,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: tickets.sold"}
+{"level":30,"time":1773594617945,"pid":11234,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773594617947,"pid":11234,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69b6e7f4b86c5fe9e82c42b2","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1773594619205,"pid":11234,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1773594619412,"pid":11234,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773594619413,"pid":11234,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b6e7f4b86c5fe9e82c42b2","ticketId":"69a292b6218a2beaff264001","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1773594621029,"pid":11234,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a292b6218a2beaff263fff: Request failed with status code 500"}
+{"level":30,"time":1773594621597,"pid":11234,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69b6e7f4b86c5fe9e82c42b2"}
+{"level":30,"time":1773594621867,"pid":11234,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69b6e7f4b86c5fe9e82c42b2"}
+{"level":30,"time":1773595554002,"pid":12347,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773595555927,"pid":12347,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773595555927,"pid":12347,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","msg":"Inside handleTicketsFailed"}
+{"level":30,"time":1773595769866,"pid":13149,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773595770770,"pid":13149,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773595770770,"pid":13149,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","msg":"Inside handleTicketsFailed"}
+{"level":30,"time":1773596124267,"pid":13149,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1773596125350,"pid":13149,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773596125351,"pid":13149,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69b6eddb0190b6ef5cb77676","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1773596125685,"pid":13149,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1773596125914,"pid":13149,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1773596125915,"pid":13149,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69b6eddb0190b6ef5cb77676","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1773596127374,"pid":13149,"hostname":"Ubuntu","context":"CircuitBreakerService","msg":"✅ [stripe-payment] success"}
+{"level":30,"time":1773596127562,"pid":13149,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: tickets.sold"}
+{"level":30,"time":1773596129641,"pid":13149,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773596129641,"pid":13149,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69b6eddb0190b6ef5cb77676","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1773596131092,"pid":13149,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1773596131349,"pid":13149,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1773596131349,"pid":13149,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b6eddb0190b6ef5cb77676","ticketId":"69a292b6218a2beaff264001","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1773596132619,"pid":13149,"hostname":"Ubuntu","context":"EventClient","msg":"Failed to fetch event 69a292b6218a2beaff263fff: Request failed with status code 500"}
+{"level":30,"time":1773596132819,"pid":13149,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69b6eddb0190b6ef5cb77676"}
+{"level":30,"time":1773596133035,"pid":13149,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69b6eddb0190b6ef5cb77676"}
+{"level":30,"time":1774358390910,"pid":16844,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.created"}
+{"level":30,"time":1774358391560,"pid":16844,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1774358391560,"pid":16844,"hostname":"Ubuntu","module":"Booking","service":"TicketsBookingHandler","bookingId":"69c28f763913831fb803107a","msg":"Inside handleTicketRserved"}
+{"level":30,"time":1774358391674,"pid":16844,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: payment.request"}
+{"level":30,"time":1774358391796,"pid":16844,"hostname":"Ubuntu","module":"Payment","service":"PaymentSagaProcessor","msg":"Inside Payment-Module-SAGA"}
+{"level":30,"time":1774358391796,"pid":16844,"hostname":"Ubuntu","module":"Payment","service":"BookingPaymentHandler","bookingId":"69c28f763913831fb803107a","msg":"Inside handleBookingPaymentRequest"}
+{"level":30,"time":1774358393058,"pid":16844,"hostname":"Ubuntu","context":"CircuitBreakerService","msg":"✅ [stripe-payment] success"}
+{"level":30,"time":1774358393172,"pid":16844,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: tickets.sold"}
+{"level":30,"time":1774358393819,"pid":16844,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1774358393820,"pid":16844,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69c28f763913831fb803107a","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1774358394261,"pid":16844,"hostname":"Ubuntu","context":"OutboxDispatcher","msg":"New outbox event detected: booking.confirmed"}
+{"level":30,"time":1774358394382,"pid":16844,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1774358394382,"pid":16844,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69c28f763913831fb803107a","ticketId":"69a292b6218a2beaff264002","msg":"Inside handleBookingConfirmed"}
+{"level":50,"time":1774358394542,"pid":16844,"hostname":"Ubuntu","context":"IdentityClient","msg":"Failed to fetch user 699dde985bcb39540ca7dc83: Request failed with status code 404"}
+{"level":30,"time":1774358394847,"pid":16844,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"New outbox event detected: booking.confirmed for 69c28f763913831fb803107a"}
+{"level":30,"time":1774358395415,"pid":16844,"hostname":"Ubuntu","context":"NotificationOutboxProcessor","msg":"Published: booking.confirmed for 69c28f763913831fb803107a"}
+{"level":30,"time":1775202503706,"pid":12909,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1775202503706,"pid":12909,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","bookingId":"69cf70bfa1c82706d19710eb","msg":"Inside handleBookingConfirmedRequest"}
+{"level":30,"time":1775202504423,"pid":12909,"hostname":"Ubuntu","module":"Booking","service":"BookingSagaProcessor","msg":"Inside Booking-Module-SAGA"}
+{"level":30,"time":1775202504423,"pid":12909,"hostname":"Ubuntu","module":"Booking","service":"BookingsHandler","eventId":"69cea379c0a379785ec819e5","bookingId":"69cf70bfa1c82706d19710eb","ticketId":"69cea37ac0a379785ec819e7","msg":"Inside handleBookingConfirmed"}

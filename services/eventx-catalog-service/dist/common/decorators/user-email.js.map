@@ -1,0 +1,1 @@
+{"version":3,"file":"user-email.js","sourceRoot":"","sources":["../../../src/common/decorators/user-email.ts"],"names":[],"mappings":";;;AAAA,2CAAwE;AAG3D,QAAA,YAAY,GAAG,IAAA,6BAAoB,EAAC,CAAC,IAAa,EAAE,OAAyB,EAAE,EAAE;IAC3F,MAAM,OAAO,GAAG,OAAO,CAAC,YAAY,EAAE,CAAC,UAAU,EAAE,CAAC;IACpD,MAAM,SAAS,GAAG,OAAO,CAAC,IAAI,EAAE,KAAK,CAAC;IACtC,OAAO,SAAS,CAAC;AACpB,CAAC,CAAC,CAAC"}

@@ -1,0 +1,2 @@
+{"level":30,"time":"2026-04-03T07:48:15.345Z","service":"booking-service","requestId":"2715e938-41bf-41ad-938e-16c42e5957e2","userId":"699dde985bcb39540ca7dc83","eventId":"69cea379c0a379785ec819e5","msg":"createBooking attempt started"}
+{"level":30,"time":"2026-04-03T07:48:18.705Z","service":"booking-service","requestId":"2715e938-41bf-41ad-938e-16c42e5957e2","userId":"699dde985bcb39540ca7dc83","eventId":"69cea379c0a379785ec819e5","msg":"booking created"}

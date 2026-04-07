@@ -1,0 +1,363 @@
+{"level":30,"time":1772041729868,"pid":14238,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772041729869,"pid":14238,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"6970b692d23f674c79dd0ba7","bookingId":"699f3601e13f89d33d20d831","ticketId":"6970b692d23f674c79dd0ba9","msg":"Inside BookingCreated"}
+{"level":40,"time":1772041730074,"pid":14238,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 699f3601e13f89d33d20d833 failed (Attempt 1 of 3). Retrying..."}
+{"level":30,"time":1772042085212,"pid":15655,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772042085214,"pid":15655,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"6970b692d23f674c79dd0ba7","bookingId":"699f37647e25ecb01793e3e8","ticketId":"6970b692d23f674c79dd0ba9","msg":"Inside BookingCreated"}
+{"level":30,"time":1772058415467,"pid":23909,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772058415469,"pid":23909,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"699f7646d02dc11340529781","bookingId":"699f7727037fc3cf42a20934","ticketId":"699f76470ee25dbccbc56fdd","msg":"Inside BookingCreated"}
+{"level":30,"time":1772101755476,"pid":15959,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772101755477,"pid":15959,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"699f7646d02dc11340529781","bookingId":"69a0207ac7bd2318f3f9ef7d","ticketId":"699f76470ee25dbccbc56fdd","msg":"Inside BookingCreated"}
+{"level":30,"time":1772102684949,"pid":15959,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772102684949,"pid":15959,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"699f7646d02dc11340529781","bookingId":"69a0241bd51bec8dbc3f758e","ticketId":"699f76470ee25dbccbc56fdd","msg":"Inside BookingCreated"}
+{"level":30,"time":1772305959664,"pid":12773,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772305959666,"pid":12773,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69a33e25e52ebc6c81cb52ed","ticketId":"69a20c6c2915d37577895d7d","msg":"Inside BookingCreated"}
+{"level":30,"time":1772349700371,"pid":9298,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772349700375,"pid":9298,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69a3e90293f5af65216261f6","ticketId":"69a20c6c2915d37577895d7d","msg":"Inside BookingCreated"}
+{"level":30,"time":1772352151254,"pid":8776,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772352151255,"pid":8776,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69a3f2965959b8ee963db592","ticketId":"69a20c6c2915d37577895d7d","msg":"Inside BookingCreated"}
+{"level":30,"time":1772353403381,"pid":8776,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772353403382,"pid":8776,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69a3f77af448a3636181e85c","ticketId":"69a20c6c2915d37577895d7d","msg":"Inside BookingCreated"}
+{"level":30,"time":1772353558826,"pid":8776,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772353558826,"pid":8776,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69a3f811f448a3636181e86f","ticketId":"69a20c6c2915d37577895d7d","msg":"Inside BookingCreated"}
+{"level":30,"time":1772648166001,"pid":17458,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772648166002,"pid":17458,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69a876e4f04fdf74f44e3910","ticketId":"69a20c6c2915d37577895d7d","msg":"Inside BookingCreated"}
+{"level":30,"time":1772649207761,"pid":18767,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772649207763,"pid":18767,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69a87af6a0fca88890005dd6","ticketId":"69a20c6c2915d37577895d7d","msg":"Inside BookingCreated"}
+{"level":30,"time":1772655040111,"pid":27317,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772655040112,"pid":27317,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69a891bf5acb1134307b55d4","ticketId":"69a20c6c2915d37577895d7d","msg":"Inside BookingCreated"}
+{"level":30,"time":1772742563385,"pid":18388,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772742563387,"pid":18388,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69a9e7a2400ab06bf733a2fa","ticketId":"69a20c6c2915d37577895d7d","msg":"Inside BookingCreated"}
+{"level":30,"time":1772743145763,"pid":18388,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772743145764,"pid":18388,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a9e97cc37372d308107c60","bookingId":"69a9e9e8b1aaa434f6ef7a01","ticketId":"69a9e97cc37372d308107c62","msg":"Inside BookingCreated"}
+{"level":30,"time":1772744363451,"pid":18388,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772744363451,"pid":18388,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69a9eeaab1aaa434f6ef7a11","ticketId":"69a20c6c2915d37577895d7d","msg":"Inside BookingCreated"}
+{"level":30,"time":1772744404783,"pid":18388,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772744404783,"pid":18388,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69a9eed4b53b3748b9d830c9","ticketId":"69a20c6c2915d37577895d7d","msg":"Inside BookingCreated"}
+{"level":30,"time":1772744663857,"pid":20307,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772744663861,"pid":20307,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69a9efd6929f549f11472cc2","ticketId":"69a20c6c2915d37577895d7d","msg":"Inside BookingCreated"}
+{"level":30,"time":1772745068049,"pid":20307,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772745068051,"pid":20307,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69a9f169a5dde6e6d443293d","ticketId":"69a20c6c2915d37577895d7d","msg":"Inside BookingCreated"}
+{"level":30,"time":1772746412384,"pid":21461,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772746412392,"pid":21461,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69a9f6a9ae1b601538f45ed4","ticketId":"69a20c6c2915d37577895d7d","msg":"Inside BookingCreated"}
+{"level":30,"time":1772746512767,"pid":21461,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772746512768,"pid":21461,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a9e97cc37372d308107c60","bookingId":"69a9f70fae1b601538f45ee8","ticketId":"69a9e97cc37372d308107c62","msg":"Inside BookingCreated"}
+{"level":30,"time":1772746559210,"pid":21461,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772746559211,"pid":21461,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a9e97cc37372d308107c60","bookingId":"69a9f73d926a4f3f678bb780","ticketId":"69a9e97cc37372d308107c62","msg":"Inside BookingCreated"}
+{"level":30,"time":1772746744404,"pid":21461,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772746744407,"pid":21461,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a9e97cc37372d308107c60","bookingId":"69a9f7f69bf9e00364a9f89d","ticketId":"69a9e97cc37372d308107c62","msg":"Inside BookingCreated"}
+{"level":30,"time":1772746924031,"pid":21461,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772746924032,"pid":21461,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a9e97cc37372d308107c60","bookingId":"69a9f8a9f657bce9694d9d9f","ticketId":"69a9e97cc37372d308107c62","msg":"Inside BookingCreated"}
+{"level":30,"time":1772746989802,"pid":21461,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772746989807,"pid":21461,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a9e97cc37372d308107c60","bookingId":"69a9f8ec165d356b0e8c76aa","ticketId":"69a9e97cc37372d308107c62","msg":"Inside BookingCreated"}
+{"level":30,"time":1772789890436,"pid":9621,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772789890438,"pid":9621,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a9e97cc37372d308107c60","bookingId":"69aaa081ee3a363f4eecdfa4","ticketId":"69a9e97cc37372d308107c62","msg":"Inside BookingCreated"}
+{"level":30,"time":1772790102586,"pid":10063,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772790102587,"pid":10063,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a9e97cc37372d308107c60","bookingId":"69aaa1551463e7ac2a1d5b9b","ticketId":"69a9e97cc37372d308107c62","msg":"Inside BookingCreated"}
+{"level":30,"time":1772790380465,"pid":10063,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772790380466,"pid":10063,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aaa26b1463e7ac2a1d5bab","ticketId":"69aaa22295960786afa37ec5","msg":"Inside BookingCreated"}
+{"level":30,"time":1772790380979,"pid":10063,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772790380979,"pid":10063,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aaa26b1463e7ac2a1d5bab","ticketId":"69aaa22295960786afa37ec5","msg":"----- Inside TicketSold -----"}
+{"level":30,"time":1772790437558,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772790437560,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aaa2a378409e70fa479da0","ticketId":"69aaa22295960786afa37ec5","msg":"Inside BookingCreated"}
+{"level":30,"time":1772790438149,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772790438149,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aaa2a378409e70fa479da0","ticketId":"69aaa22295960786afa37ec5","msg":"----- Inside TicketSold -----"}
+{"level":30,"time":1772790457778,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772790457779,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aaa2b878409e70fa479da5","ticketId":"69aaa22295960786afa37ec5","msg":"Inside BookingCreated"}
+{"level":30,"time":1772790458535,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772790458535,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aaa2b878409e70fa479da5","ticketId":"69aaa22295960786afa37ec5","msg":"----- Inside TicketSold -----"}
+{"level":30,"time":1772790472344,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772790472345,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aaa2c778409e70fa479daa","ticketId":"69aaa22295960786afa37ec5","msg":"Inside BookingCreated"}
+{"level":40,"time":1772790472551,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aaa2c778409e70fa479dac failed (Attempt 1 of 3). Retrying..."}
+{"level":30,"time":1772790474576,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772790474577,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aaa2c778409e70fa479daa","ticketId":"69aaa22295960786afa37ec5","msg":"Inside BookingCreated"}
+{"level":40,"time":1772790474765,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aaa2c778409e70fa479dac failed (Attempt 2 of 3). Retrying..."}
+{"level":30,"time":1772790478836,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772790478837,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aaa2c778409e70fa479daa","ticketId":"69aaa22295960786afa37ec5","msg":"Inside BookingCreated"}
+{"level":50,"time":1772790479011,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aaa2c778409e70fa479dac failed permanently. Triggering Saga Rollback."}
+{"level":30,"time":1772790516923,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772790516923,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aaa2f478409e70fa479db1","ticketId":"69aaa22295960786afa37ec5","msg":"Inside BookingCreated"}
+{"level":30,"time":1772790517572,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772790517572,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aaa2f478409e70fa479db1","ticketId":"69aaa22295960786afa37ec5","msg":"----- Inside TicketSold -----"}
+{"level":30,"time":1772790532828,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772790532829,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aaa30378409e70fa479db6","ticketId":"69aaa22295960786afa37ec5","msg":"Inside BookingCreated"}
+{"level":30,"time":1772790533330,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772790533330,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aaa30378409e70fa479db6","ticketId":"69aaa22295960786afa37ec5","msg":"----- Inside TicketSold -----"}
+{"level":30,"time":1772790544168,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772790544169,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aaa30f78409e70fa479dbb","ticketId":"69aaa22295960786afa37ec5","msg":"Inside BookingCreated"}
+{"level":40,"time":1772790544333,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aaa30f78409e70fa479dbd failed (Attempt 1 of 3). Retrying..."}
+{"level":30,"time":1772790546357,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772790546357,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aaa30f78409e70fa479dbb","ticketId":"69aaa22295960786afa37ec5","msg":"Inside BookingCreated"}
+{"level":40,"time":1772790546561,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aaa30f78409e70fa479dbd failed (Attempt 2 of 3). Retrying..."}
+{"level":30,"time":1772790550600,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772790550601,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aaa30f78409e70fa479dbb","ticketId":"69aaa22295960786afa37ec5","msg":"Inside BookingCreated"}
+{"level":50,"time":1772790550770,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aaa30f78409e70fa479dbd failed permanently. Triggering Saga Rollback."}
+{"level":30,"time":1772790606763,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772790606764,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aaa34d78409e70fa479dc2","ticketId":"69aaa22295960786afa37ec6","msg":"Inside BookingCreated"}
+{"level":30,"time":1772790608736,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772790608737,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aaa34d78409e70fa479dc2","ticketId":"69aaa22295960786afa37ec6","msg":"----- Inside TicketSold -----"}
+{"level":30,"time":1772790674098,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772790674098,"pid":10855,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69aaa38d78409e70fa479dc7","ticketId":"69a20c6c2915d37577895d7e","msg":"Inside BookingCreated"}
+{"level":30,"time":1772791253472,"pid":12504,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772791253473,"pid":12504,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aaa5d46c95b258c5323244","ticketId":"69aaa22295960786afa37ec6","msg":"Inside BookingCreated"}
+{"level":30,"time":1772791254034,"pid":12504,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772791254035,"pid":12504,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aaa5d46c95b258c5323244","ticketId":"69aaa22295960786afa37ec6","msg":"Inside TicketSold"}
+{"level":30,"time":1772791622198,"pid":12504,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772791622198,"pid":12504,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aaa7436c95b258c5323249","ticketId":"69aaa22295960786afa37ec6","msg":"Inside BookingCreated"}
+{"level":30,"time":1772791622728,"pid":12504,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772791622728,"pid":12504,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aaa7436c95b258c5323249","ticketId":"69aaa22295960786afa37ec6","msg":"Inside TicketSold"}
+{"level":30,"time":1772792009710,"pid":13206,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772792009711,"pid":13206,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aaa8c96c95b258c532324e","ticketId":"69aaa22295960786afa37ec6","msg":"Inside BookingCreated"}
+{"level":30,"time":1772792010256,"pid":13206,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772792010256,"pid":13206,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aaa8c96c95b258c532324e","ticketId":"69aaa22295960786afa37ec6","msg":"Inside TicketSold"}
+{"level":30,"time":1772792617044,"pid":13788,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772792617046,"pid":13788,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69aaab272eb33bbe91a733f8","ticketId":"69a20c6c2915d37577895d7e","msg":"Inside BookingCreated"}
+{"level":30,"time":1772799606429,"pid":16454,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772799606431,"pid":16454,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aac675f2cdad98e2c9e534","ticketId":"69aaa22295960786afa37ec6","msg":"Inside BookingCreated"}
+{"level":30,"time":1772799606980,"pid":16454,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772799606981,"pid":16454,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aac675f2cdad98e2c9e534","msg":"Inside TicketSold"}
+{"level":40,"time":1772799607053,"pid":16454,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aac676692dc72d2cdad45f failed (Attempt 1 of 3). Retrying..."}
+{"level":30,"time":1772799609109,"pid":16454,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772799609109,"pid":16454,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aac675f2cdad98e2c9e534","msg":"Inside TicketSold"}
+{"level":40,"time":1772799609114,"pid":16454,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aac676692dc72d2cdad45f failed (Attempt 2 of 3). Retrying..."}
+{"level":30,"time":1772799613151,"pid":16454,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772799613151,"pid":16454,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aac675f2cdad98e2c9e534","msg":"Inside TicketSold"}
+{"level":50,"time":1772799613157,"pid":16454,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aac676692dc72d2cdad45f failed permanently. Triggering Saga Rollback."}
+{"level":30,"time":1772800022880,"pid":17267,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772800022882,"pid":17267,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aac816315d81a60df6d2b3","ticketId":"69aaa22295960786afa37ec6","msg":"Inside BookingCreated"}
+{"level":30,"time":1772800023820,"pid":17267,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772800023821,"pid":17267,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aac816315d81a60df6d2b3","msg":"Inside TicketSold"}
+{"level":40,"time":1772800024005,"pid":17267,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aac8172134ae5997671e68 failed (Attempt 1 of 3). Retrying..."}
+{"level":30,"time":1772800026034,"pid":17267,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772800026034,"pid":17267,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aac816315d81a60df6d2b3","msg":"Inside TicketSold"}
+{"level":40,"time":1772800026089,"pid":17267,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aac8172134ae5997671e68 failed (Attempt 2 of 3). Retrying..."}
+{"level":30,"time":1772800030084,"pid":17267,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772800030084,"pid":17267,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aac816315d81a60df6d2b3","msg":"Inside TicketSold"}
+{"level":50,"time":1772800030097,"pid":17267,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aac8172134ae5997671e68 failed permanently. Triggering Saga Rollback."}
+{"level":30,"time":1772800333365,"pid":17573,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772800333366,"pid":17573,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aac94c315d81a60df6d2c8","ticketId":"69aaa22295960786afa37ec6","msg":"Inside BookingCreated"}
+{"level":30,"time":1772800334217,"pid":17573,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772800334218,"pid":17573,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aac94c315d81a60df6d2c8","msg":"Inside TicketSold"}
+{"level":40,"time":1772800334329,"pid":17573,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aac94d636b8905c7da6550 failed (Attempt 1 of 3). Retrying..."}
+{"level":30,"time":1772800336381,"pid":17573,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772800336381,"pid":17573,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aac94c315d81a60df6d2c8","msg":"Inside TicketSold"}
+{"level":40,"time":1772800336393,"pid":17573,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aac94d636b8905c7da6550 failed (Attempt 2 of 3). Retrying..."}
+{"level":30,"time":1772800340433,"pid":17573,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772800340434,"pid":17573,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aac94c315d81a60df6d2c8","msg":"Inside TicketSold"}
+{"level":50,"time":1772800340456,"pid":17573,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aac94d636b8905c7da6550 failed permanently. Triggering Saga Rollback."}
+{"level":30,"time":1772800601709,"pid":18241,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772800601711,"pid":18241,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aaca34124cd607cf7084a9","ticketId":"69aaa22295960786afa37ec6","msg":"Inside BookingCreated"}
+{"level":30,"time":1772800603886,"pid":18241,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772800603886,"pid":18241,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aaca34124cd607cf7084a9","msg":"Inside TicketSold"}
+{"level":40,"time":1772800604138,"pid":18241,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aaca5a7dfa34c6e2c9209c failed (Attempt 1 of 3). Retrying..."}
+{"level":30,"time":1772800606164,"pid":18241,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772800606164,"pid":18241,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aaca34124cd607cf7084a9","msg":"Inside TicketSold"}
+{"level":40,"time":1772800606368,"pid":18241,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aaca5a7dfa34c6e2c9209c failed (Attempt 2 of 3). Retrying..."}
+{"level":30,"time":1772800610422,"pid":18241,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772800610422,"pid":18241,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aaca34124cd607cf7084a9","msg":"Inside TicketSold"}
+{"level":50,"time":1772800610672,"pid":18241,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aaca5a7dfa34c6e2c9209c failed permanently. Triggering Saga Rollback."}
+{"level":30,"time":1772800713940,"pid":18613,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772800713941,"pid":18613,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aacac8124cd607cf7084bd","ticketId":"69aaa22295960786afa37ec6","msg":"Inside BookingCreated"}
+{"level":30,"time":1772800716905,"pid":18613,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772800716906,"pid":18613,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aacac8124cd607cf7084bd","msg":"Inside TicketSold"}
+{"level":40,"time":1772800717236,"pid":18613,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aacacc4276feb359b6bcb2 failed (Attempt 1 of 3). Retrying..."}
+{"level":30,"time":1772800719311,"pid":18613,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772800719311,"pid":18613,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aacac8124cd607cf7084bd","msg":"Inside TicketSold"}
+{"level":40,"time":1772800719518,"pid":18613,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aacacc4276feb359b6bcb2 failed (Attempt 2 of 3). Retrying..."}
+{"level":30,"time":1772800723567,"pid":18613,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772800723568,"pid":18613,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aacac8124cd607cf7084bd","msg":"Inside TicketSold"}
+{"level":50,"time":1772800723844,"pid":18613,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aacacc4276feb359b6bcb2 failed permanently. Triggering Saga Rollback."}
+{"level":30,"time":1772800801422,"pid":18921,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772800801424,"pid":18921,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aacb20124cd607cf7084d1","ticketId":"69aaa22295960786afa37ec6","msg":"Inside BookingCreated"}
+{"level":30,"time":1772800802309,"pid":18921,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772800802311,"pid":18921,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aacb20124cd607cf7084d1","msg":"Inside TicketSold"}
+{"level":40,"time":1772800803008,"pid":18921,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aacb21103feb90ec4202b5 failed (Attempt 1 of 3). Retrying..."}
+{"level":30,"time":1772800805022,"pid":18921,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772800805022,"pid":18921,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aacb20124cd607cf7084d1","msg":"Inside TicketSold"}
+{"level":40,"time":1772800805213,"pid":18921,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aacb21103feb90ec4202b5 failed (Attempt 2 of 3). Retrying..."}
+{"level":30,"time":1772800809276,"pid":18921,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772800809276,"pid":18921,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aacb20124cd607cf7084d1","msg":"Inside TicketSold"}
+{"level":50,"time":1772800809472,"pid":18921,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aacb21103feb90ec4202b5 failed permanently. Triggering Saga Rollback."}
+{"level":30,"time":1772800861132,"pid":19229,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772800861135,"pid":19229,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aacb5b124cd607cf7084e5","ticketId":"69aaa22295960786afa37ec6","msg":"Inside BookingCreated"}
+{"level":30,"time":1772800861758,"pid":19229,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772800861759,"pid":19229,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aacb5b124cd607cf7084e5","msg":"Inside TicketSold"}
+{"level":40,"time":1772800862035,"pid":19229,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aacb5de9b38b3fa72fafcb failed (Attempt 1 of 3). Retrying..."}
+{"level":30,"time":1772800864048,"pid":19229,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772800864048,"pid":19229,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aacb5b124cd607cf7084e5","msg":"Inside TicketSold"}
+{"level":40,"time":1772800864296,"pid":19229,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aacb5de9b38b3fa72fafcb failed (Attempt 2 of 3). Retrying..."}
+{"level":30,"time":1772800868309,"pid":19229,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772800868309,"pid":19229,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aacb5b124cd607cf7084e5","msg":"Inside TicketSold"}
+{"level":50,"time":1772800868503,"pid":19229,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aacb5de9b38b3fa72fafcb failed permanently. Triggering Saga Rollback."}
+{"level":30,"time":1772801002682,"pid":19716,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772801002684,"pid":19716,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aacbe9b4ac824b8dbaf212","ticketId":"69aaa22295960786afa37ec6","msg":"Inside BookingCreated"}
+{"level":30,"time":1772801003593,"pid":19716,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772801003595,"pid":19716,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aacbe9b4ac824b8dbaf212","msg":"Inside TicketSold"}
+{"level":40,"time":1772801004010,"pid":19716,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aacbea99c1574f3dc0cc26 failed (Attempt 1 of 3). Retrying..."}
+{"level":30,"time":1772801006066,"pid":19716,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772801006066,"pid":19716,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aacbe9b4ac824b8dbaf212","msg":"Inside TicketSold"}
+{"level":40,"time":1772801006282,"pid":19716,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aacbea99c1574f3dc0cc26 failed (Attempt 2 of 3). Retrying..."}
+{"level":30,"time":1772801010324,"pid":19716,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772801010325,"pid":19716,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aacbe9b4ac824b8dbaf212","msg":"Inside TicketSold"}
+{"level":50,"time":1772801010637,"pid":19716,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aacbea99c1574f3dc0cc26 failed permanently. Triggering Saga Rollback."}
+{"level":30,"time":1772801142720,"pid":20143,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772801142721,"pid":20143,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aacc75a56b99aa9552bb7c","ticketId":"69aaa22295960786afa37ec6","msg":"Inside BookingCreated"}
+{"level":30,"time":1772801143807,"pid":20143,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772801143810,"pid":20143,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aacc75a56b99aa9552bb7c","msg":"Inside TicketSold"}
+{"level":40,"time":1772801144298,"pid":20143,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aacc77e065e9587786865b failed (Attempt 1 of 3). Retrying..."}
+{"level":30,"time":1772801146292,"pid":20143,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772801146292,"pid":20143,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aacc75a56b99aa9552bb7c","msg":"Inside TicketSold"}
+{"level":40,"time":1772801146532,"pid":20143,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aacc77e065e9587786865b failed (Attempt 2 of 3). Retrying..."}
+{"level":30,"time":1772801150559,"pid":20143,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772801150560,"pid":20143,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aacc75a56b99aa9552bb7c","msg":"Inside TicketSold"}
+{"level":50,"time":1772801150793,"pid":20143,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aacc77e065e9587786865b failed permanently. Triggering Saga Rollback."}
+{"level":30,"time":1772801250032,"pid":20685,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772801250033,"pid":20685,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aacce081c6a83c2cc5408b","ticketId":"69aaa22295960786afa37ec6","msg":"Inside BookingCreated"}
+{"level":30,"time":1772801250658,"pid":20685,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772801250661,"pid":20685,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aacce081c6a83c2cc5408b","msg":"Inside TicketSold"}
+{"level":40,"time":1772801251268,"pid":20685,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aacce291b555cdb6d366ee failed (Attempt 1 of 3). Retrying..."}
+{"level":30,"time":1772801253315,"pid":20685,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772801253315,"pid":20685,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aacce081c6a83c2cc5408b","msg":"Inside TicketSold"}
+{"level":40,"time":1772801253545,"pid":20685,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aacce291b555cdb6d366ee failed (Attempt 2 of 3). Retrying..."}
+{"level":30,"time":1772801257564,"pid":20685,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772801257565,"pid":20685,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aacce081c6a83c2cc5408b","msg":"Inside TicketSold"}
+{"level":50,"time":1772801257781,"pid":20685,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aacce291b555cdb6d366ee failed permanently. Triggering Saga Rollback."}
+{"level":30,"time":1772801354278,"pid":21144,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772801354280,"pid":21144,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aacd462d0829b720d522af","ticketId":"69aaa22295960786afa37ec6","msg":"Inside BookingCreated"}
+{"level":30,"time":1772801356606,"pid":21144,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772801356607,"pid":21144,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aacd462d0829b720d522af","msg":"Inside TicketSold"}
+{"level":40,"time":1772801356990,"pid":21144,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aacd4be901e60e0942bfc0 failed (Attempt 1 of 3). Retrying..."}
+{"level":30,"time":1772801358979,"pid":21144,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772801358980,"pid":21144,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aacd462d0829b720d522af","msg":"Inside TicketSold"}
+{"level":40,"time":1772801359221,"pid":21144,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aacd4be901e60e0942bfc0 failed (Attempt 2 of 3). Retrying..."}
+{"level":30,"time":1772801363238,"pid":21144,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772801363239,"pid":21144,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aacd462d0829b720d522af","msg":"Inside TicketSold"}
+{"level":50,"time":1772801363509,"pid":21144,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aacd4be901e60e0942bfc0 failed permanently. Triggering Saga Rollback."}
+{"level":30,"time":1772801560977,"pid":21444,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772801560981,"pid":21444,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aace152d0829b720d522c3","ticketId":"69aaa22295960786afa37ec6","msg":"Inside BookingCreated"}
+{"level":30,"time":1772801564125,"pid":21444,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772801564125,"pid":21444,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aace152d0829b720d522c3","msg":"Inside TicketSold"}
+{"level":40,"time":1772801564418,"pid":21444,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aace1b1d677c6d7709d96d failed (Attempt 1 of 3). Retrying..."}
+{"level":30,"time":1772801566444,"pid":21444,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772801566444,"pid":21444,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aace152d0829b720d522c3","msg":"Inside TicketSold"}
+{"level":40,"time":1772801566861,"pid":21444,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aace1b1d677c6d7709d96d failed (Attempt 2 of 3). Retrying..."}
+{"level":30,"time":1772801570902,"pid":21444,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772801570903,"pid":21444,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aace152d0829b720d522c3","msg":"Inside TicketSold"}
+{"level":50,"time":1772801571171,"pid":21444,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Job 69aace1b1d677c6d7709d96d failed permanently. Triggering Saga Rollback."}
+{"level":30,"time":1772801689131,"pid":21766,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772801689133,"pid":21766,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69aace982d0829b720d522d7","ticketId":"69aaa22295960786afa37ec6","msg":"Inside BookingCreated"}
+{"level":30,"time":1772801691784,"pid":21766,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772801691785,"pid":21766,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69aace982d0829b720d522d7","msg":"Inside TicketSold"}
+{"level":30,"time":1772864556099,"pid":9219,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772864556101,"pid":9219,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69aaa22195960786afa37ec3","bookingId":"69abc42979eed0a935b5415c","ticketId":"69aaa22295960786afa37ec6","msg":"Inside BookingCreated"}
+{"level":30,"time":1772864556680,"pid":9219,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772864556681,"pid":9219,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69abc42979eed0a935b5415c","msg":"Inside TicketSold"}
+{"level":30,"time":1772864614348,"pid":9219,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772864614352,"pid":9219,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a20c6c2915d37577895d7b","bookingId":"69abc46579eed0a935b5416f","ticketId":"69a20c6c2915d37577895d7e","msg":"Inside BookingCreated"}
+{"level":30,"time":1772864617101,"pid":9219,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1772864617101,"pid":9219,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69abc46579eed0a935b5416f","msg":"Inside TicketSold"}
+{"level":30,"time":1773250256855,"pid":9577,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773250256859,"pid":9577,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69b143285f7a84624311e087","bookingId":"69b1a6cfdf814114c40c772b","ticketId":"69b143285f7a84624311e089","msg":"Inside BookingCreated"}
+{"level":30,"time":1773250258371,"pid":9577,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773250258373,"pid":9577,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69b1a6cfdf814114c40c772b","msg":"Inside TicketSold"}
+{"level":30,"time":1773259864798,"pid":11148,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773259864801,"pid":11148,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b1cc57d0d4361c59b77489","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":30,"time":1773259868173,"pid":11148,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773259868174,"pid":11148,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69b1cc57d0d4361c59b77489","msg":"Inside TicketSold"}
+{"level":30,"time":1773311583406,"pid":9877,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773311583407,"pid":9877,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b2965b75a4a7117c307040","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":30,"time":1773311589695,"pid":9877,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773311589695,"pid":9877,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69b2965b75a4a7117c307040","msg":"Inside TicketSold"}
+{"level":30,"time":1773330685024,"pid":9898,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773330685033,"pid":9898,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b2dff25e1b334e9bdb9d70","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":30,"time":1773330695877,"pid":9898,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773330695878,"pid":9898,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69b2dff25e1b334e9bdb9d70","msg":"Inside TicketSold"}
+{"level":30,"time":1773336842501,"pid":13490,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773336842503,"pid":13490,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b2f90967ea7d4970b671f4","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":30,"time":1773336845391,"pid":13490,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773336845391,"pid":13490,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69b2f90967ea7d4970b671f4","msg":"Inside TicketSold"}
+{"level":30,"time":1773558880614,"pid":11284,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773558880617,"pid":11284,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b65c5fdf81e5696dca79e5","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":30,"time":1773558884148,"pid":11284,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773558884148,"pid":11284,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69b65c5fdf81e5696dca79e5","msg":"Inside TicketSold"}
+{"level":30,"time":1773559241455,"pid":11284,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773559241455,"pid":11284,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b65dc7df81e5696dca7a02","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":30,"time":1773559245751,"pid":11284,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773559245751,"pid":11284,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69b65dc7df81e5696dca7a02","msg":"Inside TicketSold"}
+{"level":30,"time":1773559408217,"pid":11284,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773559408218,"pid":11284,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b65e6fdf81e5696dca7a1f","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":30,"time":1773559411155,"pid":11284,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773559411156,"pid":11284,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69b65e6fdf81e5696dca7a1f","msg":"Inside TicketSold"}
+{"level":30,"time":1773560105357,"pid":11284,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773560105359,"pid":11284,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b66128df81e5696dca7a3c","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":30,"time":1773560107898,"pid":11284,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773560107899,"pid":11284,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69b66128df81e5696dca7a3c","msg":"Inside TicketSold"}
+{"level":30,"time":1773560184597,"pid":11284,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773560184598,"pid":11284,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b66177df81e5696dca7a59","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":30,"time":1773560187461,"pid":11284,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773560187462,"pid":11284,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69b66177df81e5696dca7a59","msg":"Inside TicketSold"}
+{"level":30,"time":1773563393071,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773563393071,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b66e000dcee35254dc6ba1","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":30,"time":1773563396053,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773563396053,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69b66e000dcee35254dc6ba1","msg":"Inside TicketSold"}
+{"level":30,"time":1773563493855,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773563493855,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b66e650dcee35254dc6bbe","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":30,"time":1773563496783,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773563496783,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69b66e650dcee35254dc6bbe","msg":"Inside TicketSold"}
+{"level":30,"time":1773564238622,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773564238622,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b6714d0dcee35254dc6bdb","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":30,"time":1773564241416,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773564241416,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69b6714d0dcee35254dc6bdb","msg":"Inside TicketSold"}
+{"level":30,"time":1773564345863,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773564345863,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b671b90dcee35254dc6bf8","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":30,"time":1773564348489,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773564348489,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69b671b90dcee35254dc6bf8","msg":"Inside TicketSold"}
+{"level":30,"time":1773564664702,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773564664703,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b672f70dcee35254dc6c15","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":30,"time":1773564668708,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773564668708,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69b672f70dcee35254dc6c15","msg":"Inside TicketSold"}
+{"level":30,"time":1773565068821,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773565068821,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b6748b0dcee35254dc6c32","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":30,"time":1773565073138,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773565073139,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69b6748b0dcee35254dc6c32","msg":"Inside TicketSold"}
+{"level":30,"time":1773565431552,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773565431552,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b675f60dcee35254dc6c4f","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":30,"time":1773565435308,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773565435308,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69b675f60dcee35254dc6c4f","msg":"Inside TicketSold"}
+{"level":30,"time":1773565877731,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773565877731,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b677b40dcee35254dc6c6c","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":30,"time":1773565880263,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773565880263,"pid":9139,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69b677b40dcee35254dc6c6c","msg":"Inside TicketSold"}
+{"level":30,"time":1773573600082,"pid":17240,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773573600083,"pid":17240,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b695df4980a6cdcac8a0cb","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":30,"time":1773573603419,"pid":17240,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773573603419,"pid":17240,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69b695df4980a6cdcac8a0cb","msg":"Inside TicketSold"}
+{"level":30,"time":1773574675406,"pid":17240,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773574675407,"pid":17240,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b69a115c2f49d7e05e4cb6","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":30,"time":1773575327291,"pid":17240,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773575327292,"pid":17240,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b69c9e9ed30961cd5824da","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":30,"time":1773575467800,"pid":17240,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773575467800,"pid":17240,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b69d2bc8dbd6cb715d7c84","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":30,"time":1773575470967,"pid":17240,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773575470967,"pid":17240,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69b69d2bc8dbd6cb715d7c84","msg":"Inside TicketSold"}
+{"level":30,"time":1773579285938,"pid":20836,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773579285940,"pid":20836,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b6ac1527c211161045e680","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":30,"time":1773579289937,"pid":20836,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773579289938,"pid":20836,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69b6ac1527c211161045e680","msg":"Inside TicketSold"}
+{"level":30,"time":1773594613216,"pid":10868,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773594613224,"pid":10868,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b6e7f4b86c5fe9e82c42b2","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":30,"time":1773594616644,"pid":10868,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773594616644,"pid":10868,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69b6e7f4b86c5fe9e82c42b2","msg":"Inside TicketSold"}
+{"level":30,"time":1773595554267,"pid":12764,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773595554270,"pid":12764,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b6eba114c358ffad47cfb2","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":50,"time":1773595555416,"pid":12764,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","bookingId":"69b6eba114c358ffad47cfb2","msg":"Ticket reservation failed: Tickets not available"}
+{"level":30,"time":1773595770127,"pid":13182,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773595770130,"pid":13182,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b6ec790190b6ef5cb77670","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":50,"time":1773595770348,"pid":13182,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","bookingId":"69b6ec790190b6ef5cb77670","msg":"Ticket reservation failed: Tickets not available"}
+{"level":30,"time":1773596124777,"pid":13182,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773596124778,"pid":13182,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69b6eddb0190b6ef5cb77676","ticketId":"69a292b6218a2beaff264001","msg":"Inside BookingCreated"}
+{"level":30,"time":1773596127740,"pid":13182,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1773596127741,"pid":13182,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69b6eddb0190b6ef5cb77676","msg":"Inside TicketSold"}
+{"level":30,"time":1774358391041,"pid":17974,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1774358391042,"pid":17974,"hostname":"Ubuntu","module":"Ticket","service":"BookingTicketHandler","eventId":"69a292b6218a2beaff263fff","bookingId":"69c28f763913831fb803107a","ticketId":"69a292b6218a2beaff264002","msg":"Inside BookingCreated"}
+{"level":30,"time":1774358393291,"pid":17974,"hostname":"Ubuntu","module":"Ticket","service":"TicketSagaProcessor","msg":"Inside Ticket-Module-SAGA"}
+{"level":30,"time":1774358393291,"pid":17974,"hostname":"Ubuntu","module":"Ticket","service":"TicketHandler","bookingId":"69c28f763913831fb803107a","msg":"Inside TicketSold"}

@@ -1,0 +1,18 @@
+export declare const DOMAIN_EVENTS: {
+    BOOKING_CREATED: string;
+    BOOKING_CONFIRM_REQUESTED: string;
+    BOOKING_CONFIRMED: string;
+    BOOKING_CONFIRM_FAILED: string;
+    BOOKING_CANCELLED: string;
+    BOOKING_PAYMENT_FAILED: string;
+    TICKET_RESERVED: string;
+    TICKET_RESERVATION_FAILED: string;
+    TICKET_SOLD: string;
+    TICKET_SOLD_FAILED: string;
+    TICKET_FAILED: string;
+    PAYMENT_REQUEST: string;
+    PAYMENT_SUCCESS: string;
+    PAYMENT_FAILED: string;
+    PAYMENT_REFUND_REQUEST: string;
+    BOOKING_PAYMENT_REFUNDED: string;
+};

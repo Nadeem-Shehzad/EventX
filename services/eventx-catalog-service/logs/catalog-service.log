@@ -1,0 +1,15 @@
+{"level":30,"time":"2026-04-02T17:12:23.975Z","service":"catalog-service","requestId":"b72021e0-27aa-444e-a34d-60386e61a289","title":"Blind Race 2026","msg":"Create Event Started"}
+{"level":30,"time":"2026-04-02T17:12:23.977Z","service":"catalog-service","requestId":"b72021e0-27aa-444e-a34d-60386e61a289","title":"Blind Race 2026","msg":"DB Transaction started"}
+{"level":30,"time":"2026-04-02T17:12:25.359Z","service":"catalog-service","requestId":"b72021e0-27aa-444e-a34d-60386e61a289","msg":"No Event with same title, date and venue exists"}
+{"level":30,"time":"2026-04-02T17:12:26.365Z","service":"catalog-service","requestId":"b72021e0-27aa-444e-a34d-60386e61a289","title":"Blind Race 2026","msg":"Event Created"}
+{"level":30,"time":"2026-04-02T17:12:27.040Z","service":"catalog-service","requestId":"b72021e0-27aa-444e-a34d-60386e61a289","title":"Blind Race 2026","msg":"Tickets Created for event"}
+{"level":30,"time":"2026-04-02T17:17:47.795Z","service":"catalog-service","requestId":"5c9d479c-1223-4a7f-8b00-cc91d692c539","title":"Blind Race 2026","msg":"Create Event Started"}
+{"level":30,"time":"2026-04-02T17:17:47.796Z","service":"catalog-service","requestId":"5c9d479c-1223-4a7f-8b00-cc91d692c539","title":"Blind Race 2026","msg":"DB Transaction started"}
+{"level":40,"time":"2026-04-02T17:17:48.742Z","service":"catalog-service","requestId":"5c9d479c-1223-4a7f-8b00-cc91d692c539","msg":"Event with same title, date and venue already exists"}
+{"level":50,"time":"2026-04-02T17:17:48.743Z","service":"catalog-service","requestId":"5c9d479c-1223-4a7f-8b00-cc91d692c539","title":"Blind Race 2026","msg":"Error in creating event"}
+{"level":30,"time":"2026-04-02T17:49:21.595Z","service":"catalog-service","requestId":"91324e41-253e-49a4-aa12-b21d27c9af3f","eventId":"69cea379c0a379785ec819e5","msg":"getTicketsByEvent Started"}
+{"level":30,"time":"2026-04-03T06:39:23.559Z","service":"catalog-service","requestId":"a01846fd-6e9a-4b12-9cb6-845472519376","title":"Kabbadi 2026","msg":"Create Event Started"}
+{"level":30,"time":"2026-04-03T06:39:23.564Z","service":"catalog-service","requestId":"a01846fd-6e9a-4b12-9cb6-845472519376","title":"Kabbadi 2026","msg":"DB Transaction started"}
+{"level":30,"time":"2026-04-03T06:39:26.761Z","service":"catalog-service","requestId":"a01846fd-6e9a-4b12-9cb6-845472519376","msg":"No Event with same title, date and venue exists"}
+{"level":30,"time":"2026-04-03T06:39:27.069Z","service":"catalog-service","requestId":"a01846fd-6e9a-4b12-9cb6-845472519376","title":"Kabbadi 2026","msg":"Event Created"}
+{"level":30,"time":"2026-04-03T06:39:27.379Z","service":"catalog-service","requestId":"a01846fd-6e9a-4b12-9cb6-845472519376","title":"Kabbadi 2026","msg":"Tickets Created for event"}

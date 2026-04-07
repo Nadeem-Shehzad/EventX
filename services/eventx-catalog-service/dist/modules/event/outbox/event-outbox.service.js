@@ -1,0 +1,38 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.EventOutboxService = void 0;
+const common_1 = require("@nestjs/common");
+const event_outbox_repo_1 = require("./event-outbox-repo");
+let EventOutboxService = class EventOutboxService {
+    outboxRepo;
+    constructor(outboxRepo) {
+        this.outboxRepo = outboxRepo;
+    }
+    async addEvent(aggregateType, aggregateId, eventType, payload, session) {
+        return this.outboxRepo.addEvent(aggregateType, aggregateId, eventType, payload, session);
+    }
+    async markPublished(eventId) {
+        return this.outboxRepo.markPublished(eventId);
+    }
+    async markFailed(eventId, error) {
+        return this.outboxRepo.markFailed(eventId, error);
+    }
+    getModel() {
+        return this.outboxRepo.getModel();
+    }
+};
+exports.EventOutboxService = EventOutboxService;
+exports.EventOutboxService = EventOutboxService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [event_outbox_repo_1.EventOutboxRepo])
+], EventOutboxService);
+//# sourceMappingURL=event-outbox.service.js.map
