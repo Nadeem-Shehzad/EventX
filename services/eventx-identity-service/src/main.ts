@@ -1,3 +1,5 @@
+import { otelSDK } from './tracing';  
+
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -13,6 +15,11 @@ import { corsConfig } from './config/cors.config';
 
 
 async function bootstrap() {
+
+   await otelSDK.start();
+
+   const EventEmitter = require('events');
+   EventEmitter.defaultMaxListeners = 20;
 
    const app = await NestFactory.create(AppModule, {
       bufferLogs: true,

@@ -5,15 +5,12 @@ import {
    makeGaugeProvider,
    makeHistogramProvider
 } from '@willsoto/nestjs-prometheus';
-import { PersistentMetricsService } from './persistent-metrics/metrics.service';
+//import { PersistentMetricsService } from './persistent-metrics/metrics.service';
 
 @Global()
 @Module({
    providers: [
       MetricsService,
-
-      PersistentMetricsService,
-
       makeCounterProvider({
          name: 'auth_login_total',
          help: 'Total login attempts',
@@ -71,7 +68,7 @@ import { PersistentMetricsService } from './persistent-metrics/metrics.service';
    ],
    exports: [
       MetricsService,
-      PersistentMetricsService,
+      //PersistentMetricsService,
    ],
 })
 

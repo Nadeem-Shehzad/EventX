@@ -46,8 +46,4 @@ import { MetricsModule } from './metrics/metrics.module';
    ],
 })
 
-export class AppModule {
-   configure(consumer: MiddlewareConsumer) {
-      consumer.apply(RequestIdMiddleware).forRoutes('*')
-   }
-}
+export class AppModule {}

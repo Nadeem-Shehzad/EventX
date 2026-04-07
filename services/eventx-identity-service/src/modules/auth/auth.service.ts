@@ -23,8 +23,7 @@ import { ResetPasswordDTO } from "./dto/request/reset-password.dto";
 import { AuthHelper } from "./helpers/auth.helper";
 import { LoggerService } from "../../common/logger/logger.service";
 import { MetricsService } from "../../metrics/metrics.service";
-import { PersistentMetricsService } from "src/metrics/persistent-metrics/metrics.service";
-
+import { STATUS, ACTION, METHOD } from "src/constants/logs.constant";
 
 
 @Injectable()
@@ -39,7 +38,6 @@ export class AuthService {
       private readonly helper: AuthHelper,
       private readonly pinoLogger: LoggerService,
       private readonly metricsService: MetricsService,
-      private readonly persistentMetrics: PersistentMetricsService
    ) { }
 
    private readonly logger = new Logger(AuthService.name);
@@ -78,20 +76,31 @@ export class AuthService {
 
 
    async login(loginData: LoginDTO) {
+      const start = Date.now();
 
       this.metricsService.incrementLoginAttempt();
 
-      await this.persistentMetrics.incrementLoginTotal();
-      
-      this.pinoLogger.info('Login attempt started', { email: loginData.email });
+      this.pinoLogger.info('Login attempt started', {
+         email: loginData.email,
+         action: ACTION.LOGIN,
+         status: STATUS.START,
+         method: METHOD.POST,
+      });
 
       const user = await this.userService.getUserByEmailWithPassword(loginData.email);
       if (!user) {
          this.metricsService.incrementLoginFailed('user_not_found');
 
-         await this.persistentMetrics.incrementLoginFailed();
+         const duration = Date.now() - start;
+         this.pinoLogger.warn('Login failed - user not found', {
+            email: loginData.email,
+            action: ACTION.LOGIN,
+            status: STATUS.FAILED,
+            method: METHOD.POST,
+            duration: duration,
+            error: 'User not Found'
+         });
 
-         this.pinoLogger.warn('Login failed - user not found', { email: loginData.email });
          throw new NotFoundException('User not registered');
       }
 
@@ -103,14 +112,23 @@ export class AuthService {
 
       if (!passwordMatched) {
 
-         await this.persistentMetrics.incrementLoginFailed();
-
          this.pinoLogger.warn('Login failed - invalid password', {
             userId: user._id.toString(),
             error: 'Invalid Password'
          });
 
          this.metricsService.incrementLoginFailed('invalid_credentials');
+
+         const duration = Date.now() - start;
+         this.pinoLogger.warn('Login failed - invalid password', {
+            userId: user._id.toString(),
+            action: ACTION.LOGIN,
+            status: STATUS.FAILED,
+            method: METHOD.POST,
+            duration: duration,
+            error: 'Invalid Password'
+         });
+
          throw new UnauthorizedException('Invalid password');
       }
 
@@ -129,9 +147,16 @@ export class AuthService {
             });
          });
 
-      this.pinoLogger.info('Login successful', { userId: user._id.toString() });
-      await this.persistentMetrics.incrementLoginSuccess();
       this.metricsService.incrementLoginSuccess(user._id.toString());
+
+      const duration = Date.now() - start;
+      this.pinoLogger.info('Login successful', {
+         userId: user._id.toString(),
+         action: ACTION.LOGIN,
+         status: STATUS.SUCCESS,
+         method: METHOD.POST,
+         duration: duration
+      });
 
       return { accessToken, refreshToken };
    }

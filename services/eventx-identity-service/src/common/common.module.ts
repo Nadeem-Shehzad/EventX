@@ -8,11 +8,13 @@ import { MyRedisModule } from "src/redis/redis.module";
 import { IdempotencyInterceptor } from "./interceptors/idempotency.interceptor";
 import { LoggerService } from "./logger/logger.service";
 import { RequestContextService } from "./logger/request-context.service";
+import { LoggerModule } from "./logger/logger.module";
 
 
 @Global()
 @Module({
    imports: [
+      LoggerModule,
       JwtModule.register({}),
       MyRedisModule
    ],
@@ -22,8 +24,8 @@ import { RequestContextService } from "./logger/request-context.service";
       AccountOwnerShipGuard,
       RoleCheckGuard,
       IdempotencyInterceptor,
-      LoggerService,
-      RequestContextService
+      // LoggerService,
+      // RequestContextService
    ],
    exports: [
       JwtAuthGuard,
@@ -31,8 +33,9 @@ import { RequestContextService } from "./logger/request-context.service";
       JwtModule,
       AccountOwnerShipGuard,
       RoleCheckGuard,
-      LoggerService,
-      RequestContextService
+      // LoggerService,
+      // RequestContextService,
+      LoggerModule,
    ]
 })
 
