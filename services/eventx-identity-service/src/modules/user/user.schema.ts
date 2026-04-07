@@ -8,13 +8,13 @@ export type UserDocument = User & Document;
 @Schema({ timestamps: true })
 export class User {
    @Prop({ required: true, trim: true, min: 3, max: 22 })
-   name: string
+   name!: string
 
    @Prop({ required: true, unique: true, lowercase: true, trim: true })
-   email: string
+   email!: string
 
    @Prop({ required: true, min: 4, max: 22, select: false })
-   password: string
+   password!: string
 
    @Prop({
       type: {
@@ -24,19 +24,19 @@ export class User {
       required: true,
       _id: false
    })
-   image: { url: string; publicId: string }
+   image!: { url: string; publicId: string }
 
    @Prop({ default: false })
-   isVerified: boolean
+   isVerified!: boolean
 
    @Prop({ enum: ['user', 'admin', 'organizer'], default: 'user' })
-   role: string
+   role!: string
 
    @Prop({ type: [String], default: [] })
-   permissions: string[]
+   permissions!: string[]
 
    @Prop({ default: null, select: false })
-   refreshToken: string
+   refreshToken!: string
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -68,15 +68,38 @@ export class AuthController {
       @UploadedFile() file?: Express.Multer.File
    ) {
 
-      if (!file) throw new BadRequestException('Image is required');
+      return tracer.startActiveSpan('POST /register', async (rootSpan) => {
+         try {
 
-      const imageData = {
-         url: file.path,
-         publicId: file.filename
-      };
+            rootSpan.setAttributes({
+               'http.method': 'POST',
+               'route': '/auth/register',
+               'user.email': data.email 
+            });
 
-      data.image = imageData;
-      return this.authService.register(data);
+            if (!file) throw new BadRequestException('Image is required');
+
+            const imageData = {
+               url: file.path,
+               publicId: file.filename
+            };
+
+            data.image = imageData;
+            const result = await this.authService.register(data);
+
+            rootSpan.setStatus({ code: SpanStatusCode.OK });
+            return result;
+
+         } catch (error) {
+            const err = error as Error;
+            rootSpan.recordException(err);
+            rootSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+            throw error; // Re-throw to NestJS
+
+         } finally {
+            rootSpan.end();
+         }
+      });
    }
 
 
@@ -91,7 +114,7 @@ export class AuthController {
    @ApiResponse({ status: 404, description: 'Invalid credentials' })
    @ApiResponse({ status: 500, description: 'Server Error' })
    login(@Body() loginData: LoginDTO) {
-      //return this.authService.login(loginData);
+
       return tracer.startActiveSpan('POST /login', async (rootSpan) => {
          try {
             // 4. Attach metadata to the span for easy searching in Grafana

@@ -47,34 +47,70 @@ export class AuthService {
    private readonly logger = new Logger(AuthService.name);
 
 
-   async register(data: RegisterDTO): Promise<UserResponseDTO> {
+   async register(data: RegisterDTO): Promise<UserResponseDTO | undefined> {
 
-      this.metricsService.incrementRegisterAttempts();
-      this.pinoLogger.info('Register attempt started');
+      return tracer.startActiveSpan('AuthService.register', async (serviceSpan) => {
+         try {
+            this.metricsService.incrementRegisterAttempts();
+            this.pinoLogger.info('Register attempt started');
 
-      const hashedPassword = await this.helper.hashValue(data.password, 'credentials');
+            const hashedPassword = await tracer.startActiveSpan('HashPassword', async (hashspan) => {
+               const hashed = await this.helper.hashValue(data.password, 'credentials');
+               hashspan.end();
+               return hashed;
+            });
 
-      const user = await this.userService.createUser({
-         ...data,
-         password: hashedPassword,
-      });
+            const user = await this.userService.createUser({
+               ...data,
+               password: hashedPassword,
+            });
 
-      if (!user) {
-         this.metricsService.incrementRegisterFailed('invalid_credentials');
-         this.pinoLogger.error('Register attempt failed', { reason: 'invalid_credentials' });
-         throw new InternalServerErrorException('User creation failed');
-      }
+            if (!user) {
+               this.metricsService.incrementRegisterFailed('invalid_credentials');
+               this.pinoLogger.error('Register attempt failed', { reason: 'invalid_credentials' });
+               throw new InternalServerErrorException('User creation failed');
+            }
 
-      this.pinoLogger.info('Register user ', { userId: user._id.toString() });
-      this.metricsService.incrementRegisterSuccess();
+            this.pinoLogger.info('Register user ', { userId: user._id.toString() });
+            this.metricsService.incrementRegisterSuccess();
 
-      this.sendVerificationEmail(String(user._id), user.email).catch((err) => {
-         this.logger.error(`Verification email failed for ${user.email}: ${err.message}`)
-         this.pinoLogger.error(`Verification email failed for ${user.email}: ${err.message}`);
-      });
+            tracer.startActiveSpan('SendVerificationEmail', async (emailSpan) => {
+               try {
+                  emailSpan.setAttribute('user.email', user.email);
+                  await this.sendVerificationEmail(String(user._id), user.email);
+                  emailSpan.setStatus({ code: SpanStatusCode.OK });
 
-      return plainToInstance(UserResponseDTO, user.toObject(), {
-         excludeExtraneousValues: true,
+               } catch (error) {
+                  const err = error as Error;
+
+                  this.logger.error(`Verification email failed for ${user.email}: ${err.message}`)
+                  this.pinoLogger.error(`Verification email failed for ${user.email}: ${err.message}`);
+                  
+                  emailSpan.recordException(err as Error);
+                  emailSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+
+               } finally {
+                  emailSpan.end();
+               }
+            });
+
+
+            serviceSpan.setStatus({ code: SpanStatusCode.OK });
+
+            return plainToInstance(UserResponseDTO, user.toObject(), {
+               excludeExtraneousValues: true,
+            });
+
+         } catch (error) {
+            const err = error as Error;
+            serviceSpan.recordException(err);
+            serviceSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+            throw error;
+
+         }
+         finally {
+            serviceSpan.end();
+         }
       });
    }
 
@@ -98,7 +134,7 @@ export class AuthService {
 
             if (!user) {
                this.metricsService.incrementLoginFailed('user_not_found');
-               this.pinoLogger.warn('Login failed - user not found', { /* ... your logs ... */ });
+               this.pinoLogger.warn('Login failed - user not found', {});
 
                // Throwing here triggers the catch block below, turning the span RED
                throw new NotFoundException('User not registered');
@@ -118,7 +154,7 @@ export class AuthService {
 
             if (!passwordMatched) {
                this.metricsService.incrementLoginFailed('invalid_credentials');
-               this.pinoLogger.warn('Login failed - invalid password', { /* ... logs ... */ });
+               this.pinoLogger.warn('Login failed - invalid password', {});
                throw new UnauthorizedException('Invalid password');
             }
 
@@ -133,7 +169,7 @@ export class AuthService {
             // Because this is a floating Promise (.then/.catch), OpenTelemetry is smart 
             // enough to keep the trace context alive for this background task!
             this.helper.hashValue(refreshToken, 'refresh token')
-               .then(hashed => this.userService.updateUser(user._id, { refreshToken: hashed }))
+               .then(async (hashed) => await this.userService.updateUser(user._id, { refreshToken: hashed }))
                .catch((err) => {
                   this.pinoLogger.error('Failed to persist refresh token', {
                      userId: user._id.toString(),

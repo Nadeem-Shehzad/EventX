@@ -80,7 +80,7 @@ export class UserService {
 
          } catch (error) {
             this.pinoLogger.error('Failed to delete image from Cloudinary', { userId: id.toString() });
-            this.logger.error(`Failed to delete image from Cloudinary: ${imageId}`, error.stack);
+            this.logger.error(`Failed to delete image from Cloudinary: ${imageId}`, (error instanceof Error) ? error.stack : String(error));
          }
       }
 
