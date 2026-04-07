@@ -24,6 +24,11 @@ import { UserResponseDTO } from "../user/dto/user-response.dto";
 import { LoginResponseDTO } from "./swagger/response/login-response.dto";
 import { ForgotPasswordResponseDTO } from "./swagger/response/forgot-password-response.dto";
 import { IdempotencyInterceptor } from "src/common/interceptors/idempotency.interceptor";
+import { trace, SpanStatusCode } from '@opentelemetry/api';
+
+
+// 2. Initialize the tracer for this file
+const tracer = trace.getTracer('identity-service');
 
 
 @ApiTags('auth')
@@ -86,7 +91,34 @@ export class AuthController {
    @ApiResponse({ status: 404, description: 'Invalid credentials' })
    @ApiResponse({ status: 500, description: 'Server Error' })
    login(@Body() loginData: LoginDTO) {
-      return this.authService.login(loginData);
+      //return this.authService.login(loginData);
+      return tracer.startActiveSpan('POST /login', async (rootSpan) => {
+         try {
+            // 4. Attach metadata to the span for easy searching in Grafana
+            rootSpan.setAttributes({
+               'http.method': 'POST',
+               'route': '/auth/login',
+               'user.email': loginData.email // Good for debugging specific user issues
+            });
+
+            // 5. Call the service. Context propagation handles linking automatically!
+            const result = await this.authService.login(loginData);
+
+            // 6. If successful, mark the span as OK
+            rootSpan.setStatus({ code: SpanStatusCode.OK });
+            return result;
+
+         } catch (error) {
+            // 7. If ANY error bubbles up (404, 401), record it on the trace
+            const err = error as Error;
+            rootSpan.recordException(err);
+            rootSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+            throw error; // Re-throw to NestJS
+         } finally {
+            // 8. CRITICAL: Always end the span!
+            rootSpan.end();
+         }
+      });
    }
 
 

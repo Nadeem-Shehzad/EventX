@@ -53,6 +53,34 @@ services:
     networks:
       - observability
 
+  # --- NEW: Grafana Tempo (Trace Database) ---
+  tempo:
+    image: grafana/tempo:2.10.0  # <-- NO MORE 'latest'!
+    container_name: tempo
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    ports:
+      - "3200:3200" # Grafana UI reads from here
+      - "4317:4317" # OTel Collector writes to here (gRPC)
+    networks:
+      - observability
+    volumes:
+      - ./tempo-config.yaml:/etc/tempo.yaml
+      - tempo-data:/var/tempo
+
+  # --- NEW: OpenTelemetry Collector (The Router) ---
+  otel-collector:
+    image: otel/opentelemetry-collector:latest
+    container_name: otel-collector
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    ports:
+      - "4318:4318" # NestJS sends traces here via HTTP
+    networks:
+      - observability
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    depends_on:
+      - tempo
+
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
@@ -63,6 +91,7 @@ services:
     depends_on:
       - loki
       - prometheus
+      - tempo # Added Tempo dependency
     volumes:
       - grafana-data:/var/lib/grafana
 
@@ -74,3 +103,4 @@ volumes:
   loki-data:
   prometheus-data:
   grafana-data:
+  tempo-data: # --- NEW: Volume for trace persistence ---

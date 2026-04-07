@@ -1,0 +1,20 @@
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318  # <--- THIS IS THE FIX
+      grpc:
+
+exporters:
+  otlp: # <--- Changed from otlp/tempo to fix the deprecation warning
+    endpoint: tempo:4317
+    tls:
+      insecure: true
+  debug:
+    verbosity: detailed 
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [otlp, debug] # <--- Updated to match the exporter name above

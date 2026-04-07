@@ -25,6 +25,10 @@ import { LoggerService } from "../../common/logger/logger.service";
 import { MetricsService } from "../../metrics/metrics.service";
 import { STATUS, ACTION, METHOD } from "src/constants/logs.constant";
 
+import { trace, SpanStatusCode } from '@opentelemetry/api';
+
+const tracer = trace.getTracer('identity-service');
+
 
 @Injectable()
 export class AuthService {
@@ -76,89 +80,85 @@ export class AuthService {
 
 
    async login(loginData: LoginDTO) {
-      const start = Date.now();
+      return tracer.startActiveSpan('AuthService.login', async (serviceSpan) => {
+         try {
+            const start = Date.now();
+            this.metricsService.incrementLoginAttempt();
 
-      this.metricsService.incrementLoginAttempt();
-
-      this.pinoLogger.info('Login attempt started', {
-         email: loginData.email,
-         action: ACTION.LOGIN,
-         status: STATUS.START,
-         method: METHOD.POST,
-      });
-
-      const user = await this.userService.getUserByEmailWithPassword(loginData.email);
-      if (!user) {
-         this.metricsService.incrementLoginFailed('user_not_found');
-
-         const duration = Date.now() - start;
-         this.pinoLogger.warn('Login failed - user not found', {
-            email: loginData.email,
-            action: ACTION.LOGIN,
-            status: STATUS.FAILED,
-            method: METHOD.POST,
-            duration: duration,
-            error: 'User not Found'
-         });
-
-         throw new NotFoundException('User not registered');
-      }
-
-      const passwordMatched = await this.helper.compareValue(
-         loginData.password,
-         user.password,
-         'password',
-      );
-
-      if (!passwordMatched) {
-
-         this.pinoLogger.warn('Login failed - invalid password', {
-            userId: user._id.toString(),
-            error: 'Invalid Password'
-         });
-
-         this.metricsService.incrementLoginFailed('invalid_credentials');
-
-         const duration = Date.now() - start;
-         this.pinoLogger.warn('Login failed - invalid password', {
-            userId: user._id.toString(),
-            action: ACTION.LOGIN,
-            status: STATUS.FAILED,
-            method: METHOD.POST,
-            duration: duration,
-            error: 'Invalid Password'
-         });
-
-         throw new UnauthorizedException('Invalid password');
-      }
-
-      const payload = this.helper.buildPayload(user);
-      const accessToken = this.helper.signAccessToken(payload);
-      const refreshToken = this.helper.signRefreshToken(payload);
-
-      this.pinoLogger.info('Login credentials verified', { userId: user._id.toString() });
-
-      this.helper.hashValue(refreshToken, 'refresh token')
-         .then(hashed => this.userService.updateUser(user._id, { refreshToken: hashed }))
-         .catch((err) => {
-            this.pinoLogger.error('Failed to persist refresh token', {
-               userId: user._id.toString(),
-               error: err.message
+            // Pino automatically picks up the trace_id from the active span!
+            this.pinoLogger.info('Login attempt started', {
+               email: loginData.email,
+               action: ACTION.LOGIN,
+               status: STATUS.START,
+               method: METHOD.POST,
             });
-         });
 
-      this.metricsService.incrementLoginSuccess(user._id.toString());
+            // 2. Database Call (Auto-instrumentation handles tracing this pg/mongo query automatically)
+            const user = await this.userService.getUserByEmailWithPassword(loginData.email);
 
-      const duration = Date.now() - start;
-      this.pinoLogger.info('Login successful', {
-         userId: user._id.toString(),
-         action: ACTION.LOGIN,
-         status: STATUS.SUCCESS,
-         method: METHOD.POST,
-         duration: duration
+            if (!user) {
+               this.metricsService.incrementLoginFailed('user_not_found');
+               this.pinoLogger.warn('Login failed - user not found', { /* ... your logs ... */ });
+
+               // Throwing here triggers the catch block below, turning the span RED
+               throw new NotFoundException('User not registered');
+            }
+
+            // 3. Wrap CPU-Heavy tasks in a custom GRANDCHILD span.
+            // bcrypt.compare is slow. This span will show you EXACTLY how many ms it takes.
+            const passwordMatched = await tracer.startActiveSpan('ComparePassword', async (compareSpan) => {
+               const matched = await this.helper.compareValue(
+                  loginData.password,
+                  user.password,
+                  'password',
+               );
+               compareSpan.end(); // Always end child spans immediately when done
+               return matched;
+            });
+
+            if (!passwordMatched) {
+               this.metricsService.incrementLoginFailed('invalid_credentials');
+               this.pinoLogger.warn('Login failed - invalid password', { /* ... logs ... */ });
+               throw new UnauthorizedException('Invalid password');
+            }
+
+            // 4. Token Generation (Fast enough that we don't need custom spans here)
+            const payload = this.helper.buildPayload(user);
+            const accessToken = this.helper.signAccessToken(payload);
+            const refreshToken = this.helper.signRefreshToken(payload);
+
+            this.pinoLogger.info('Login credentials verified', { userId: user._id.toString() });
+
+            // 5. Background Task Context Flow
+            // Because this is a floating Promise (.then/.catch), OpenTelemetry is smart 
+            // enough to keep the trace context alive for this background task!
+            this.helper.hashValue(refreshToken, 'refresh token')
+               .then(hashed => this.userService.updateUser(user._id, { refreshToken: hashed }))
+               .catch((err) => {
+                  this.pinoLogger.error('Failed to persist refresh token', {
+                     userId: user._id.toString(),
+                     error: err.message
+                  });
+               });
+
+            this.metricsService.incrementLoginSuccess(user._id.toString());
+            this.pinoLogger.info('Login successful', { /* ... logs ... */ });
+
+            // 6. Mark service span successful
+            serviceSpan.setStatus({ code: SpanStatusCode.OK });
+            return { accessToken, refreshToken };
+
+         } catch (error) {
+            // 7. Catch the 404/401 and mark the span as failed
+            const err = error as Error;
+            serviceSpan.recordException(err);
+            serviceSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+            throw error;
+         } finally {
+            // 8. CRITICAL: End the service span
+            serviceSpan.end();
+         }
       });
-
-      return { accessToken, refreshToken };
    }
 
 
