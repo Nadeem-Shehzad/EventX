@@ -541,89 +541,79 @@ export class AuthService {
 
    async forgotPassword(email: string) {
 
-      return tracer.startActiveSpan('AuthService.forgotPassword', async (serviceSpan) => {
+      this.pinoLogger.info('Forgot password flow initiated', { email });
 
-         try {
+      try {
+         const user = await this.userService.getUserByEmail(email);
 
-            const user = await this.userService.getUserByEmail(email);
-
-            if (!user) {
-               this.pinoLogger.error('User not Found', { email: email.toString() });
-               return { message: 'User not Found' };
-            }
-
-            const token = randomBytes(32).toString('hex');
-            const userId = String(user._id);
-
-            await tracer.startActiveSpan('AuthService.forgotPassword.redis', async (redisSpan) => {
-               try {
-                  await this.redis.set(`fp:${token}`, userId, 60 * 15);
-                  redisSpan.setStatus({ code: SpanStatusCode.OK });
-
-               } catch (error) {
-                  const err = error as Error;
-                  this.pinoLogger.error(`Redis unavailable for forgot password`, { userId, error: err.message });
-
-                  redisSpan.recordException(err);
-                  redisSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
-
-                  throw new ServiceUnavailableException('Unable to process request, please try again');
-
-               } finally {
-                  redisSpan.end();
-               }
-            })
-
-            const APP_URL = this.configService.get<string>('app_url');
-            const url = `${APP_URL}/auth/v1/reset-password?token=${token}`;
-
-            // Mail is non-critical — token is already in Redis
-            // If mail fails, user can request again
-            tracer.startActiveSpan('AuthService.forgotPassword.sendEmail', async (emailSpan) => {
-               try {
-
-                  await this.mailService.sendMail({
-                     to: email,
-                     subject: 'Reset your password',
-                     html: `
-                           <h2>Reset password</h2>
-                           <p>Click below to reset your password:</p>
-                           <a href="${url}">${url}</a>
-                        `,
-                  });
-
-                  emailSpan.setStatus({ code: SpanStatusCode.OK });
-
-               } catch (error) {
-                  const err = error as Error;
-
-                  this.pinoLogger.error(`Email Service unavailable for forgot password`, { userId, error: err.message });
-
-                  emailSpan.recordException(err);
-                  emailSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
-
-               } finally {
-                  emailSpan.end();
-               }
-            });
-
-            this.pinoLogger.info('If this email is registered, a reset link has been sent', { email: email.toString() });
-
-            serviceSpan.setStatus({ code: SpanStatusCode.OK });
+         if (!user) {
+            // Security: Log internally that it failed, but DO NOT tell the client.
+            // This prevents email enumeration attacks.
+            this.pinoLogger.warn('Forgot password requested for non-existent user', { email });
             return { message: 'If this email is registered, a reset link has been sent' };
-
-         } catch (error) {
-            const err = error as Error;
-
-            this.pinoLogger.error(`Email Service unavailable for forgot password`, { email, error: err.message });
-
-            serviceSpan.recordException(err);
-            serviceSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
-
-         } finally {
-            serviceSpan.end();
          }
-      });
+
+         const token = randomBytes(32).toString('hex');
+         const userId = String(user._id);
+
+         // 2. Redis Span (Synchronous - we await this)
+         await tracer.startActiveSpan('AuthService.forgotPassword.redis', async (redisSpan) => {
+            try {
+               await this.redis.set(`fp:${token}`, userId, 60 * 15);
+               redisSpan.setStatus({ code: SpanStatusCode.OK });
+            } catch (error) {
+               const err = error as Error;
+               this.pinoLogger.error('Redis failed to save reset token', { userId, error: err.message });
+
+               redisSpan.recordException(err);
+               redisSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+
+               throw new ServiceUnavailableException('Unable to process request, please try again');
+            } finally {
+               redisSpan.end();
+            }
+         });
+
+         const APP_URL = this.configService.get<string>('app_url');
+         const url = `${APP_URL}/auth/v1/reset-password?token=${token}`;
+
+         // 3. Email Span (Asynchronous Background Task - NO await)
+         tracer.startActiveSpan('AuthService.forgotPassword.sendEmail', async (emailSpan) => {
+            try {
+               await this.mailService.sendMail({
+                  to: email,
+                  subject: 'Reset your password',
+                  html: `
+                  <h2>Reset password</h2>
+                  <p>Click below to reset your password:</p>
+                  <a href="${url}">${url}</a>
+               `,
+               });
+               emailSpan.setStatus({ code: SpanStatusCode.OK });
+            } catch (error) {
+               const err = error as Error;
+               // Background errors are logged and traced, but don't break the user's response
+               this.pinoLogger.error('Mail provider failed to send reset email', { userId, error: err.message });
+
+               emailSpan.recordException(err);
+               emailSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+            } finally {
+               emailSpan.end();
+            }
+         });
+
+         // 4. Return immediately to the user while the email sends
+         return { message: 'If this email is registered, a reset link has been sent' };
+
+      } catch (error) {
+         // 5. Catching catastrophic errors (like database connection failures)
+         const err = error as Error;
+         this.pinoLogger.error('Forgot password flow completely failed', { email, error: err.message });
+
+         // Because we removed the outer span, we just let the Controller's Interceptor 
+         // catch this thrown error and turn the root trace RED!
+         throw err;
+      }
    }
 
 

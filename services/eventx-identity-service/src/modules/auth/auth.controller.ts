@@ -25,11 +25,10 @@ import { LoginResponseDTO } from "./swagger/response/login-response.dto";
 import { ForgotPasswordResponseDTO } from "./swagger/response/forgot-password-response.dto";
 import { IdempotencyInterceptor } from "src/common/interceptors/idempotency.interceptor";
 import { trace, SpanStatusCode } from '@opentelemetry/api';
+import { OpenTelemetryInterceptor } from "../../common/interceptors/tracing.interceptor";
 
 
-// 2. Initialize the tracer for this file
 const tracer = trace.getTracer('identity-service');
-
 
 @ApiTags('auth')
 @ApiBearerAuth('JWT-auth')
@@ -248,7 +247,7 @@ export class AuthController {
    }
 
 
-   @UseInterceptors(IdempotencyInterceptor)
+   @UseInterceptors(IdempotencyInterceptor, OpenTelemetryInterceptor)
    @Post('forgot-password')
    @ApiOperation({ summary: 'forgot password' })
    @ApiResponse({
@@ -256,32 +255,8 @@ export class AuthController {
       type: ForgotPasswordResponseDTO
    })
    @ApiResponse({ status: 500, description: 'Server Error' })
-   forgotPassword(@Body() body: ForgotPasswordDTO) {
-
-      return tracer.startActiveSpan('POST /forgot-password', async (rootSpan) => {
-         try {
-
-            rootSpan.setAttributes({
-               'http.method': 'POST',
-               'route': '/auth/forgotPassword',
-               'user.email': body.email
-            });
-
-            const result = await this.authService.forgotPassword(body.email);
-            rootSpan.setStatus({ code: SpanStatusCode.OK });
-            return result;
-
-         } catch (error) {
-            const err = error as Error;
-
-            rootSpan.recordException(err);
-            rootSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
-            throw err;
-            
-         } finally {
-            rootSpan.end();
-         }
-      });
+   async forgotPassword(@Body() body: ForgotPasswordDTO) {
+      return await this.authService.forgotPassword(body.email);
    }
 
 
