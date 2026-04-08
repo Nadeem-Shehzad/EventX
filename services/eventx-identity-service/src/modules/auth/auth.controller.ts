@@ -74,7 +74,7 @@ export class AuthController {
             rootSpan.setAttributes({
                'http.method': 'POST',
                'route': '/auth/register',
-               'user.email': data.email 
+               'user.email': data.email
             });
 
             if (!file) throw new BadRequestException('Image is required');
@@ -156,8 +156,31 @@ export class AuthController {
    @ApiResponse({ status: 401, description: 'Unauthorized' })
    @ApiResponse({ status: 404, description: 'Invalid credentials' })
    @ApiResponse({ status: 500, description: 'Server Error' })
-   changePassword(@GetUserID() id: string, @Body() cpData: ChangePasswordDTO): Promise<{ message: string }> {
-      return this.authService.changePassword(id, cpData);
+   changePassword(@GetUserID() id: string, @Body() cpData: ChangePasswordDTO): Promise<{ message: string } | undefined> {
+      return tracer.startActiveSpan('POST /change-password', async (rootSpan) => {
+         try {
+
+            rootSpan.setAttributes({
+               'http.method': 'POST',
+               'route': '/auth/change-password',
+               'user.id': id
+            });
+
+            const result = await this.authService.changePassword(id, cpData);
+
+            rootSpan.setStatus({ code: SpanStatusCode.OK });
+            return result;
+
+         } catch (error) {
+            const err = error as Error;
+            rootSpan.recordException(err);
+            rootSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+            throw err;
+
+         } finally {
+            rootSpan.end();
+         }
+      });
    }
 
 
@@ -172,7 +195,31 @@ export class AuthController {
    @ApiResponse({ status: 401, description: 'Unauthorized' })
    @ApiResponse({ status: 500, description: 'Server Error' })
    logout(@GetUserID() id: string) {
-      return this.authService.logout(id);
+
+      return tracer.startActiveSpan('POST /logout', async (rootSpan) => {
+         try {
+
+            rootSpan.setAttributes({
+               'http.method': 'POST',
+               'route': '/auth/logout',
+               'user.id': id
+            });
+
+            const result = await this.authService.logout(id);
+
+            rootSpan.setStatus({ code: SpanStatusCode.OK });
+            return result;
+
+         } catch (error) {
+            const err = error as Error;
+            rootSpan.recordException(err);
+            rootSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+            throw err;
+
+         } finally {
+            rootSpan.end();
+         }
+      });
    }
 
 
@@ -210,7 +257,31 @@ export class AuthController {
    })
    @ApiResponse({ status: 500, description: 'Server Error' })
    forgotPassword(@Body() body: ForgotPasswordDTO) {
-      return this.authService.forgotPassword(body.email);
+
+      return tracer.startActiveSpan('POST /forgot-password', async (rootSpan) => {
+         try {
+
+            rootSpan.setAttributes({
+               'http.method': 'POST',
+               'route': '/auth/forgotPassword',
+               'user.email': body.email
+            });
+
+            const result = await this.authService.forgotPassword(body.email);
+            rootSpan.setStatus({ code: SpanStatusCode.OK });
+            return result;
+
+         } catch (error) {
+            const err = error as Error;
+
+            rootSpan.recordException(err);
+            rootSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+            throw err;
+            
+         } finally {
+            rootSpan.end();
+         }
+      });
    }
 
 

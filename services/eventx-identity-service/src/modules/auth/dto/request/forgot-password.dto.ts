@@ -5,5 +5,5 @@ export class ForgotPasswordDTO {
    @IsEmail()
    @IsNotEmpty()
    @ApiProperty({ example: 'kashif@gmail.com' })
-   email: string;
+   email!: string;
 }

@@ -52,7 +52,14 @@ export class AuthService {
       return tracer.startActiveSpan('AuthService.register', async (serviceSpan) => {
          try {
             this.metricsService.incrementRegisterAttempts();
-            this.pinoLogger.info('Register attempt started');
+
+            this.pinoLogger.info('Register attempt started', {
+               email: data.email,
+               action: ACTION.REGISTER,
+               status: STATUS.START,
+               method: METHOD.POST,
+            });
+
 
             const hashedPassword = await tracer.startActiveSpan('HashPassword', async (hashspan) => {
                const hashed = await this.helper.hashValue(data.password, 'credentials');
@@ -71,7 +78,13 @@ export class AuthService {
                throw new InternalServerErrorException('User creation failed');
             }
 
-            this.pinoLogger.info('Register user ', { userId: user._id.toString() });
+            this.pinoLogger.info('Register user ', {
+               email: data.email,
+               action: ACTION.REGISTER,
+               status: STATUS.PROCESSING,
+               method: METHOD.POST,
+            });
+
             this.metricsService.incrementRegisterSuccess();
 
             tracer.startActiveSpan('SendVerificationEmail', async (emailSpan) => {
@@ -83,9 +96,14 @@ export class AuthService {
                } catch (error) {
                   const err = error as Error;
 
-                  this.logger.error(`Verification email failed for ${user.email}: ${err.message}`)
-                  this.pinoLogger.error(`Verification email failed for ${user.email}: ${err.message}`);
-                  
+                  this.pinoLogger.error(`Verification email failed`, {
+                     email: data.email,
+                     action: ACTION.REGISTER,
+                     status: STATUS.FAILED,
+                     method: METHOD.POST,
+                     reason: err.message
+                  });
+
                   emailSpan.recordException(err as Error);
                   emailSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
 
@@ -94,8 +112,14 @@ export class AuthService {
                }
             });
 
-
             serviceSpan.setStatus({ code: SpanStatusCode.OK });
+
+            this.pinoLogger.error(`User Registration Success`, {
+               email: data.email,
+               action: ACTION.REGISTER,
+               status: STATUS.SUCCESS,
+               method: METHOD.POST
+            });
 
             return plainToInstance(UserResponseDTO, user.toObject(), {
                excludeExtraneousValues: true,
@@ -103,6 +127,15 @@ export class AuthService {
 
          } catch (error) {
             const err = error as Error;
+
+            this.pinoLogger.error(`User Registration Failed`, {
+               email: data.email,
+               action: ACTION.REGISTER,
+               status: STATUS.FAILED,
+               method: METHOD.POST,
+               reason: err.message
+            });
+
             serviceSpan.recordException(err);
             serviceSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
             throw error;
@@ -134,7 +167,12 @@ export class AuthService {
 
             if (!user) {
                this.metricsService.incrementLoginFailed('user_not_found');
-               this.pinoLogger.warn('Login failed - user not found', {});
+               this.pinoLogger.warn('Login failed - user not found', {
+                  email: loginData.email,
+                  action: ACTION.LOGIN,
+                  status: STATUS.FAILED,
+                  method: METHOD.POST,
+               });
 
                // Throwing here triggers the catch block below, turning the span RED
                throw new NotFoundException('User not registered');
@@ -154,7 +192,12 @@ export class AuthService {
 
             if (!passwordMatched) {
                this.metricsService.incrementLoginFailed('invalid_credentials');
-               this.pinoLogger.warn('Login failed - invalid password', {});
+               this.pinoLogger.warn('Login failed - invalid password', {
+                  email: loginData.email,
+                  action: ACTION.LOGIN,
+                  status: STATUS.FAILED,
+                  method: METHOD.POST,
+               });
                throw new UnauthorizedException('Invalid password');
             }
 
@@ -163,7 +206,12 @@ export class AuthService {
             const accessToken = this.helper.signAccessToken(payload);
             const refreshToken = this.helper.signRefreshToken(payload);
 
-            this.pinoLogger.info('Login credentials verified', { userId: user._id.toString() });
+            this.pinoLogger.info('Login credentials verified', {
+               email: loginData.email,
+               action: ACTION.LOGIN,
+               status: STATUS.PROCESSING,
+               method: METHOD.POST,
+            });
 
             // 5. Background Task Context Flow
             // Because this is a floating Promise (.then/.catch), OpenTelemetry is smart 
@@ -172,26 +220,43 @@ export class AuthService {
                .then(async (hashed) => await this.userService.updateUser(user._id, { refreshToken: hashed }))
                .catch((err) => {
                   this.pinoLogger.error('Failed to persist refresh token', {
-                     userId: user._id.toString(),
+                     email: loginData.email,
+                     action: ACTION.LOGIN,
+                     status: STATUS.SUCCESS,
+                     method: METHOD.POST,
                      error: err.message
                   });
                });
 
             this.metricsService.incrementLoginSuccess(user._id.toString());
-            this.pinoLogger.info('Login successful', { /* ... logs ... */ });
+
+            this.pinoLogger.info('Login successful', {
+               email: loginData.email,
+               action: ACTION.LOGIN,
+               status: STATUS.SUCCESS,
+               method: METHOD.POST,
+            });
 
             // 6. Mark service span successful
             serviceSpan.setStatus({ code: SpanStatusCode.OK });
             return { accessToken, refreshToken };
 
          } catch (error) {
-            // 7. Catch the 404/401 and mark the span as failed
             const err = error as Error;
+
+            this.pinoLogger.error(`User Registration Failed`, {
+               email: loginData.email,
+               action: ACTION.LOGIN,
+               status: STATUS.FAILED,
+               method: METHOD.POST,
+               reason: err.message
+            });
+
             serviceSpan.recordException(err);
             serviceSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
             throw error;
+
          } finally {
-            // 8. CRITICAL: End the service span
             serviceSpan.end();
          }
       });
@@ -200,50 +265,165 @@ export class AuthService {
 
    async changePassword(id: string, cpData: ChangePasswordDTO) {
 
-      this.pinoLogger.info('changePassword attempt started', { UserId: id.toString() });
+      return tracer.startActiveSpan('AuthService.changePassword', async (serviceSpan) => {
 
-      const user = await this.userService.findUserByIDWithPassword(id);
-      if (!user) {
-         this.pinoLogger.error('User not found', { UserId: id.toString() });
-         throw new NotFoundException('User not found');
-      }
+         try {
 
-      const passwordMatched = await this.helper.compareValue(
-         cpData.currentPassword,
-         user.password,
-         'current password',
-      );
+            this.pinoLogger.info(`changePassword attempt started`, {
+               UserId: id.toString(),
+               action: ACTION.CHANGE_PASSOWRD,
+               status: STATUS.START,
+               method: METHOD.POST
+            });
 
-      if (!passwordMatched) {
-         this.pinoLogger.error('Invalid current password', { UserId: id.toString() });
-         throw new UnauthorizedException('Invalid current password')
-      }
+            const user = await this.userService.findUserByIDWithPassword(id);
+            if (!user) {
+               this.pinoLogger.error(`User not found`, {
+                  UserId: id.toString(),
+                  action: ACTION.CHANGE_PASSOWRD,
+                  status: STATUS.FAILED,
+                  method: METHOD.POST,
+                  reason: 'User Not Found'
+               });
 
-      if (cpData.currentPassword === cpData.newPassword) {
-         this.pinoLogger.error('New password must differ from current password', { UserId: id.toString() });
-         throw new BadRequestException('New password must differ from current password');
-      }
+               throw new NotFoundException('User not found');
+            }
 
-      if (cpData.newPassword !== cpData.confirmPassword) {
-         this.pinoLogger.error('New password and confirm password do not match', { UserId: id.toString() });
-         throw new BadRequestException('New password and confirm password do not match');
-      }
+            const passwordMatched = await tracer.startActiveSpan('compare-password', async (passMatchSpan) => {
+               const password = await this.helper.compareValue(
+                  cpData.currentPassword,
+                  user.password,
+                  'current password',
+               );
+               passMatchSpan.end();
+               return password;
+            });
 
-      const newHashedPassword = await this.helper.hashValue(cpData.newPassword, 'new password');
 
-      await this.userService.updateUser(user._id, { password: newHashedPassword });
-      this.pinoLogger.info('Password changed successfully', { UserId: id.toString() });
+            if (!passwordMatched) {
 
-      return { message: 'Password changed successfully' };
+               this.pinoLogger.error(`Invalid current password`, {
+                  UserId: id.toString(),
+                  action: ACTION.CHANGE_PASSOWRD,
+                  status: STATUS.FAILED,
+                  method: METHOD.POST,
+                  reason: 'Invalid current password'
+               });
+
+               throw new UnauthorizedException('Invalid current password')
+            }
+
+            if (cpData.currentPassword === cpData.newPassword) {
+
+               this.pinoLogger.error(`New password must differ from current password`, {
+                  UserId: id.toString(),
+                  action: ACTION.CHANGE_PASSOWRD,
+                  status: STATUS.FAILED,
+                  method: METHOD.POST,
+                  reason: 'New password must differ from current password'
+               });
+
+               throw new BadRequestException('New password must differ from current password');
+            }
+
+            if (cpData.newPassword !== cpData.confirmPassword) {
+
+               this.pinoLogger.error(`New password and confirm password do not match`, {
+                  UserId: id.toString(),
+                  action: ACTION.CHANGE_PASSOWRD,
+                  status: STATUS.FAILED,
+                  method: METHOD.POST,
+                  reason: 'New password and confirm password do not match'
+               });
+
+               throw new BadRequestException('New password and confirm password do not match');
+            }
+
+            const newHashedPassword = await tracer.startActiveSpan('HashPassword', async (hashPassword) => {
+               const hashedPassword = await this.helper.hashValue(cpData.newPassword, 'new password');
+               hashPassword.end();
+               return hashedPassword;
+            });
+
+            await this.userService.updateUser(user._id, { password: newHashedPassword });
+
+            this.pinoLogger.info('Password changed successfully', {
+               UserId: id.toString(),
+               action: ACTION.CHANGE_PASSOWRD,
+               status: STATUS.SUCCESS,
+               method: METHOD.POST,
+            });
+
+            return { message: 'Password changed successfully' };
+
+         } catch (error) {
+            const err = error as Error;
+
+            this.pinoLogger.info('Password changed Failed', {
+               UserId: id.toString(),
+               action: ACTION.CHANGE_PASSOWRD,
+               status: STATUS.FAILED,
+               method: METHOD.POST,
+               reason: err.message
+            });
+
+            serviceSpan.recordException(err);
+            serviceSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+            throw err;
+
+         } finally {
+            serviceSpan.end();
+         }
+      });
    }
 
 
    async logout(userId: string) {
-      this.pinoLogger.info('logout attempt started', { UserId: userId.toString() });
-      await this.userService.removeUserToken(userId);
-      this.metricsService.decrementActiveUsers(userId);
-      this.pinoLogger.info('logout successfully', { UserId: userId.toString() });
-      return { loggedOut: true };
+
+      return tracer.startActiveSpan('AuthService.logout', async (serviceSpan) => {
+         try {
+
+            this.pinoLogger.info(`logout attempt started`, {
+               UserId: userId.toString(),
+               action: ACTION.LOGOUT,
+               status: STATUS.START,
+               method: METHOD.POST
+            });
+
+            await this.userService.removeUserToken(userId);
+
+            this.metricsService.decrementActiveUsers(userId);
+
+            this.pinoLogger.info(`logout successfully`, {
+               UserId: userId.toString(),
+               action: ACTION.LOGOUT,
+               status: STATUS.SUCCESS,
+               method: METHOD.POST
+            });
+
+            serviceSpan.setStatus({ code: SpanStatusCode.OK });
+            return { loggedOut: true };
+
+         } catch (error) {
+            const err = error as Error;
+
+            this.pinoLogger.error(`logout failed`, {
+               UserId: userId.toString(),
+               action: ACTION.LOGOUT,
+               status: STATUS.FAILED,
+               method: METHOD.POST,
+               reason: err.message
+            });
+
+            serviceSpan.recordException(err);
+            serviceSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+            throw err;
+
+         } finally {
+            serviceSpan.end();
+         }
+      });
+
    }
 
 
@@ -360,48 +540,90 @@ export class AuthService {
 
 
    async forgotPassword(email: string) {
-      this.pinoLogger.info('forgotPassword attempt started');
 
-      const user = await this.userService.getUserByEmail(email);
+      return tracer.startActiveSpan('AuthService.forgotPassword', async (serviceSpan) => {
 
-      if (!user) {
-         this.pinoLogger.error('User not Found', { email: email.toString() });
-         return { message: 'User not Found' };
-      }
+         try {
 
-      const token = randomBytes(32).toString('hex');
-      const userId = String(user._id);
+            const user = await this.userService.getUserByEmail(email);
 
-      try {
-         await this.redis.set(`fp:${token}`, userId, 60 * 15);
-      } catch (err) {
-         const message = err instanceof Error ? err.message : String(err);
-         this.pinoLogger.error(`Redis unavailable for forgot password`, { userId, error: message });
-         this.logger.error(`Redis unavailable for forgot password: ${message}`);
-         throw new ServiceUnavailableException('Unable to process request, please try again');
-      }
+            if (!user) {
+               this.pinoLogger.error('User not Found', { email: email.toString() });
+               return { message: 'User not Found' };
+            }
 
-      const APP_URL = this.configService.get<string>('app_url');
-      const url = `${APP_URL}/auth/v1/reset-password?token=${token}`;
+            const token = randomBytes(32).toString('hex');
+            const userId = String(user._id);
 
-      // Mail is non-critical — token is already in Redis
-      // If mail fails, user can request again
-      this.mailService
-         .sendMail({
-            to: email,
-            subject: 'Reset your password',
-            html: `
-          <h2>Reset password</h2>
-          <p>Click below to reset your password:</p>
-          <a href="${url}">${url}</a>
-        `,
-         })
-         .catch(err =>
-            this.logger.error(`Failed to send reset email to ${email}: ${err.message}`)
-         );
+            await tracer.startActiveSpan('AuthService.forgotPassword.redis', async (redisSpan) => {
+               try {
+                  await this.redis.set(`fp:${token}`, userId, 60 * 15);
+                  redisSpan.setStatus({ code: SpanStatusCode.OK });
 
-      this.pinoLogger.info('If this email is registered, a reset link has been sent', { email: email.toString() });
-      return { message: 'If this email is registered, a reset link has been sent' };
+               } catch (error) {
+                  const err = error as Error;
+                  this.pinoLogger.error(`Redis unavailable for forgot password`, { userId, error: err.message });
+
+                  redisSpan.recordException(err);
+                  redisSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+
+                  throw new ServiceUnavailableException('Unable to process request, please try again');
+
+               } finally {
+                  redisSpan.end();
+               }
+            })
+
+            const APP_URL = this.configService.get<string>('app_url');
+            const url = `${APP_URL}/auth/v1/reset-password?token=${token}`;
+
+            // Mail is non-critical — token is already in Redis
+            // If mail fails, user can request again
+            tracer.startActiveSpan('AuthService.forgotPassword.sendEmail', async (emailSpan) => {
+               try {
+
+                  await this.mailService.sendMail({
+                     to: email,
+                     subject: 'Reset your password',
+                     html: `
+                           <h2>Reset password</h2>
+                           <p>Click below to reset your password:</p>
+                           <a href="${url}">${url}</a>
+                        `,
+                  });
+
+                  emailSpan.setStatus({ code: SpanStatusCode.OK });
+
+               } catch (error) {
+                  const err = error as Error;
+
+                  this.pinoLogger.error(`Email Service unavailable for forgot password`, { userId, error: err.message });
+
+                  emailSpan.recordException(err);
+                  emailSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+
+               } finally {
+                  emailSpan.end();
+               }
+            });
+
+            this.pinoLogger.info('If this email is registered, a reset link has been sent', { email: email.toString() });
+
+            serviceSpan.setStatus({ code: SpanStatusCode.OK });
+            return { message: 'If this email is registered, a reset link has been sent' };
+
+         } catch (error) {
+            const err = error as Error;
+
+            this.pinoLogger.error(`Email Service unavailable for forgot password`, { email, error: err.message });
+
+            serviceSpan.recordException(err);
+            serviceSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+
+         } finally {
+            serviceSpan.end();
+         }
+      });
    }
 
 
@@ -421,7 +643,6 @@ export class AuthService {
       } catch (err) {
          const message = err instanceof Error ? err.message : String(err);
          this.pinoLogger.error(`Redis unavailable for reset password`, { token, error: message });
-         this.logger.error(`Redis unavailable for reset password: ${message}`);
          throw new ServiceUnavailableException('Unable to process request, please try again');
       }
 
@@ -446,7 +667,6 @@ export class AuthService {
       // If del fails it's non-critical — token TTL (15m) will clean it up
       this.redis.del(`fp:${token}`).catch((err) => {
          this.pinoLogger.error(`Failed to delete reset token from Redis: ${err.message}`);
-         this.logger.warn(`Failed to delete reset token from Redis: ${err.message}`)
       });
 
       return { message: 'Password reset successfully' };
