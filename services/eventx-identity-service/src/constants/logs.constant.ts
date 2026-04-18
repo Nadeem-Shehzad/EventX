@@ -13,6 +13,10 @@ export const ACTION = {
    FORGOT_PASSWORD: 'forgot_password'
 }
 
+export const USER_ACTION = {
+   PROFILE: 'profile',
+}
+
 export const METHOD = {
    POST: 'post',
    GET: 'get',

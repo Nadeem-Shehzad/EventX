@@ -6,6 +6,11 @@ import { UserResponseDTO } from "./dto/user-response.dto";
 import { UpdateUserDTO } from "./dto/update-user.dto";
 import { v2 as cloudinary } from 'cloudinary';
 import { LoggerService } from "../../common/logger/logger.service";
+import { STATUS, USER_ACTION, METHOD } from "../../constants/logs.constant";
+import { trace, SpanStatusCode } from '@opentelemetry/api';
+
+
+const tracer = trace.getTracer('identity-service');
 
 
 @Injectable()
@@ -20,19 +25,60 @@ export class UserService {
 
 
    async getUserProfile(id: string) {
-      this.pinoLogger.info('getUserProfile attempt started');
+      return tracer.startActiveSpan('UserService.profile', async (serviceSpan) => {
+         try {
+            this.pinoLogger.info('getUserProfile attempt started');
 
-      const user = await this.userRepo.findUserById(id);
+            this.pinoLogger.info('getUserProfile attempt started', {
+               userId: id.toString(),
+               action: USER_ACTION.PROFILE,
+               status: STATUS.START,
+               method: METHOD.GET,
+            });
 
-      if (!user) {
-         this.pinoLogger.error('User not found', { userId: id.toString() });
-         throw new NotFoundException('User not found');
-      }
+            const user = await this.userRepo.findUserById(id);
 
-      this.pinoLogger.info('getUserProfile success');
+            if (!user) {
 
-      return plainToInstance(UserResponseDTO, user, {
-         excludeExtraneousValues: true,
+               this.pinoLogger.error('User not found', {
+                  userId: id.toString(),
+                  action: USER_ACTION.PROFILE,
+                  status: STATUS.FAILED,
+                  method: METHOD.GET,
+               });
+
+               throw new NotFoundException('User not found');
+            }
+
+            this.pinoLogger.info('getUserProfile success', {
+               userId: id.toString(),
+               action: USER_ACTION.PROFILE,
+               status: STATUS.SUCCESS,
+               method: METHOD.GET,
+            });
+
+            serviceSpan.setStatus({ code: SpanStatusCode.OK });
+
+            return plainToInstance(UserResponseDTO, user, {
+               excludeExtraneousValues: true,
+            });
+
+         } catch (error) {
+            const err = error as Error;
+
+            this.pinoLogger.error('User Profile Failed', {
+               userId: id.toString(),
+               action: USER_ACTION.PROFILE,
+               status: STATUS.FAILED,
+               method: METHOD.GET,
+            });
+
+            serviceSpan.recordException(err);
+            serviceSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+
+         } finally {
+            serviceSpan.end();
+         }
       });
    }
 

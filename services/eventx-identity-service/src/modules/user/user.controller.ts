@@ -19,6 +19,10 @@ import { RoleCheckGuard } from "../../common/guards/role.guard";
 import { GetUserID } from "../../common/decorators/used-id";
 import { AccountOwnerShipGuard } from "../../common/guards/ownership.guard";
 import { IdempotencyInterceptor } from "src/common/interceptors/idempotency.interceptor";
+import { trace, SpanStatusCode } from '@opentelemetry/api';
+
+
+const tracer = trace.getTracer('identity-service');
 
 
 @ApiTags('user')
@@ -40,7 +44,30 @@ export class UserController {
    @ApiResponse({ status: 404, description: 'user not found' })
    @ApiResponse({ status: 500, description: 'server error' })
    profile(@GetUserID() id: string) {
-      return this.userService.getUserProfile(id);
+      return tracer.startActiveSpan('POST /profile', async (rootSpan) => {
+         try {
+
+            rootSpan.setAttributes({
+               'http.method': 'POST',
+               'route': '/auth/login',
+               'user.id': id
+            });
+
+            const result = await this.userService.getUserProfile(id);
+
+            rootSpan.setStatus({ code: SpanStatusCode.OK });
+            return result;
+
+         } catch (error) {
+            const err = error as Error;
+            rootSpan.recordException(err);
+            rootSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+            throw err;
+
+         } finally {
+            rootSpan.end();
+         }
+      })
    }
 
 
@@ -218,13 +245,13 @@ export class UserController {
 
 
    // internal Services Communications
-   
+
    @Get('internal/:id')
    async getUserInternal(
       @Param('id') id: string,
       @Headers('x-internal-api-key') apiKey: string,
    ) {
-      
+
       if (apiKey !== process.env.INTERNAL_API_KEY) {
          throw new UnauthorizedException('Invalid internal API key');
       }

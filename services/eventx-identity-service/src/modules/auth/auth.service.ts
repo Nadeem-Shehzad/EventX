@@ -23,7 +23,7 @@ import { ResetPasswordDTO } from "./dto/request/reset-password.dto";
 import { AuthHelper } from "./helpers/auth.helper";
 import { LoggerService } from "../../common/logger/logger.service";
 import { MetricsService } from "../../metrics/metrics.service";
-import { STATUS, ACTION, METHOD } from "src/constants/logs.constant";
+import { STATUS, ACTION, METHOD } from "../../constants/logs.constant";
 
 import { trace, SpanStatusCode } from '@opentelemetry/api';
 
@@ -547,8 +547,6 @@ export class AuthService {
          const user = await this.userService.getUserByEmail(email);
 
          if (!user) {
-            // Security: Log internally that it failed, but DO NOT tell the client.
-            // This prevents email enumeration attacks.
             this.pinoLogger.warn('Forgot password requested for non-existent user', { email });
             return { message: 'If this email is registered, a reset link has been sent' };
          }
