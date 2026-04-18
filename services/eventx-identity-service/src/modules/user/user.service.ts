@@ -27,7 +27,6 @@ export class UserService {
    async getUserProfile(id: string) {
       return tracer.startActiveSpan('UserService.profile', async (serviceSpan) => {
          try {
-            this.pinoLogger.info('getUserProfile attempt started');
 
             this.pinoLogger.info('getUserProfile attempt started', {
                userId: id.toString(),
@@ -84,16 +83,34 @@ export class UserService {
 
 
    async getUserDataByID(id: string) {
-      this.pinoLogger.info('getUserDataByID attempt started');
+
+      this.pinoLogger.info('getUserDataByID attempt started', {
+         userId: id.toString(),
+         action: USER_ACTION.GET_USER_BY_ID,
+         status: STATUS.START,
+         method: METHOD.GET,
+      });
 
       const user = await this.userRepo.findUserById(id);
 
       if (!user) {
-         this.pinoLogger.error('User not found', { userId: id.toString() });
+
+         this.pinoLogger.error('User not found', {
+            userId: id.toString(),
+            action: USER_ACTION.GET_USER_BY_ID,
+            status: STATUS.FAILED,
+            method: METHOD.GET,
+         });
+
          throw new NotFoundException('User not Found!');
       }
 
-      this.pinoLogger.info('getUserDataByID success');
+      this.pinoLogger.info('getUserDataByID success', {
+         userId: id.toString(),
+         action: USER_ACTION.GET_USER_BY_ID,
+         status: STATUS.SUCCESS,
+         method: METHOD.GET,
+      });
 
       return plainToInstance(UserResponseDTO, user, {
          excludeExtraneousValues: true
@@ -119,15 +136,23 @@ export class UserService {
       }
 
       if (imageId) {
-         try {
-            cloudinary.uploader.destroy(imageId)
-               .then(() => this.logger.log(`Cloudinary image deleted: ${imageId}`))
-               .catch((err) => this.logger.error(`Cloudinary delete failed: ${imageId}`, err?.message))
+         tracer.startActiveSpan('Cloudinary.destroyImage', async (cloudSpan) => {
+            try {
+               await cloudinary.uploader.destroy(imageId);
+               this.logger.log(`Cloudinary image deleted: ${imageId}`)
+               cloudSpan.setStatus({ code: SpanStatusCode.OK });
 
-         } catch (error) {
-            this.pinoLogger.error('Failed to delete image from Cloudinary', { userId: id.toString() });
-            this.logger.error(`Failed to delete image from Cloudinary: ${imageId}`, (error instanceof Error) ? error.stack : String(error));
-         }
+            } catch (error) {
+               const err = error as Error;
+               this.pinoLogger.error('Failed to delete image from Cloudinary', { userId: id.toString() });
+
+               cloudSpan.recordException(err);
+               cloudSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+
+            } finally {
+               cloudSpan.end();
+            }
+         });
       }
 
       this.pinoLogger.info('deleteAccount success');
@@ -146,11 +171,23 @@ export class UserService {
       }
 
       if (dataToUpdate.image && user.image?.publicId) {
-         cloudinary.uploader.destroy(user.image.publicId)
-            .catch((err) => {
+         tracer.startActiveSpan('Cloudinary.destroyImage', async (cloudSpan) => {
+            try {
+               await cloudinary.uploader.destroy(user.image.publicId);
+               cloudSpan.setStatus({ code: SpanStatusCode.OK });
+
+            } catch (error) {
+               const err = error as Error;
                this.pinoLogger.error('Cloudinary cleanup failed', { userId: id.toString() });
                this.logger.error(`Cloudinary cleanup failed`, err?.message);
-            });
+
+               cloudSpan.recordException(err);
+               cloudSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+
+            } finally {
+               cloudSpan.end();
+            }
+         })
       }
 
       const result = await this.userRepo.update(id, dataToUpdate);

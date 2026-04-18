@@ -20,6 +20,7 @@ import { GetUserID } from "../../common/decorators/used-id";
 import { AccountOwnerShipGuard } from "../../common/guards/ownership.guard";
 import { IdempotencyInterceptor } from "src/common/interceptors/idempotency.interceptor";
 import { trace, SpanStatusCode } from '@opentelemetry/api';
+import { OpenTelemetryInterceptor } from "src/common/interceptors/tracing.interceptor";
 
 
 const tracer = trace.getTracer('identity-service');
@@ -72,7 +73,7 @@ export class UserController {
 
 
    @UseGuards(JwtAuthGuard, RoleCheckGuard, AccountOwnerShipGuard)
-   @UseInterceptors(IdempotencyInterceptor)
+   @UseInterceptors(IdempotencyInterceptor, OpenTelemetryInterceptor)
    @Put(':id')
    @HttpCode(HttpStatus.CREATED)
    @ApiOperation({ summary: 'Update profile' })
@@ -118,7 +119,7 @@ export class UserController {
 
 
    @UseGuards(JwtAuthGuard, RoleCheckGuard, AccountOwnerShipGuard)
-   @UseInterceptors(IdempotencyInterceptor)
+   @UseInterceptors(IdempotencyInterceptor, OpenTelemetryInterceptor)
    @Delete(':id')
    @HttpCode(HttpStatus.OK)
    @ApiOperation({ summary: 'Delete profile' })
@@ -160,7 +161,8 @@ export class UserController {
    }
 
 
-   @UseGuards(JwtAuthGuard, RoleCheckGuard)
+   @UseInterceptors(OpenTelemetryInterceptor)
+   @UseGuards(JwtAuthGuard)
    @Get(':id')
    //@Roles('admin')
    @HttpCode(HttpStatus.OK)
@@ -187,7 +189,7 @@ export class UserController {
 
 
    @UseGuards(JwtAuthGuard, RoleCheckGuard)
-   @UseInterceptors(IdempotencyInterceptor)
+   @UseInterceptors(IdempotencyInterceptor, OpenTelemetryInterceptor)
    @Put(':id/admin')
    @Roles('admin')
    @HttpCode(HttpStatus.CREATED)
@@ -218,7 +220,7 @@ export class UserController {
 
 
    @UseGuards(JwtAuthGuard, RoleCheckGuard)
-   @UseInterceptors(IdempotencyInterceptor)
+   @UseInterceptors(IdempotencyInterceptor, OpenTelemetryInterceptor)
    @Delete(':id/admin')
    @Roles('admin')
    @HttpCode(HttpStatus.OK)
@@ -245,7 +247,6 @@ export class UserController {
 
 
    // internal Services Communications
-
    @Get('internal/:id')
    async getUserInternal(
       @Param('id') id: string,

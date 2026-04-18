@@ -15,6 +15,7 @@ export const ACTION = {
 
 export const USER_ACTION = {
    PROFILE: 'profile',
+   GET_USER_BY_ID: 'get_user_by_id'
 }
 
 export const METHOD = {
